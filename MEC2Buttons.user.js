@@ -1,11 +1,12 @@
 // ==UserScript==
-// @name         Test-MEC2Buttons
-// @namespace    http://tampermonkey.net/
+// @name         MEC2Buttons
+// @namespace    http://github.com/jbmccormick
 // @version      0.1
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
-// @match        mec2.trng2.dhs.state.mn.us/*
+// @match        mec2.prod2.dhs.state.mn.us/*
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2Buttons.user.js
 // ==/UserScript==
 
   (function() {

@@ -1,11 +1,12 @@
 // ==UserScript==
-// @name         MEC2 ReStyle
-// @namespace    http://tampermonkey.net/
+// @name         MEC2ReStyle
+// @namespace    http://github.com/jbmccormick
 // @version      0.1
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
-// @match        mec2.dhs.state.mn.us/*
+// @match        mec2.prod2.dhs.state.mn.us/*
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
 // ==/UserScript==
 
 (function() {

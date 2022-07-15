@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.1
+// @version      0.2
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,6 +12,9 @@
   (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
+if (document.getElementById("loginDetail")) {
+    console.log("Login present");
+};
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
 let primaryPanelID = document.getElementById("page-wrap")
 let panelDefault = document.getElementsByClassName('panel-default')[0];
@@ -20,13 +23,13 @@ if (!document.getElementById("page-wrap")) {
 };
 let buttonDivOne = document.createElement('div');
     buttonDivOne.id = "buttonPaneOne";
-      let buttonDivOneID = document.getElementById("buttonPaneOne");
+//      let buttonDivOneID = document.getElementById("buttonPaneOne");
 let buttonDivTwo = document.createElement('div');
 	buttonDivTwo.id = "buttonPaneTwo"
-      let buttonDivTwoID = document.getElementById("buttonPaneTwo");
+//      let buttonDivTwoID = document.getElementById("buttonPaneTwo");
 let buttonDivThree = document.createElement('div');
 	buttonDivThree.id = "buttonPaneThree"
-      let buttonDivThreeID = document.getElementById("buttonPaneThree");
+//      let buttonDivThreeID = document.getElementById("buttonPaneThree");
 primaryPanelID.insertAdjacentElement("afterend", buttonDivOne);
     buttonDivOne.insertAdjacentElement("afterend", buttonDivTwo);
     buttonDivTwo.insertAdjacentElement("afterend", buttonDivThree);
@@ -46,9 +49,11 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
 }
       addGlobalStyle('.custombutton { cursor: pointer; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
       addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 4px 5px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-4px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
+      addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-4px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
+      addGlobalStyle('.custom-form-button {margin-left: 10px; }');
+      addGlobalStyle('#buttonPaneThree {margin-bottom:1px; }');
       if (primaryPanelID.getAttribute('Id') == "greenline") {
       addGlobalStyle('.custombutton { cursor: no-drop; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
       addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-4px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
@@ -56,7 +61,6 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
       addGlobalStyle('#panelDefault {margin-top: -20px !important; }');
       //addGlobalStyle('.panel-default {margin-top: -20px !important; }');//panelDefault
-                     //document.getElementsByClassName("panel panel-default")[0].style.marginTop = "-20px";
       };
       addGlobalStyle('.navbar { display: none; }');
       addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');
@@ -127,7 +131,7 @@ const rowThreeButtonArray = {
 	caseButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		editSummary:["Edit Summary","CaseEditSummary","_self", "Edit Summary", "CaseEditSummarySelf", "caseButtons"],
 		caseAddress:["Address", "CaseAddress", "_self", "Case Address", "CaseAddressSelf", "caseButtons"],
-		caseAction:["Case Action", "ApplicationInformation", "_self", "Case Action", "CaseActionSelf", "caseButtons"],
+		caseAction:["Case Action", "CaseAction", "_self", "Case Action", "CaseActionSelf", "caseButtons"],
 		caseFunding:["Funding Availability", "FundingAvailability", "_self", "Funding Availability", "FundingAvailabilitySelf", "caseButtons"],
 		caseRedetermination:["Redetermination", "CaseRedetermination", "_self", "Case Redetermination", "CaseRedeterminationSelf", "caseButtons"],
 		caseAppInfo:["Application Info", "ApplicationInformation", "_self", "Case Application Info", "CaseApplicationInfoSelf", "caseButtons"],
@@ -361,5 +365,4 @@ function traverseOnRowTwoClick(o) {
     }
 }
 traverseOnPageLoad(rowThreeButtonArray)
-//testing area
 })();

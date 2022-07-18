@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.22
+// @version      0.23
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
-// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
 // ==/UserScript==
 
 (function() {
@@ -123,7 +123,7 @@ let newBr = document.createElement('br');
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
-    document.getElementById('noteStringText').setAttribute('rows', '30');
+    document.getElementById('noteStringText').setAttribute('rows', '29');
 };
 //SECTION END Case Notes custom styles
 //SECTION START Delete all alerts of current name
@@ -213,6 +213,5 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
 //SECTION START Sort caseload lists by client name, ascending
 if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
     document.getElementsByClassName('sorting')[1].click()
-//SECTION END Sort caseload lists by client name, ascending
 };
 })();

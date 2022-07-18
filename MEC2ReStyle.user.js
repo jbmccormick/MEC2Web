@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.2
+// @version      0.21
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -28,16 +28,18 @@ addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2
 addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Confirmed works
 addGlobalStyle('form { margin-top: 3px !important; }');//Shrink margin from 'form' elements
 addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 9px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
-if (window.location.href.indexOf("CaseOverview") > -1) {
-addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
-};
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
+//SECTION START Custom page styles
 if (window.location.href.indexOf("CaseExpense") > -1) {
     document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
 };
+if (window.location.href.indexOf("CaseOverview") > -1) {
+addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
+};
+//SECTION END Custom page styles
+//SECTION START Resize the alert text viewable area
 if (window.location.href.indexOf("Alerts") > -1) {
-//SECTION START Resize the alert text viewable area SECTION START
 addGlobalStyle ('#message {	resize: none; width: 700px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $("#alertTable").on('click', function() {
         $("#message").css('height', '100px');
@@ -45,7 +47,7 @@ addGlobalStyle ('#message {	resize: none; width: 700px !important; padding: 5px;
         $("#message").css('height', scroll_height + 'px');
     });
 };
-//SECTION END Resize the alert text viewable area SECTION END
+//SECTION END Resize the alert text viewable area
 //SECTION START Delete BR if before panel-box-format, after form-group, around h4
 let fgClassList = document.getElementsByClassName('form-group');
 for (let i = 0; i < fgClassList.length; i++) {
@@ -60,21 +62,6 @@ for (let i = 0; i < fgClassList.length; i++) {
         };
     };
 };
-//SECTION START Cause Fraud is special
-let fgClassListFraud = document.getElementsByClassName('form-group');
-for (let i = 0; i < fgClassListFraud.length; i++) {
-    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild !== 'script') {
-        if (fgClassListFraud[i].firstElementChild.tagName == 'BR') {
-            fgClassListFraud[i].firstElementChild.setAttribute('clear', 'all');
-        };
-    };
-    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild.nextElementSibling) {
-        if (fgClassListFraud[i].firstElementChild.nextElementSibling.tagName == 'BR') {
-            fgClassListFraud[i].firstElementChild.nextElementSibling.remove();
-        };
-    };
-};
-//SECTION END Cause Fraud is special
 let pbfClassList = document.getElementsByClassName('panel-box-format');
 for (let i = 0; i < pbfClassList.length; i++) {
     if (pbfClassList[i].previousElementSibling) {
@@ -101,7 +88,22 @@ for (let i = 0; i < h4brs.length; i++) {
         };
     };
 };
-//SECTION END
+//SECTION END Delete BR if before panel-box-format, after form-group, around h4
+//SECTION START Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
+let fgClassListFraud = document.getElementsByClassName('form-group');
+for (let i = 0; i < fgClassListFraud.length; i++) {
+    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild !== 'script') {
+        if (fgClassListFraud[i].firstElementChild.tagName == 'BR') {
+            fgClassListFraud[i].firstElementChild.setAttribute('clear', 'all');
+        };
+    };
+    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild.nextElementSibling) {
+        if (fgClassListFraud[i].firstElementChild.nextElementSibling.tagName == 'BR') {
+            fgClassListFraud[i].firstElementChild.nextElementSibling.remove();
+        };
+    };
+};
+//SECTION END Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
 //SECTION START Custom fix for Provider Address table
 if (window.location.href.indexOf("ProviderAddress") > -1) {
 let newBr = document.createElement('br');
@@ -110,6 +112,14 @@ let newBr = document.createElement('br');
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for Provider Address table
+//SECTION START Custom fix for ProviderRegistrationAndRenewal
+if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('providerData');
+    newBr.insertAdjacentElement("afterend", newBrHome)
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for ProviderRegistrationAndRenewal
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
@@ -144,15 +154,15 @@ function deleteAllAlerts() {
     alert("Yeah, wouldn't this be nice?");
 };
 //SECTION END Delete all alerts of current name
-//SECTION START Reverses Period options order, makes most recent visible SECTION START
+//SECTION START Reverses Period options order, makes most recent visible
 let checkForId = document.getElementById("selectPeriod");
 if(checkForId) {
     $('.form-control option').each(function () {
 $(this).prependTo($(this).parent());
 });
 };
-//SECTION END Reverses Period options order, makes most recent visible SECTION END
-//SECTION START Next/Prev button area SECTION START
+//SECTION END Reverses Period options order, makes most recent visible
+//SECTION START Next/Prev button area
 let selectPeriodDropdown = document.getElementById('selectPeriod');
     if (selectPeriodDropdown) {
         let back = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-chevron-left'></span>";
@@ -199,5 +209,5 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
                 console.log(selectPeriodDropdown.selectedIndex);
         };
     };
-//SECTION END Next/Prev button area SECTION END
+//SECTION END Next/Prev button area
 })();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.23
+// @version      0.24
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -36,6 +36,9 @@ if (window.location.href.indexOf("CaseExpense") > -1) {
 };
 if (window.location.href.indexOf("CaseOverview") > -1) {
 addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
+};
+if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
+    document.getElementById('comments').setAttribute('rows', '15');
 };
 //SECTION END Custom page styles
 //SECTION START Resize the alert text viewable area

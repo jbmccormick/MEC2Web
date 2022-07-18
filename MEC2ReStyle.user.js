@@ -213,5 +213,6 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
 //SECTION START Sort caseload lists by client name, ascending
 if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
     document.getElementsByClassName('sorting')[1].click()
+//SECTION END Sort caseload lists by client name, ascending
 };
 })();

@@ -60,7 +60,9 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
       addGlobalStyle('#panelDefault {margin-top: -20px !important; }');
-      //addGlobalStyle('.panel-default {margin-top: -20px !important; }');//panelDefault
+          if (window.location.href.indexOf("CaseSpecialLetter") > -1 || window.location.href.indexOf("CaseMemo") > -1) {
+              document.getElementById('comments').setAttribute('rows', '15');
+          };
       };
       addGlobalStyle('.navbar { display: none; }');
       addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');

@@ -5,6 +5,7 @@
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
+// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
 // @grant        none
 // ==/UserScript==
 

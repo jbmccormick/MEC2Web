@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.21
+// @version      0.22
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
 // ==/UserScript==
 
 (function() {
@@ -210,4 +209,8 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
         };
     };
 //SECTION END Next/Prev button area
+//SECTION START Sort caseload lists by client name, ascending
+if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
+    document.getElementsByClassName('sorting')[1].click()
+};
 })();

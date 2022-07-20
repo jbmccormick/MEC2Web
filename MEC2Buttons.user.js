@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.24
+// @version      0.25
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -55,8 +55,8 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
       addGlobalStyle('.custom-form-button {margin-left: 10px; }');
       addGlobalStyle('#buttonPaneThree {margin-bottom:1px; }');
       if (primaryPanelID.getAttribute('Id') == "greenline") {
-      addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-4px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
+      addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
+      addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
       addGlobalStyle('#panelDefault {margin-top: -20px !important; }');

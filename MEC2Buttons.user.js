@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.22
+// @version      0.24
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -47,15 +47,15 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     style.innerHTML = css;
     head.appendChild(style);
 }
-      addGlobalStyle('.custombutton { cursor: pointer; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 4px 5px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-4px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
+      addGlobalStyle('.custombutton { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
+      addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 3px 4px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
+      addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-7px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
       addGlobalStyle('.custom-form-button {margin-left: 10px; }');
       addGlobalStyle('#buttonPaneThree {margin-bottom:1px; }');
       if (primaryPanelID.getAttribute('Id') == "greenline") {
-      addGlobalStyle('.custombutton { cursor: no-drop; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
+      addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 4px 5px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
       addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-4px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
@@ -83,8 +83,8 @@ const gotoButtons = [ //Goto Buttons, ["Name as it appears on a button","gotoPag
 	["+","PendingCaseList", "_blank", "Pending Case List", "PendingCaseListBlank"],
 	["Inactive","InactiveCaseList", "_self", "Inactive Case List", "InactiveCaseListSelf"],
 	["+","InactiveCaseList", "_blank", "Inactive Case List", "InactiveCaseListBlank"],
-	["Redet","RedeterminationCaseList", "_self", "Redetermination List", "RedeterminationListSelf"],
-	["+","RedeterminationCaseList", "_blank", "Redetermination List", "RedeterminationListBlank"],
+//	["Redet","RedeterminationCaseList", "_self", "Redetermination List", "RedeterminationListSelf"],
+//	["+","RedeterminationCaseList", "_blank", "Redetermination List", "RedeterminationListBlank"],
     ["New App","CaseApplicationInitiation","_self","Case Application Initiation","NewAppSelf"],
     ["+","CaseApplicationInitiation","_blank","Case Application Initiation","NewAppBlank"],
 ];

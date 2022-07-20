@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.24
+// @version      0.26
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -27,9 +27,10 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
 addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; }');//Confirmed works
 addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Confirmed works
 addGlobalStyle('form { margin-top: 3px !important; }');//Shrink margin from 'form' elements
-addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 9px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
+addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements //padding-top: 9px !important;
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
+addGlobalStyle('#noteStringText { width: 818px !important; }');
 //SECTION START Custom page styles
 if (window.location.href.indexOf("CaseExpense") > -1) {
     document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
@@ -43,7 +44,7 @@ if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
 //SECTION END Custom page styles
 //SECTION START Resize the alert text viewable area
 if (window.location.href.indexOf("Alerts") > -1) {
-addGlobalStyle ('#message {	resize: none; width: 700px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
+addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $("#alertTable").on('click', function() {
         $("#message").css('height', '100px');
         var scroll_height = $("#message").get(0).scrollHeight;
@@ -107,16 +108,16 @@ for (let i = 0; i < fgClassListFraud.length; i++) {
     };
 };
 //SECTION END Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
-//SECTION START Custom fix for Provider Address table
+/*//SECTION START Custom fix for Provider Address table
 if (window.location.href.indexOf("ProviderAddress") > -1) {
 let newBr = document.createElement('br');
     let newBrHome = document.getElementById('providerData');
     newBr.insertAdjacentElement("afterend", newBrHome)
     newBrHome.nextElementSibling.setAttribute('clear','all');
-};
+};*/
 //SECTION END Custom fix for Provider Address table
 //SECTION START Custom fix for ProviderRegistrationAndRenewal
-if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1) {
+if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
 let newBr = document.createElement('br');
     let newBrHome = document.getElementById('providerData');
     newBr.insertAdjacentElement("afterend", newBrHome)
@@ -160,7 +161,8 @@ function deleteAllAlerts() {
 //SECTION START Reverses Period options order, makes most recent visible
 let checkForId = document.getElementById("selectPeriod");
 if(checkForId) {
-    $('.form-control option').each(function () {
+//    $('.form-control option').each(function () {selectPeriod
+    $('#selectPeriod option').each(function () {
 $(this).prependTo($(this).parent());
 });
 };

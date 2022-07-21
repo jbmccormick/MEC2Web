@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.26
+// @version      0.27
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -118,12 +118,20 @@ let newBr = document.createElement('br');
 //SECTION END Custom fix for Provider Address table
 //SECTION START Custom fix for ProviderRegistrationAndRenewal
 if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
-let newBr = document.createElement('br');
+//let newBr = document.createElement('br');
     let newBrHome = document.getElementById('providerData');
-    newBr.insertAdjacentElement("afterend", newBrHome)
+    //newBrHome.insertAdjacentElement("afterend", newBr)
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for ProviderRegistrationAndRenewal
+//SECTION START Custom fix for FinancialAbsentDayHolidayTracking
+if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('absentDayHolidayTrackingChildTableData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+    //newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for FinancialAbsentDayHolidayTracking
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";

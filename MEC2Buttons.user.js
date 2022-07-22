@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.26
+// @version      0.27
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -376,4 +376,38 @@ traverseOnPageLoad(rowThreeButtonArray)
     btnNavigation.addEventListener("click", function() { deleteButtonBottom.click()});
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
 //SECTION END Superfluous delete button
+//SECTION START Do action based on Alert Type
+if (window.location.href.indexOf("Alerts") > -1) {
+    let anchorPoint = document.getElementById('message');
+    let btnNavigation = document.createElement('button');
+    btnNavigation.type = 'button';
+    btnNavigation.innerHTML = "Select an alert";
+    btnNavigation.id = "doTheThing";
+    btnNavigation.className = 'custombutton';
+    anchorPoint.insertAdjacentElement('afterend', btnNavigation);
+    let clickedAlert = document.getElementById('alertTable')
+    clickedAlert.addEventListener("click", function() { changeButtonText()});
+    btnNavigation.addEventListener("click", function() { goDoTheThing()});
+    document.getElementById('doTheThing').innerHTML = document.getElementsByClassName('selected')[1].childNodes[0].innerText
+};
+    function changeButtonText() {
+        let alertType = document.getElementsByClassName('selected')[1].childNodes[0].innerText
+        if (!alertType) {
+            document.getElementById('doTheThing').innerHTML = 'No alert selected'
+        };
+        if (alertType == 'Eligibility') {
+            document.getElementById('doTheThing').innerHTML = alertType
+        } else {
+            document.getElementById('doTheThing').innerHTML = 'Not yet supported'
+        };
+    };
+    function goDoTheThing() {
+    let messageText = document.getElementById('message');
+        if (messageText.value == "Unapproved results have been created and need review.") {
+            let parm2var = document.getElementsByClassName('selected')[0].childNodes[2].innerText
+            let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+            window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        };
+    };
+//SECTION END Do action based on Alert Type
 })();

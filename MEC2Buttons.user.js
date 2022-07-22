@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.25
+// @version      0.26
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -365,4 +365,15 @@ function traverseOnRowTwoClick(o) {
     }
 }
 traverseOnPageLoad(rowThreeButtonArray)
+//SECTION START Superfluous delete button
+    let anchorPoint = document.getElementById('alertTotal');
+    let deleteButtonBottom = document.getElementById('delete');
+    let btnNavigation = document.createElement('button');
+    btnNavigation.type = 'button';
+    btnNavigation.innerHTML = "Delete Alert";
+    btnNavigation.id = "buttonDeleteTop";
+    btnNavigation.className = 'form-button custom-form-button';
+    btnNavigation.addEventListener("click", function() { deleteButtonBottom.click()});
+    anchorPoint.insertAdjacentElement('afterend', btnNavigation);
+//SECTION END Superfluous delete button
 })();

@@ -376,7 +376,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
     btnNavigation.className = 'form-button custom-form-button';
     btnNavigation.addEventListener("click", function() { deleteButtonBottom.click()});
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
-}
+};
 //SECTION END Superfluous delete button
 //SECTION START Do action based on Alert Type
 if (window.location.href.indexOf("Alerts") > -1) {

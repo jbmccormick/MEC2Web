@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.27
+// @version      0.28
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -31,6 +31,7 @@ addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !impo
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
 addGlobalStyle('#noteStringText { width: 818px !important; }');
+addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');
 //SECTION START Custom page styles
 if (window.location.href.indexOf("CaseExpense") > -1) {
     document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
@@ -132,6 +133,14 @@ let newBr = document.createElement('br');
     //newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for FinancialAbsentDayHolidayTracking
+//SECTION START Custom fix for CaseCSIA
+if (window.location.href.indexOf("CaseCSIA") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for FinancialAbsentDayHolidayTracking.caseHeaderData.CaseCSIA
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";

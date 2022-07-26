@@ -236,4 +236,15 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
 if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
     document.getElementsByClassName('sorting')[1].click()
 };
+//SECTION START Temp fix for case notes
+function fixCaseNoteDisplay() {
+    let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
+    document.getElementById('noteStringText').value = fixedCaseNote
+};
+if (window.location.href.indexOf("CaseNotes") > -1) {
+let caseNoteTable = document.getElementById('caseNotesTable');
+caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
+fixCaseNoteDisplay()
+};
+//SECTION END Temp fix for case notes
 })();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.28
+// @version      0.29
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -24,14 +24,14 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     style.innerHTML = css;
     head.appendChild(style);
 };
-addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; }');//Confirmed works
-addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Confirmed works
-addGlobalStyle('form { margin-top: 3px !important; }');//Shrink margin from 'form' elements
-addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements //padding-top: 9px !important;
-addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
+addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; }');//Shrinks space between green panels
+addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrinks space around page titles
+addGlobalStyle('form { margin-top: 3px !important; }');//Shrinks margin from 'form' elements
+addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }'); //padding-top: 9px !important;
+addGlobalStyle('.form-group { margin-bottom: 3px !important; }');//Shrink margin from 'form' elements
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
-addGlobalStyle('#noteStringText { width: 818px !important; }');
-addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');
+addGlobalStyle('#noteStringText { width: 818px !important; }');//CaseNotes Note fixed width
+addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');//Table entry height
 //SECTION START Custom page styles
 if (window.location.href.indexOf("CaseExpense") > -1) {
     document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');

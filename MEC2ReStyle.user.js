@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.29
+// @version      0.30
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -109,28 +109,17 @@ for (let i = 0; i < fgClassListFraud.length; i++) {
     };
 };
 //SECTION END Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
-/*//SECTION START Custom fix for Provider Address table
-if (window.location.href.indexOf("ProviderAddress") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('providerData');
-    newBr.insertAdjacentElement("afterend", newBrHome)
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};*/
-//SECTION END Custom fix for Provider Address table
-//SECTION START Custom fix for ProviderRegistrationAndRenewal
+//SECTION START Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
 if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
-//let newBr = document.createElement('br');
     let newBrHome = document.getElementById('providerData');
-    //newBrHome.insertAdjacentElement("afterend", newBr)
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
-//SECTION END Custom fix for ProviderRegistrationAndRenewal
+//SECTION END Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
 //SECTION START Custom fix for FinancialAbsentDayHolidayTracking
 if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) {
 let newBr = document.createElement('br');
     let newBrHome = document.getElementById('absentDayHolidayTrackingChildTableData');
     newBrHome.insertAdjacentElement("beforebegin", newBr)
-    //newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for FinancialAbsentDayHolidayTracking
 //SECTION START Custom fix for CaseCSIA
@@ -140,7 +129,13 @@ let newBr = document.createElement('br');
     newBrHome.insertAdjacentElement("beforebegin", newBr)
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
-//SECTION END Custom fix for FinancialAbsentDayHolidayTracking.caseHeaderData.CaseCSIA
+//SECTION END Custom fix for CaseCSIA
+//SECTION START Custom fix for CaseWorker
+if (window.location.href.indexOf("CaseWorker") > -1) {
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseWorker
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";

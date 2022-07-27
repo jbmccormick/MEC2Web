@@ -122,7 +122,7 @@ let newBr = document.createElement('br');
     newBrHome.insertAdjacentElement("beforebegin", newBr)
 };
 //SECTION END Custom fix for FinancialAbsentDayHolidayTracking
-//SECTION START Custom fix for CaseCSIA
+//SECTION START Custom fix for CaseCSIA.CaseLockStatus.caseHeaderData
 if (window.location.href.indexOf("CaseCSIA") > -1) {
 let newBr = document.createElement('br');
     let newBrHome = document.getElementById('caseHeaderData');
@@ -130,6 +130,14 @@ let newBr = document.createElement('br');
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for CaseCSIA
+//SECTION START Custom fix for CaseLockStatus
+if (window.location.href.indexOf("CaseLockStatus") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseLockStatus
 //SECTION START Custom fix for CaseWorker
 if (window.location.href.indexOf("CaseWorker") > -1) {
     let newBrHome = document.getElementById('caseHeaderData');

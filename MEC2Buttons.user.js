@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.29
+// @version      0.30
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -135,7 +135,7 @@ const rowThreeButtonArray = {
 		caseRedetermination:["Redetermination", "CaseRedetermination", "_self", "Case Redetermination", "CaseRedeterminationSelf", "caseButtons"],
 		caseAppInfo:["Application Info", "ApplicationInformation", "_self", "Case Application Info", "CaseApplicationInfoSelf", "caseButtons"],
 		caseReinstate:["Reinstate", "CaseReinstate", "_self", "Reinstate", "CaseReinstateSelf", "caseButtons"],
-		caseLockStatus:["Lock Status", "CaseLockStatus", "_self", "ReinCase Lock Statusstate", "CaseLockStatus", "caseButtons"],
+		caseLockStatus:["Lock Status", "CaseLockStatus", "_self", "Case Lock Status", "CaseLockStatus", "caseButtons"],
 	},
 	eligibilityButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		eligibilitySelection:["Selection","CaseEligibilityResultSelection", "_self", "Eligibility Results Selection", "CaseEligibilityResultSelectionSelf", "eligibilityButtons"],

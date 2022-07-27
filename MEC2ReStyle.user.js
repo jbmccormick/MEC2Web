@@ -6,7 +6,7 @@
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/
+// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2ReStyle.user.js
 // ==/UserScript==
 
 (function() {

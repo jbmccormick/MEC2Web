@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.30
+// @version      0.31
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -145,7 +145,7 @@ const rowThreeButtonArray = {
 		eligibilityActivity:["Activity","CaseEligibilityResultActivity", "_self", "Activity Results", "CaseEligibilityResultActivitySelf", "eligibilityButtons"],
 		eligibilityFinancial:["Financial","CaseEligibilityResultFinancial", "_self", "Financial Results", "CaseEligibilityResultFinancialSelf", "eligibilityButtons"],
 		eligibilityApproval:["Approval","CaseEligibilityResultApproval", "_self", "Approval Results", "CaseEligibilityResultApprovalSelf", "eligibilityButtons"],
-		eligibilityCreateResults:["Create","CaseCreateEligibilityResults", "_self", "Create Eligibility Results", "CaseCreateEligibilityResultsSelf", "eligibilityButtons"],
+		eligibilityCreateResults:["Create Eligibility Results","CaseCreateEligibilityResults", "_self", "Create Eligibility Results", "CaseCreateEligibilityResultsSelf", "eligibilityButtons"],
 		//eligibilityReinstate:["Reinstate", "CaseReinstate", "_self", "Reinstate", "CaseReinstateSelf"],
 	},
 	saButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
@@ -167,10 +167,10 @@ const rowThreeButtonArray = {
 	},
 	billingButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		financialBilling:["Billing", "FinancialBilling", "_self", "Billing", "FinancialBillingSelf", "billingButtons"],
-		financialPayHistory:["Pay History","CasePaymentHistory", "_self", "Case Payment History", "CasePaymentHistorySelf", "billingButtons"],
 		financialBillingApproval:["Billing Approval", "FinancialBillingApproval", "_self", "Billing Approval", "FinancialBillingApprovalSelf", "billingButtons"],
+		financialPayHistory:["Pay History","CasePaymentHistory", "_self", "Case Payment History", "CasePaymentHistorySelf", "billingButtons"],
 		financialAbsentDays:["Absent Days", "FinancialAbsentDayHolidayTracking", "_self", "Tracking Absent Day Holiday", "FinancialAbsentDayHolidayTrackingSelf", "billingButtons"],
-		financialRegistrationFee:["Reg Fees", "FinancialBillingRegistrationFeeTracking", "_self", "Tracking Registration Fee", "FinancialBillingRegistrationFeeTrackingSelf", "billingButtons"],
+		financialRegistrationFee:["Registration Fee Tracking", "FinancialBillingRegistrationFeeTracking", "_self", "Tracking Registration Fee", "FinancialBillingRegistrationFeeTrackingSelf", "billingButtons"],
 		financialManualPayments:["Manual Payments", "FinancialManualPayment", "_self", "Manual Payments", "FinancialManualPaymentSelf", "billingButtons"],
 	},
 	providerButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.30
+// @version      0.32
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -13,8 +13,8 @@
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
 document.getElementsByClassName("panel-default")[0].style = "background-color: #f5f5f5; margin-top: -40px !important;";
-document.getElementsByClassName("form-group")[0].style = "margin-bottom: 4px;";
-document.body.style = "background-color: #eee";
+//document.getElementsByClassName("form-group")[0].style = "margin-bottom: 4px;";
+//document.body.style = "background-color: #eee";
 function addGlobalStyle(css) { //To allow for adding CSS styles
     var head, style;
     head = document.getElementsByTagName('head')[0];
@@ -24,36 +24,107 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     style.innerHTML = css;
     head.appendChild(style);
 };
-addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; }');//Shrinks space between green panels
+addGlobalStyle('body { background-color: #eee }');//Shrinks space between green panels
+addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; background-color: #faf9f5 !important }');//Shrinks space between green panels
 addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrinks space around page titles
 addGlobalStyle('form { margin-top: 3px !important; }');//Shrinks margin from 'form' elements
-addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }'); //padding-top: 9px !important;
+addGlobalStyle('label { vertical-align: text-top !important; }');
+//addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }'); //padding-top: 9px !important;
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');//Shrink margin from 'form' elements
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
 addGlobalStyle('#noteStringText { width: 818px !important; }');//CaseNotes Note fixed width
 addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');//Table entry height
-//SECTION START Custom page styles
-if (window.location.href.indexOf("CaseExpense") > -1) {
-    document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
-};
-if (window.location.href.indexOf("CaseOverview") > -1) {
-addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
-};
-if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
-    document.getElementById('comments').setAttribute('rows', '15');
-};
-//SECTION END Custom page styles
-//SECTION START Resize the alert text viewable area
+addGlobalStyle('.ui-datepicker { width: 20em !important; }');//calendar width fix
+addGlobalStyle('#ui-datepicker-div table thead tr th { color: white; }');//calendar days font color
+addGlobalStyle('.borderless { border: 1px #bfbfbf solid !important; background-color: white !important }');
+// --- Single page fixes --- Single page fixes --- Single page fixes ---
+//SECTION START Resize the Alert page's Explanation viewable area
 if (window.location.href.indexOf("Alerts") > -1) {
+addGlobalStyle('label { vertical-align: inherit !important; }');
 addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $("#alertTable").on('click', function() {
         $("#message").css('height', '100px');
-        var scroll_height = $("#message").get(0).scrollHeight;
-        $("#message").css('height', scroll_height + 'px');
+        //let scroll_height = $("#message").get(0).scrollHeight;
+        //$("#message").css('height', scroll_height + 'px');
+        $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
     });
 };
-//SECTION END Resize the alert text viewable area
-//SECTION START Delete BR if before panel-box-format, after form-group, around h4
+//SECTION END Resize the Alert page's Explanation viewable area
+//SECTION START Custom page styles #caseData document.getElementById('caseData').style.clear = "both" CaseOverview
+/*if (window.location.href.indexOf("CaseExpense") > -1 || window.location.href.indexOf("FinancialBilling") > -1) {//
+    document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
+};*/
+//SECTION END Custom fix for
+//SECTION START Custom fix for CaseOverview
+if (window.location.href.indexOf("CaseOverview") > -1) {
+    addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
+    document.getElementById('caseData').style.clear = "both";
+};
+//SECTION END Custom fix for CaseOverview
+//SECTION START Custom fix for CaseSpecialLetter
+if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
+    document.getElementById('comments').setAttribute('rows', '15');//CaseEligibilityResultSelection #message
+};
+//SECTION END Custom fix for CaseSpecialLetter
+//SECTION START Custom fix for CaseEligibilityResultSelection
+if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
+    addGlobalStyle('#message { font-size: 130%; background-color: yellow }');
+    document.getElementById('message').innerHTML = "Select a program record listed above and click Select below to view the Eligibility Results."
+};
+//SECTION END Custom fix for CaseEligibilityResultSelection
+//SECTION START Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
+if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
+    let newBrHome = document.getElementById('providerData');
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview //CaseNotices textbox1 600px
+//SECTION START Custom fix for FinancialAbsentDayHolidayTracking
+if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('absentDayHolidayTrackingChildTableData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+};
+//SECTION END Custom fix for FinancialAbsentDayHolidayTracking
+//SECTION START Custom fix for CaseCSIA.CaseLockStatus.caseHeaderData
+if (window.location.href.indexOf("CaseCSIA") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseCSIA
+//SECTION START Custom fix for CaseLockStatus
+if (window.location.href.indexOf("CaseLockStatus") > -1) {
+let newBr = document.createElement('br');
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.insertAdjacentElement("beforebegin", newBr)
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseLockStatus
+//SECTION START Custom fix for CaseWorker
+if (window.location.href.indexOf("CaseWorker") > -1) {
+    let newBrHome = document.getElementById('caseHeaderData');
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseWorker
+//SECTION START Case Notes custom styles
+if (window.location.href.indexOf("CaseNotes") > -1) {
+    document.getElementsByClassName('panel-box-format')[1].style.display = "none";
+    document.getElementById('noteStringText').setAttribute('rows', '29');
+};
+//SECTION END Case Notes custom styles
+//SECTION START Temp fix for case notes - TEMP FIX
+function fixCaseNoteDisplay() {
+    let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
+    document.getElementById('noteStringText').value = fixedCaseNote
+};
+if (window.location.href.indexOf("CaseNotes") > -1) {
+let caseNoteTable = document.getElementById('caseNotesTable');
+caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
+fixCaseNoteDisplay()
+};
+//SECTION END Temp fix for case notes - TEMP FIX
+//SECTION START Delete BR if before panel-box-format, after form-group, around h4 //add style="clear: both;" to parentNode?
 let fgClassList = document.getElementsByClassName('form-group');
 for (let i = 0; i < fgClassList.length; i++) {
     if (fgClassList[i].nextElementSibling && fgClassList[i].firstElementChild !== 'script') {
@@ -109,52 +180,11 @@ for (let i = 0; i < fgClassListFraud.length; i++) {
     };
 };
 //SECTION END Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
-//SECTION START Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
-if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
-    let newBrHome = document.getElementById('providerData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
-//SECTION START Custom fix for FinancialAbsentDayHolidayTracking
-if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('absentDayHolidayTrackingChildTableData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-};
-//SECTION END Custom fix for FinancialAbsentDayHolidayTracking
-//SECTION START Custom fix for CaseCSIA.CaseLockStatus.caseHeaderData
-if (window.location.href.indexOf("CaseCSIA") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseCSIA
-//SECTION START Custom fix for CaseLockStatus
-if (window.location.href.indexOf("CaseLockStatus") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseLockStatus
-//SECTION START Custom fix for CaseWorker
-if (window.location.href.indexOf("CaseWorker") > -1) {
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseWorker
-//SECTION START Case Notes custom styles
-if (window.location.href.indexOf("CaseNotes") > -1) {
-    document.getElementsByClassName('panel-box-format')[1].style.display = "none";
-    document.getElementById('noteStringText').setAttribute('rows', '29');
-};
-//SECTION END Case Notes custom styles
 //SECTION START Delete all alerts of current name
-$("#caseOrProviderTable").on('click', function() {
-
-});
-if (window.location.href.indexOf("Alert") > -1) {
+if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.location.href.indexOf("Alert") > -1) {
+$("#caseOrProviderTable").on('click', function() { functionNameGoesHere()});
+function functionNameGoesHere() {
+};
     console.log(sessionStorage.getItem('storedCase'));
     let storedCaseName = sessionStorage.getItem('storedCase');
     $('#caseOrProviderTable option:contains(storedCase)')//Doesn't work
@@ -239,15 +269,5 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
 if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
     document.getElementsByClassName('sorting')[1].click()
 };
-//SECTION START Temp fix for case notes
-function fixCaseNoteDisplay() {
-    let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
-    document.getElementById('noteStringText').value = fixedCaseNote
-};
-if (window.location.href.indexOf("CaseNotes") > -1) {
-let caseNoteTable = document.getElementById('caseNotesTable');
-caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
-fixCaseNoteDisplay()
-};
-//SECTION END Temp fix for case notes
+//SECTION END Sort caseload lists by client name, ascending
 })();

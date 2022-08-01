@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.32
+// @version      0.33
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -107,6 +107,12 @@ if (window.location.href.indexOf("CaseWorker") > -1) {
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for CaseWorker
+//SECTION START Custom fix for BillsList
+if (window.location.href.indexOf("BillsList") > -1) {
+    let newBrHome = document.getElementById('redeterminationResultData');
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Case Notes custom styles //Custom fix for BillsList
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";

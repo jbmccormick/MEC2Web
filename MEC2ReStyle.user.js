@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.33
+// @version      0.34
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -50,11 +50,12 @@ addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px;
     });
 };
 //SECTION END Resize the Alert page's Explanation viewable area
-//SECTION START Custom page styles #caseData document.getElementById('caseData').style.clear = "both" CaseOverview
-/*if (window.location.href.indexOf("CaseExpense") > -1 || window.location.href.indexOf("FinancialBilling") > -1) {//
-    document.getElementById('caseHeaderData').nextElementSibling.setAttribute('clear', 'all');
-};*/
-//SECTION END Custom fix for
+//SECTION START Custom text for CaseWrapUp
+if (window.location.href.indexOf("CaseWrapUp") > -1) {
+    document.getElementById('caseWrapUpTableData').h4.innerText = "Double check which period you made changes in before Wrap Up. Double Wrap Up has been locking cases."
+    document.getElementsByClassName('sorting')[5].click();//sort by approval status
+};
+//SECTION END Custom text for CaseWrapUp
 //SECTION START Custom fix for CaseOverview
 if (window.location.href.indexOf("CaseOverview") > -1) {
     addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
@@ -63,15 +64,16 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
 //SECTION END Custom fix for CaseOverview
 //SECTION START Custom fix for CaseSpecialLetter
 if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
-    document.getElementById('comments').setAttribute('rows', '15');//CaseEligibilityResultSelection #message
+    document.getElementById('comments').setAttribute('rows', '15');
 };
 //SECTION END Custom fix for CaseSpecialLetter
-//SECTION START Custom fix for CaseEligibilityResultSelection
+//SECTION START Custom fix and text for CaseEligibilityResultSelection
 if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
     addGlobalStyle('#message { font-size: 130%; background-color: yellow }');
     document.getElementById('message').innerHTML = "Select a program record listed above and click Select below to view the Eligibility Results."
+    document.getElementsByClassName('sorting')[5].click();//sort by approval status
 };
-//SECTION END Custom fix for CaseEligibilityResultSelection
+//SECTION END Custom fix and text for CaseEligibilityResultSelection
 //SECTION START Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
 if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
     let newBrHome = document.getElementById('providerData');
@@ -85,7 +87,13 @@ let newBr = document.createElement('br');
     newBrHome.insertAdjacentElement("beforebegin", newBr)
 };
 //SECTION END Custom fix for FinancialAbsentDayHolidayTracking
-//SECTION START Custom fix for CaseCSIA.CaseLockStatus.caseHeaderData
+//SECTION START Custom fix for CaseExpense
+if (window.location.href.indexOf("CaseExpense") > -1) {
+    let newBrHome = document.getElementById('expenseTableAndPanelData');
+    newBrHome.nextElementSibling.setAttribute('clear','all');
+};
+//SECTION END Custom fix for CaseExpense
+//SECTION START Custom fix for CaseCSIA .expenseTableAndPanelData.CaseExpense
 if (window.location.href.indexOf("CaseCSIA") > -1) {
 let newBr = document.createElement('br');
     let newBrHome = document.getElementById('caseHeaderData');
@@ -107,29 +115,12 @@ if (window.location.href.indexOf("CaseWorker") > -1) {
     newBrHome.nextElementSibling.setAttribute('clear','all');
 };
 //SECTION END Custom fix for CaseWorker
-//SECTION START Custom fix for BillsList
-if (window.location.href.indexOf("BillsList") > -1) {
-    let newBrHome = document.getElementById('redeterminationResultData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Case Notes custom styles //Custom fix for BillsList
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').setAttribute('rows', '29');
 };
 //SECTION END Case Notes custom styles
-//SECTION START Temp fix for case notes - TEMP FIX
-function fixCaseNoteDisplay() {
-    let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
-    document.getElementById('noteStringText').value = fixedCaseNote
-};
-if (window.location.href.indexOf("CaseNotes") > -1) {
-let caseNoteTable = document.getElementById('caseNotesTable');
-caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
-fixCaseNoteDisplay()
-};
-//SECTION END Temp fix for case notes - TEMP FIX
 //SECTION START Delete BR if before panel-box-format, after form-group, around h4 //add style="clear: both;" to parentNode?
 let fgClassList = document.getElementsByClassName('form-group');
 for (let i = 0; i < fgClassList.length; i++) {

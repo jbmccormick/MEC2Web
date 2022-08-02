@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.34
+// @version      0.35
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -52,8 +52,7 @@ addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px;
 //SECTION END Resize the Alert page's Explanation viewable area
 //SECTION START Custom text for CaseWrapUp
 if (window.location.href.indexOf("CaseWrapUp") > -1) {
-    document.getElementById('caseWrapUpTableData').h4.innerText = "Double check which period you made changes in before Wrap Up. Double Wrap Up has been locking cases."
-    document.getElementsByClassName('sorting')[5].click();//sort by approval status
+    document.getElementById('caseWrapUpTableData').firstElementChild.innerText = "Double check which period you made changes in before Wrap Up. Double Wrap Up has been locking cases."
 };
 //SECTION END Custom text for CaseWrapUp
 //SECTION START Custom fix for CaseOverview

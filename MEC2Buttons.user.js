@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.32
+// @version      0.33
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -9,7 +9,7 @@
 // @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2Buttons.user.js
 // ==/UserScript==
 
-  (function() {
+(function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
 if (document.getElementById("loginDetail")) {
@@ -116,6 +116,7 @@ const rowThreeButtonArray = {
 		caseAlias:["Alias", "CaseAlias", "_self", "Case Alias", "CaseAliasSelf", "memberMainButtons"],
 		caseRemoveMember:["Remove Member", "CaseRemoveMember", "_self", "Remove a Member", "CaseRemoveMemberSelf", "memberMainButtons"],
 		caseMemberHistory:["Member History","CaseMemberHistory", "_self", "Member History", "CaseMemberHistorySelf", "memberMainButtons"],
+		//caseMemberHistoryPlus:["+","CaseMemberHistory", "_blank", "Member History", "CaseMemberHistoryBlank", "memberMainButtons"],
 	},
 	activityIncomeButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		caseEarnedIncome:["Earned", "CaseEarnedIncome", "_self", "Earned Income", "CaseEarnedIncomeSelf", "activityIncomeButtons"],
@@ -260,6 +261,11 @@ function btnRowThree(rowTwoButtonClicked){
         btnNavigation.id = buttonArray[4];
         btnNavigation.type = 'button';
         btnNavigation.className = 'custombutton';
+        /*if (gotoButtons[i][0] == "+") {
+            btnNavigation.className = 'custombutton custombuttonplus';
+        } else {
+            btnNavigation.className = 'custombutton';
+        };*/
         buttonDivThree.appendChild(btnNavigation);
         btnNavigation.addEventListener("click", function() { gotoPage(this.id)});
     };
@@ -380,7 +386,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
 };
 //SECTION END Superfluous delete button
-//SECTION START Do action based on Alert Type
+//SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('button');

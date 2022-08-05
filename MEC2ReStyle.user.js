@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.35
+// @version      0.37
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
-document.getElementsByClassName("panel-default")[0].style = "background-color: #f5f5f5; margin-top: -40px !important;";
+document.getElementsByClassName("panel-default")[0].style = "background-color: #f5f5f5; margin-top: -20px !important;";
 //document.getElementsByClassName("form-group")[0].style = "margin-bottom: 4px;";
 //document.body.style = "background-color: #eee";
 function addGlobalStyle(css) { //To allow for adding CSS styles
@@ -37,15 +37,17 @@ addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');//Table entry he
 addGlobalStyle('.ui-datepicker { width: 20em !important; }');//calendar width fix
 addGlobalStyle('#ui-datepicker-div table thead tr th { color: white; }');//calendar days font color
 addGlobalStyle('.borderless { border: 1px #bfbfbf solid !important; background-color: white !important }');
+//addGlobalStyle('.clearfix::after { content: ""; clear: both; display: table;}');
 // --- Single page fixes --- Single page fixes --- Single page fixes ---
+if (window.location.href.indexOf("CaseNotices") > -1) {//dataTables_scrollBody
+    $(".dataTables_scrollBody").css('max-height', '400px');
+}
 //SECTION START Resize the Alert page's Explanation viewable area
 if (window.location.href.indexOf("Alerts") > -1) {
 addGlobalStyle('label { vertical-align: inherit !important; }');
 addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $("#alertTable").on('click', function() {
         $("#message").css('height', '100px');
-        //let scroll_height = $("#message").get(0).scrollHeight;
-        //$("#message").css('height', scroll_height + 'px');
         $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
     });
 };
@@ -59,6 +61,7 @@ if (window.location.href.indexOf("CaseWrapUp") > -1) {
 if (window.location.href.indexOf("CaseOverview") > -1) {
     addGlobalStyle('label { padding-bottom: 0px !important; padding-top: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrink margin from 'form' elements
     document.getElementById('caseData').style.clear = "both";
+    document.getElementById('participantInformationData_wrapper').getElementsByClassName('sorting')[0].click();//participantInformationData_length
 };
 //SECTION END Custom fix for CaseOverview
 //SECTION START Custom fix for CaseSpecialLetter
@@ -73,67 +76,33 @@ if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
     document.getElementsByClassName('sorting')[5].click();//sort by approval status
 };
 //SECTION END Custom fix and text for CaseEligibilityResultSelection
-//SECTION START Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview
-if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1 || window.location.href.indexOf("ProviderAddress") > -1 || window.location.href.indexOf("getProviderOverview") > -1) {
-    let newBrHome = document.getElementById('providerData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for ProviderRegistrationAndRenewal, ProviderAddress, and getProviderOverview //CaseNotices textbox1 600px
-//SECTION START Custom fix for FinancialAbsentDayHolidayTracking
-if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('absentDayHolidayTrackingChildTableData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-};
-//SECTION END Custom fix for FinancialAbsentDayHolidayTracking
-//SECTION START Custom fix for CaseExpense
-if (window.location.href.indexOf("CaseExpense") > -1) {
-    let newBrHome = document.getElementById('expenseTableAndPanelData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseExpense
-//SECTION START Custom fix for CaseCSIA .expenseTableAndPanelData.CaseExpense
-if (window.location.href.indexOf("CaseCSIA") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseCSIA
-//SECTION START Custom fix for CaseLockStatus
-if (window.location.href.indexOf("CaseLockStatus") > -1) {
-let newBr = document.createElement('br');
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.insertAdjacentElement("beforebegin", newBr)
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseLockStatus
-//SECTION START Custom fix for CaseWorker
-if (window.location.href.indexOf("CaseWorker") > -1) {
-    let newBrHome = document.getElementById('caseHeaderData');
-    newBrHome.nextElementSibling.setAttribute('clear','all');
-};
-//SECTION END Custom fix for CaseWorker
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').setAttribute('rows', '29');
 };
 //SECTION END Case Notes custom styles
-//SECTION START Delete BR if before panel-box-format, after form-group, around h4 //add style="clear: both;" to parentNode?
-let fgClassList = document.getElementsByClassName('form-group');
-for (let i = 0; i < fgClassList.length; i++) {
-    if (fgClassList[i].nextElementSibling && fgClassList[i].firstElementChild !== 'script') {
-        if (fgClassList[i].nextElementSibling.tagName == 'BR') {
-            fgClassList[i].nextElementSibling.setAttribute('clear', 'all');
-        };
-    };
-    if (fgClassList[i].nextElementSibling && fgClassList[i].nextElementSibling.nextElementSibling) {
-        if (fgClassList[i].nextElementSibling.nextElementSibling.tagName == 'BR') {
-            fgClassList[i].nextElementSibling.nextElementSibling.remove();
-        };
-    };
+//SECTION START Permanent fix for case notes - case notes saved when state broke them are permanently broken
+function fixCaseNoteDisplay() {
+    let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
+    document.getElementById('noteStringText').value = fixedCaseNote
 };
+if (window.location.href.indexOf("CaseNotes") > -1) {
+let caseNoteTable = document.getElementById('caseNotesTable');
+caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
+fixCaseNoteDisplay()
+};
+//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken$('br + br').parent().addClass('clearfix');
+$('br + br').remove();
+$('.panel-box-format').addClass('clearfix');
+$('.form-group').addClass('clearfix');
+let justHasBr = document.querySelectorAll('.visible-lg.visible-md');
+    for (let j = 0; j < justHasBr.length; j++) {
+        if(justHasBr[j].childElementCount == 1 && justHasBr[j].firstElementChild.tagName == 'BR') {
+            justHasBr[j].remove();
+        };
+    };
+//SECTION START Delete BR if before panel-box-format, after form-group, around h4
 let pbfClassList = document.getElementsByClassName('panel-box-format');
 for (let i = 0; i < pbfClassList.length; i++) {
     if (pbfClassList[i].previousElementSibling) {
@@ -160,22 +129,20 @@ for (let i = 0; i < h4brs.length; i++) {
         };
     };
 };
-//SECTION END Delete BR if before panel-box-format, after form-group, around h4
-//SECTION START Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
-let fgClassListFraud = document.getElementsByClassName('form-group');
-for (let i = 0; i < fgClassListFraud.length; i++) {
-    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild !== 'script') {
-        if (fgClassListFraud[i].firstElementChild.tagName == 'BR') {
-            fgClassListFraud[i].firstElementChild.setAttribute('clear', 'all');
+let fgClassList = document.getElementsByClassName('form-group');
+for (let i = 0; i < fgClassList.length; i++) {
+    if (fgClassList[i].nextElementSibling) {
+        if (fgClassList[i].nextElementSibling.tagName == 'BR') {
+            fgClassList[i].nextElementSibling.remove();
         };
     };
-    if (fgClassListFraud[i].firstElementChild && fgClassListFraud[i].firstElementChild.nextElementSibling) {
-        if (fgClassListFraud[i].firstElementChild.nextElementSibling.tagName == 'BR') {
-            fgClassListFraud[i].firstElementChild.nextElementSibling.remove();
+    if (fgClassList[i].firstElementChild && fgClassList[i].firstElementChild !== 'script') {
+        if (fgClassList[i].firstElementChild.tagName == 'BR') {
+            fgClassList[i].firstElementChild.remove();
         };
     };
 };
-//SECTION END Custom Fraud Delete BR if before panel-box-format, after form-group, around h4
+//SECTION END Delete BR if before panel-box-format, after form-group, around h4
 //SECTION START Delete all alerts of current name
 if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.location.href.indexOf("Alert") > -1) {
 $("#caseOrProviderTable").on('click', function() { functionNameGoesHere()});
@@ -207,7 +174,6 @@ function deleteAllAlerts() {
 //SECTION START Reverses Period options order, makes most recent visible
 let checkForId = document.getElementById("selectPeriod");
 if(checkForId) {
-//    $('.form-control option').each(function () {selectPeriod
     $('#selectPeriod option').each(function () {
 $(this).prependTo($(this).parent());
 });
@@ -257,7 +223,6 @@ let selectPeriodDropdown = document.getElementById('selectPeriod');
                     document.getElementById('caseInputSubmit').click();
                 }
             }
-                console.log(selectPeriodDropdown.selectedIndex);
         };
     };
 //SECTION END Next/Prev button area
@@ -266,4 +231,10 @@ if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.
     document.getElementsByClassName('sorting')[1].click()
 };
 //SECTION END Sort caseload lists by client name, ascending
+//SECTION START No timing out, resets sessionStartTime
+function keepAlive() {//set new sessionStartTime to reset each page
+    localStorage.setItem('mec2.sessionStartTime', new Date().getTime());
+};
+setInterval(keepAlive, 61000);//61 seconds
+//SECTION END No timing out, resets sessionStartTime
 })();

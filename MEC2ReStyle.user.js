@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.37
+// @version      0.38
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,9 +12,8 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
-document.getElementsByClassName("panel-default")[0].style = "background-color: #f5f5f5; margin-top: -20px !important;";
+if (document.getElementsByClassName("panel-default")[0] !== undefined) { document.getElementsByClassName("panel-default")[0].style = "background-color: #f5f5f5; /*margin-top: -20px !important;*/"; };
 //document.getElementsByClassName("form-group")[0].style = "margin-bottom: 4px;";
-//document.body.style = "background-color: #eee";
 function addGlobalStyle(css) { //To allow for adding CSS styles
     var head, style;
     head = document.getElementsByTagName('head')[0];
@@ -24,11 +23,11 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     style.innerHTML = css;
     head.appendChild(style);
 };
-addGlobalStyle('body { background-color: #eee }');//Shrinks space between green panels
+addGlobalStyle('body { background-color: #eee }');
 addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; background-color: #faf9f5 !important }');//Shrinks space between green panels
 addGlobalStyle('h1 { margin-bottom: 0px !important; margin-top: 0px !important; }');//Shrinks space around page titles
 addGlobalStyle('form { margin-top: 3px !important; }');//Shrinks margin from 'form' elements
-addGlobalStyle('label { vertical-align: text-top !important; }');
+//addGlobalStyle('label { vertical-align: text-top !important; }');
 //addGlobalStyle('label { padding-bottom: 0px !important; margin-bottom: 0px !important; margin-top: 0px !important; }'); //padding-top: 9px !important;
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');//Shrink margin from 'form' elements
 addGlobalStyle('.form-control { margin-bottom: 2px !important; padding-bottom: 6px !important; padding-top: 6px !important;}');
@@ -37,11 +36,13 @@ addGlobalStyle('tbody tr td { padding: 5px 10px !important; }');//Table entry he
 addGlobalStyle('.ui-datepicker { width: 20em !important; }');//calendar width fix
 addGlobalStyle('#ui-datepicker-div table thead tr th { color: white; }');//calendar days font color
 addGlobalStyle('.borderless { border: 1px #bfbfbf solid !important; background-color: white !important }');
-//addGlobalStyle('.clearfix::after { content: ""; clear: both; display: table;}');
+addGlobalStyle('.col-lg-12.padL0.textInherit { padding-top: 0px !important }');
 // --- Single page fixes --- Single page fixes --- Single page fixes ---
-if (window.location.href.indexOf("CaseNotices") > -1) {//dataTables_scrollBody
+//SECTION START Fixing the table height of the Case Notice table to show more notices
+if (window.location.href.indexOf("CaseNotices") > -1) {
     $(".dataTables_scrollBody").css('max-height', '400px');
 }
+//SECTION END Fixing the table height of the Case Notice table to show more notices
 //SECTION START Resize the Alert page's Explanation viewable area
 if (window.location.href.indexOf("Alerts") > -1) {
 addGlobalStyle('label { vertical-align: inherit !important; }');
@@ -92,7 +93,8 @@ let caseNoteTable = document.getElementById('caseNotesTable');
 caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
 fixCaseNoteDisplay()
 };
-//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken$('br + br').parent().addClass('clearfix');
+//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken
+//SECTION START Remove double+ BRs, apply site's clearfix class to elements, remove odd break when md+
 $('br + br').remove();
 $('.panel-box-format').addClass('clearfix');
 $('.form-group').addClass('clearfix');
@@ -102,6 +104,9 @@ let justHasBr = document.querySelectorAll('.visible-lg.visible-md');
             justHasBr[j].remove();
         };
     };
+if (document.getElementsByClassName("panel-default")[0] !== undefined && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').childElementCount > 2 && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.tagName == 'BR') {
+    document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.remove();
+};
 //SECTION START Delete BR if before panel-box-format, after form-group, around h4
 let pbfClassList = document.getElementsByClassName('panel-box-format');
 for (let i = 0; i < pbfClassList.length; i++) {
@@ -143,6 +148,26 @@ for (let i = 0; i < fgClassList.length; i++) {
     };
 };
 //SECTION END Delete BR if before panel-box-format, after form-group, around h4
+//SECTION START Clean Header section of pages, removing extra BRs
+function cleanHeader() {
+    let cHD = (document.getElementById('caseHeaderData'))
+    if (document.getElementById('caseHeaderData')) {
+        if (cHD.parentNode.previousElementSibling.tagName == 'BR') {
+            cHD.parentNode.previousElementSibling.remove();
+        };
+        if (cHD.previousElementSibling.tagName == 'BR') {
+            cHD.previousElementSibling.remove();
+        };
+        if (cHD.nextElementSibling.tagName == 'BR') {
+            cHD.nextElementSibling.remove();
+        };
+        if (cHD.lastElementChild.tagName == 'BR') {
+            cHD.lastElementChild.remove();
+        };
+    };
+};
+cleanHeader()
+//SECTION END Clean Header section of pages, removing extra BRs
 //SECTION START Delete all alerts of current name
 if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.location.href.indexOf("Alert") > -1) {
 $("#caseOrProviderTable").on('click', function() { functionNameGoesHere()});
@@ -237,4 +262,14 @@ function keepAlive() {//set new sessionStartTime to reset each page
 };
 setInterval(keepAlive, 61000);//61 seconds
 //SECTION END No timing out, resets sessionStartTime
+//SECTION START Login assistance //https://mec2.trng2.dhs.state.mn.us/ChildCare/Login.htm
+if (document.getElementById("loginDetail") !== null) {
+    let userXNumber = localStorage.getItem('userIdNumber');
+    document.getElementById("userId").value = userXNumber;
+    document.getElementById("terms").click();
+    addEventListener('beforeunload', (event) => {
+        let enteredUserId = document.getElementById("userId").value
+        localStorage.setItem('userIdNumber', enteredUserId) });
+};
+//SECTION END Login assistance
 })();

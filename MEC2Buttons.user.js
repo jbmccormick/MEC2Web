@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.33
+// @version      0.34
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,9 +12,6 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
-if (document.getElementById("loginDetail")) {
-    console.log("Login present");
-};
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
 let primaryPanelID = document.getElementById("page-wrap")
 let panelDefault = document.getElementsByClassName('panel-default')[0];
@@ -59,11 +56,10 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
       addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
       addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
       addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
-      addGlobalStyle('#panelDefault {margin-top: -20px !important; }');
+      addGlobalStyle('.panel.panel-default {margin-top: 0px !important; }');
       };
       addGlobalStyle('.navbar { display: none; }');
       addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');
-      //if (primaryPanelID.getAttribute('Id') == "page-wrap") { addGlobalStyle('#buttonPaneOne { margin-top:40px }'); };
 document.getElementById("banner_honeycomb").style.display = "none";
 document.getElementsByClassName("navbar navbar-inverse")[0].setAttribute("id", "theirnavbar");
 document.getElementById("theirnavbar").style.display = "none";
@@ -114,9 +110,9 @@ const rowThreeButtonArray = {
 		caseFraud:["Fraud", "CaseFraud", "_self", "Case Fraud", "CaseFraudSelf", "memberMainButtons"],
 		caseImmigration:["Immigration", "CaseImmigration", "_self", "Immigration", "CaseImmigrationSelf", "memberMainButtons"],
 		caseAlias:["Alias", "CaseAlias", "_self", "Case Alias", "CaseAliasSelf", "memberMainButtons"],
-		caseRemoveMember:["Remove Member", "CaseRemoveMember", "_self", "Remove a Member", "CaseRemoveMemberSelf", "memberMainButtons"],
-		caseMemberHistory:["Member History","CaseMemberHistory", "_self", "Member History", "CaseMemberHistorySelf", "memberMainButtons"],
-		//caseMemberHistoryPlus:["+","CaseMemberHistory", "_blank", "Member History", "CaseMemberHistoryBlank", "memberMainButtons"],
+		caseRemoveMember:["Remove Memb.", "CaseRemoveMember", "_self", "Remove a Member", "CaseRemoveMemberSelf", "memberMainButtons"],
+		caseMemberHistory:["Memb. History","CaseMemberHistory", "_self", "Member History", "CaseMemberHistorySelf", "memberMainButtons"],
+		caseMemberHistoryPlus:["+","CaseMemberHistory", "_blank", "Member History", "CaseMemberHistoryBlank", "memberMainButtons"],
 	},
 	activityIncomeButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		caseEarnedIncome:["Earned", "CaseEarnedIncome", "_self", "Earned Income", "CaseEarnedIncomeSelf", "activityIncomeButtons"],
@@ -147,7 +143,6 @@ const rowThreeButtonArray = {
 		eligibilityFinancial:["Financial","CaseEligibilityResultFinancial", "_self", "Financial Results", "CaseEligibilityResultFinancialSelf", "eligibilityButtons"],
 		eligibilityApproval:["Approval","CaseEligibilityResultApproval", "_self", "Approval Results", "CaseEligibilityResultApprovalSelf", "eligibilityButtons"],
 		eligibilityCreateResults:["Create Eligibility Results","CaseCreateEligibilityResults", "_self", "Create Eligibility Results", "CaseCreateEligibilityResultsSelf", "eligibilityButtons"],
-		//eligibilityReinstate:["Reinstate", "CaseReinstate", "_self", "Reinstate", "CaseReinstateSelf"],
 	},
 	saButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		saOverview:["Overview","CaseServiceAuthorizationOverview", "_self", "Service Authorization Overview", "CaseServiceAuthorizationOverviewSelf", "saButtons"],
@@ -205,7 +200,6 @@ const rowThreeButtonArray = {
 		claimMaintenanceCase:["Maint-Case", "FinancialClaimMaintenanceCase", "_self", "Maintenance Case", "FinancialClaimMaintenanceCaseSelf", "claimsButtons"],
 		claimMaintenancePerson:["Maint-Person", "FinancialClaimMaintenancePerson", "_self", "Maintenance Person", "FinancialClaimMaintenancePersonSelf", "claimsButtons"],
 		claimMaintenanceProvider:["Maint-Provider", "FinancialClaimMaintenanceProvider", "_self", "Maintenance Provider", "FinancialClaimMaintenanceProviderSelf", "claimsButtons"],
-		//:["", "", "_self", "", ""],
 	},
 	/*etc:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		:["", "", "_self", "", "", ""],
@@ -260,12 +254,12 @@ function btnRowThree(rowTwoButtonClicked){
 		btnNavigation.setAttribute("data-pageLinkUsingId", [buttonArray[3]]);
         btnNavigation.id = buttonArray[4];
         btnNavigation.type = 'button';
-        btnNavigation.className = 'custombutton';
-        /*if (gotoButtons[i][0] == "+") {
+        //btnNavigation.className = 'custombutton';
+        if (buttonArray[0] == "+") {
             btnNavigation.className = 'custombutton custombuttonplus';
         } else {
             btnNavigation.className = 'custombutton';
-        };*/
+        };
         buttonDivThree.appendChild(btnNavigation);
         btnNavigation.addEventListener("click", function() { gotoPage(this.id)});
     };

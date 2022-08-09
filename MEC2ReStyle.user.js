@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.39
+// @version      0.40
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -74,7 +74,7 @@ if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
 if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
     addGlobalStyle('#message { font-size: 130%; background-color: yellow }');
     document.getElementById('message').innerHTML = "Select a program record listed above and click Select below to view the Eligibility Results."
-    document.getElementsByClassName('sorting')[5].click();//sort by approval status
+    if (document.getElementsByClassName('dataTables_empty').length == 0) { document.getElementsByClassName('sorting')[5].click() };//sort by approval status
 };
 //SECTION END Custom fix and text for CaseEligibilityResultSelection
 //SECTION START Case Notes custom styles

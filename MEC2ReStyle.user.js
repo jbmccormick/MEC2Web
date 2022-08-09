@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.38
+// @version      0.39
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -267,6 +267,7 @@ if (document.getElementById("loginDetail") !== null) {
     let userXNumber = localStorage.getItem('userIdNumber');
     document.getElementById("userId").value = userXNumber;
     document.getElementById("terms").click();
+    document.getElementById("password").focus();
     addEventListener('beforeunload', (event) => {
         let enteredUserId = document.getElementById("userId").value
         localStorage.setItem('userIdNumber', enteredUserId) });

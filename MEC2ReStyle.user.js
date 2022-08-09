@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.40
+// @version      0.41
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -38,6 +38,11 @@ addGlobalStyle('#ui-datepicker-div table thead tr th { color: white; }');//calen
 addGlobalStyle('.borderless { border: 1px #bfbfbf solid !important; background-color: white !important }');
 addGlobalStyle('.col-lg-12.padL0.textInherit { padding-top: 0px !important }');
 // --- Single page fixes --- Single page fixes --- Single page fixes ---
+//SECTION START ProviderRegistrationAndRenewal Fix to display table
+if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1) {
+    document.getElementById('providerData').addClass('clearfix');
+};
+//SECTION END ProviderRegistrationAndRenewal Fix to display table
 //SECTION START Fixing the table height of the Case Notice table to show more notices
 if (window.location.href.indexOf("CaseNotices") > -1) {
     $(".dataTables_scrollBody").css('max-height', '400px');
@@ -104,8 +109,10 @@ let justHasBr = document.querySelectorAll('.visible-lg.visible-md');
             justHasBr[j].remove();
         };
     };
-if (document.getElementsByClassName("panel-default")[0] !== undefined && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').childElementCount > 2 && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.tagName == 'BR') {
-    document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.remove();
+if (document.getElementsByClassName("panel-default")[0] !== undefined && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div') !== null) {
+    if (document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').childElementCount > 1 && document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.tagName == 'BR') {
+        document.querySelector('.panel.panel-default > div > form > div:nth-of-type(3) > div').lastElementChild.remove();
+    };
 };
 //SECTION START Delete BR if before panel-box-format, after form-group, around h4
 let pbfClassList = document.getElementsByClassName('panel-box-format');
@@ -139,6 +146,11 @@ for (let i = 0; i < fgClassList.length; i++) {
     if (fgClassList[i].nextElementSibling) {
         if (fgClassList[i].nextElementSibling.tagName == 'BR') {
             fgClassList[i].nextElementSibling.remove();
+        };
+    };
+    if (fgClassList[i].previousElementSibling) {
+        if (fgClassList[i].previousElementSibling.tagName == 'BR') {
+            fgClassList[i].previousElementSibling.remove();
         };
     };
     if (fgClassList[i].firstElementChild && fgClassList[i].firstElementChild !== 'script') {

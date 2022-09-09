@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.34
+// @version      0.35
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -20,13 +20,10 @@ if (!document.getElementById("page-wrap")) {
 };
 let buttonDivOne = document.createElement('div');
     buttonDivOne.id = "buttonPaneOne";
-//      let buttonDivOneID = document.getElementById("buttonPaneOne");
 let buttonDivTwo = document.createElement('div');
 	buttonDivTwo.id = "buttonPaneTwo"
-//      let buttonDivTwoID = document.getElementById("buttonPaneTwo");
 let buttonDivThree = document.createElement('div');
 	buttonDivThree.id = "buttonPaneThree"
-//      let buttonDivThreeID = document.getElementById("buttonPaneThree");
 primaryPanelID.insertAdjacentElement("afterend", buttonDivOne);
     buttonDivOne.insertAdjacentElement("afterend", buttonDivTwo);
     buttonDivTwo.insertAdjacentElement("afterend", buttonDivThree);
@@ -188,7 +185,7 @@ const rowThreeButtonArray = {
 		caseTransfer:["Case Transfer", "CaseTransfer", "_self", "Case Transfer", "CaseTransferSelf", "transferButtons"],
 		incomingTransfer:["Incoming", "ServicingAgencyIncomingTransfers", "_blank", "Incoming Transfers", "ServicingAgencyIncomingTransfersSelf", "transferButtons"],
 		outgoingTransfer:["Outgoing", "ServicingAgencyOutgoingTransfers", "_blank", "Outgoing Transfers", "ServicingAgencyOutgoingTransfersSelf", "transferButtons"],
-		financialClaimTransfer:["Claim Transfer", "FinancialClaimTransfer", "_self", "", "FinancialClaimTransferSelf", "transferButtons"],
+		financialClaimTransfer:["Claim Transfer", "FinancialClaimTransfer", "_blank", "Claim Transfer", "FinancialClaimTransferSelf", "transferButtons"],
 	},
 	claimsButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		claimEstablishment:["Establishment", "FinancialClaimEstablishment", "_blank", "Claim Establishment", "FinancialClaimEstablishmentBlank", "claimsButtons"],
@@ -307,10 +304,10 @@ function newTabFieldButtons() { //Text field to enter a case number to open in a
     newTabFieldVar.setAttribute('type', 'text');
     newTabFieldVar.setAttribute('maxlength', '8');
     newTabFieldVar.setAttribute('size', '8');
-    let label = document.createElement('label');
-    label.setAttribute('for', 'newTabField');
-    label.innerHTML = '&nbsp;&nbsp;Case:&nbsp;';
-    buttonDivOne.appendChild(label);
+    //let label = document.createElement('label');
+    //label.setAttribute('for', 'newTabField');
+    //label.innerHTML = '&nbsp;&nbsp;Case:&nbsp;';
+    //buttonDivOne.appendChild(label);
     buttonDivOne.appendChild(newTabFieldVar);
         for(let i = 0; i < openNotesOrOverview.length; i++){
             let buttonDivOne = document.getElementById("buttonPaneOne");
@@ -389,19 +386,24 @@ if (window.location.href.indexOf("Alerts") > -1) {
     btnNavigation.id = "doTheThing";
     btnNavigation.className = 'custombutton';
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
-    let clickedAlert = document.getElementById('alertTable')
-    clickedAlert.addEventListener("click", function() { changeButtonText()});
+    //let clickedAlert = document.getElementById('alertTable');
+    let clickedAlert = $('#alertTable');
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
-    //document.getElementById('doTheThing').innerHTML = document.getElementsByClassName('selected')[1].childNodes[0].innerText
-    document.getElementById('doTheThing').innerHTML = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText
-changeButtonText();
+    //document.getElementById('doTheThing').innerHTML = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText
+    $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
+    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    $('#caseOrProviderTable, #alertTable').click(function(event) {
+        if (event.target.nodeName == 'TD') {
+            $(event.target).parent().addClass("selected");
+        };
+    changeButtonText();
+    });
 };
 function changeButtonText() {
-    //let alertType = document.getElementsByClassName('selected')[1].childNodes[0].innerText
-    let alertType = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText //alertTable selected[1] (bottom table)
-    if (!alertType) {
-        document.getElementById('doTheThing').innerHTML = 'No alert selected'
-    };
+    let alertType = $('#alertTable .selected').children().eq(0).text()
+/*    if (alertType == '') {
+        document.getElementById('doTheThing').innerHTML = 'Both tables must have line selected'
+    };*/
     if (alertType == 'Eligibility') {
         document.getElementById('doTheThing').innerHTML = alertType
     } else {
@@ -414,8 +416,26 @@ function goDoTheThing() {
     if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
         let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
         let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-        window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
     };
 };
+/*if (window.location.href.indexOf("CaseNotes") > -1) {
+    //if (localStorage.getItem("caseNotesLocal") !== "clear") {
+    if (localStorage.getItem("caseNotesLocal") == "redetermination") {
+        localStorage.setItem("caseNotesLocal", )
+        //$('#new').click()
+    };
+};*/
 //SECTION END Do action based on Alert Type
+
+//SECTION START CaseLockStatus Reveal Unlock button
+if (window.location.href.indexOf("CaseLockStatus") > -1) {
+    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>')
+    $('#acceptMyTerms').click(function() { termsAccepted()} );
+    function termsAccepted() {
+        $("#caseLockStatusUnlockButtonArea").show();
+        $("#acceptMyTerms").remove();
+    };
+};
+//SECTION END CaseLockStatus Reveal Unlock button
 })();

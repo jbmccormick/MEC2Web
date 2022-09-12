@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.35
+// @version      0.36
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -377,6 +377,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
 };
 //SECTION END Superfluous delete button
+
 //SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
@@ -393,12 +394,12 @@ if (window.location.href.indexOf("Alerts") > -1) {
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     $('#caseOrProviderTable, #alertTable').click(function(event) {
-        if (event.target.nodeName == 'TD') {
-            $(event.target).parent().addClass("selected");
-        };
-    changeButtonText();
+        changeButtonText();
     });
 };
+//});
+//SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
+
 function changeButtonText() {
     let alertType = $('#alertTable .selected').children().eq(0).text()
 /*    if (alertType == '') {
@@ -438,4 +439,10 @@ if (window.location.href.indexOf("CaseLockStatus") > -1) {
     };
 };
 //SECTION END CaseLockStatus Reveal Unlock button
+
+//SECTION START Fix for table entries losing selected class when clicked on
+$('tbody').click(function(event) {
+    $(event.target).parents('tr').addClass('selected');
+//SECTION END Fix for table entries losing selected class when clicked on
+});
 })();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.36
+// @version      0.37
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -236,9 +236,9 @@ for(let i = 0; i < mainRowButtons.length; i++){
 };
 function btnRowThree(rowTwoButtonClicked){
     if (primaryPanelID.getAttribute('Id') == "greenline") { return };
-    while (buttonDivThree.firstChild) {
+    while (buttonDivThree.firstChild) {//replace with ${buttonDivThree}.empty()?
         buttonDivThree.removeChild(buttonDivThree.firstChild);
-    }
+    };
     buttonClicked();
     document.getElementById([rowTwoButtonClicked]).classList.add("custombuttonclicked");
     let tempArray = Object.keys(rowThreeButtonArray[rowTwoButtonClicked]);
@@ -319,24 +319,25 @@ function newTabFieldButtons() { //Text field to enter a case number to open in a
             btnNavigation.className = 'custombuttonsearch';
             btnNavigation.addEventListener("click", function() { openCaseNumber(this.getAttribute('data-pageName'))});
             buttonDivOne.appendChild(btnNavigation);
-        }
-}
+        };
+};
 function openCaseNumber(e) {
     const enteredCaseNumber = document.getElementById('newTabField').value;
     if (e == "CaseNotes") {
         window.open('/ChildCare/CaseNotes.htm?parm2=' + enteredCaseNumber, '_blank');
     } else {
         window.open('/ChildCare/CaseOverview.htm?parm2=' + enteredCaseNumber, '_blank');
-    }
+    };
 };
 newTabFieldButtons();
 // buttonClicked, traverseOnPageLoad, traverseOnRowTwoClick are to highlight buttons based on the current page
 function buttonClicked(){
-    let clickedButtons = document.getElementsByClassName('custombuttonclicked');
+$('.custombuttonclicked').removeClass('custombuttonclicked');
+/*    let clickedButtons = document.getElementsByClassName('custombuttonclicked');
       for(let i = 0; i < clickedButtons.length; i++) {
           clickedButtons[i].classList.remove('custombuttonclicked');
-      }
-}
+      }*/
+};
 function traverseOnPageLoad(o) {
     if (primaryPanelID.getAttribute('Id') == "greenline") { return };
     for (let i in o) {
@@ -346,23 +347,23 @@ function traverseOnPageLoad(o) {
                 document.getElementById([o[4]]).classList.add('custombuttonclicked');
             };
             return;
-        }
+        };
         if (o[i] !== null && typeof(o[i])=="object") {
             traverseOnPageLoad(o[i]);
-        }
-    }
-}
+        };
+    };
+};
 function traverseOnRowTwoClick(o) {
     for (let i in o) {
         if (o[i] == thisPageName) {
             document.getElementById([o[4]]).classList.add('custombuttonclicked');
             return;
-        }
+        };
         if (o[i] !== null && typeof(o[i])=="object") {
             traverseOnRowTwoClick(o[i]);
-        }
-    }
-}
+        };
+    };
+};
 traverseOnPageLoad(rowThreeButtonArray)
 //SECTION START Superfluous delete button
 if (window.location.href.indexOf("Alerts") > -1) {
@@ -378,7 +379,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
 };
 //SECTION END Superfluous delete button
 
-//SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
+//SECTION START Button to do an action based on Alert Type
 if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('button');
@@ -391,33 +392,40 @@ if (window.location.href.indexOf("Alerts") > -1) {
     let clickedAlert = $('#alertTable');
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
     //document.getElementById('doTheThing').innerHTML = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText
-    $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
-    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    //$('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
     $('#caseOrProviderTable, #alertTable').click(function(event) {
         changeButtonText();
     });
+    waitForElm('#alertTable').then((elm) => {//test
+    changeButtonText();
+    scrollIntoView();
+    });
 };
-//});
-//SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
+//SECTION END Button to do an action based on Alert Type
+
+function scrollIntoView() {
+    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+};
 
 function changeButtonText() {
-    let alertType = $('#alertTable .selected').children().eq(0).text()
+    let alertType = $('#alertTable .selected').children().eq(0).text();
 /*    if (alertType == '') {
         document.getElementById('doTheThing').innerHTML = 'Both tables must have line selected'
     };*/
     if (alertType == 'Eligibility') {
-        document.getElementById('doTheThing').innerHTML = alertType
+        document.getElementById('doTheThing').innerHTML = alertType;
     } else {
-        document.getElementById('doTheThing').innerHTML = 'Not yet supported'
+        document.getElementById('doTheThing').innerHTML = 'Not yet supported';
     };
 };
+
 function goDoTheThing() {
     //rewrite this section. Make arrays based on category, get category and match to startsWith?
     let messageText = document.getElementById('message');//alertTable
     if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
-        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
-        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText; //caseOrProviderTable selected[0]
+        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '');
+        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank');
     };
 };
 /*if (window.location.href.indexOf("CaseNotes") > -1) {
@@ -431,7 +439,7 @@ function goDoTheThing() {
 
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {
-    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>')
+    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>');
     $('#acceptMyTerms').click(function() { termsAccepted()} );
     function termsAccepted() {
         $("#caseLockStatusUnlockButtonArea").show();
@@ -442,7 +450,41 @@ if (window.location.href.indexOf("CaseLockStatus") > -1) {
 
 //SECTION START Fix for table entries losing selected class when clicked on
 $('tbody').click(function(event) {
-    $(event.target).parents('tr').addClass('selected');
-//SECTION END Fix for table entries losing selected class when clicked on
+    $(event.target).parents('tr').addClass('selected');//.closest('tr') would also work
 });
+//SECTION END Fix for table entries losing selected class when clicked on
+
+//SECTION START Retract drop-down menu on page load
+$('.sub_menu').css('visibility', 'hidden');
+//SECTION END Retract drop-down menu on page load
+
+//SECTION START Wait for something to be available //https://stackoverflow.com/a/61511955
+function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+/*
+To use it:
+    waitForElm('.some-class').then((elm) => {
+        console.log('Element is ready');
+        console.log(elm.textContent);
+    });
+Or with async/await:
+    const elm = await waitForElm('.some-class');
+*/
+//SECTION END Wait for something to be available
+
 })();

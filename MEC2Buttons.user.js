@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.37
+// @version      0.38
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -379,7 +379,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
 };
 //SECTION END Superfluous delete button
 
-//SECTION START Button to do an action based on Alert Type
+//SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('button');
@@ -392,40 +392,41 @@ if (window.location.href.indexOf("Alerts") > -1) {
     let clickedAlert = $('#alertTable');
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
     //document.getElementById('doTheThing').innerHTML = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText
-    //$('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
+    $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
+    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     $('#caseOrProviderTable, #alertTable').click(function(event) {
         changeButtonText();
     });
-    waitForElm('#alertTable').then((elm) => {//test
+    waitForElm('#alertTable tr').then((elm) => {//test
+        console.log('works');
     changeButtonText();
     scrollIntoView();
     });
 };
-//SECTION END Button to do an action based on Alert Type
+//SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 
 function scrollIntoView() {
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 };
 
 function changeButtonText() {
-    let alertType = $('#alertTable .selected').children().eq(0).text();
+    let alertType = $('#alertTable .selected').children().eq(0).text()
 /*    if (alertType == '') {
         document.getElementById('doTheThing').innerHTML = 'Both tables must have line selected'
     };*/
     if (alertType == 'Eligibility') {
-        document.getElementById('doTheThing').innerHTML = alertType;
+        document.getElementById('doTheThing').innerHTML = alertType
     } else {
-        document.getElementById('doTheThing').innerHTML = 'Not yet supported';
+        document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
     };
 };
-
 function goDoTheThing() {
     //rewrite this section. Make arrays based on category, get category and match to startsWith?
     let messageText = document.getElementById('message');//alertTable
     if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
-        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText; //caseOrProviderTable selected[0]
-        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '');
-        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank');
+        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
+        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
     };
 };
 /*if (window.location.href.indexOf("CaseNotes") > -1) {
@@ -439,7 +440,7 @@ function goDoTheThing() {
 
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {
-    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>');
+    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>')
     $('#acceptMyTerms').click(function() { termsAccepted()} );
     function termsAccepted() {
         $("#caseLockStatusUnlockButtonArea").show();
@@ -486,5 +487,4 @@ Or with async/await:
     const elm = await waitForElm('.some-class');
 */
 //SECTION END Wait for something to be available
-
 })();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.38
+// @version      0.39
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -41,22 +41,25 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     style.innerHTML = css;
     head.appendChild(style);
 }
-      addGlobalStyle('.custombutton { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 3px 4px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-7px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
-      addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
-      addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
-      addGlobalStyle('.custom-form-button {margin-left: 10px; }');
-      addGlobalStyle('#buttonPaneThree {margin-bottom:1px; }');
-      if (primaryPanelID.getAttribute('Id') == "greenline") {
-      addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-      addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
-      addGlobalStyle('.custombutton:hover {background-color: #DAF7A6; }'); //button hover style
-      addGlobalStyle('.custombuttonclicked {background-color: #A6EDF7; }');
-      addGlobalStyle('.panel.panel-default {margin-top: 0px !important; }');
-      };
-      addGlobalStyle('.navbar { display: none; }');
-      addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');
+    addGlobalStyle('.custombutton { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
+    addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 3px 4px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
+    addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-7px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
+    addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
+    addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
+    addGlobalStyle('.custom-form-button { margin-left: 10px; }');
+    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; }');
+    addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: flex-end; }');
+    addGlobalStyle('.centered-form-group { /*display: inline-flex; */align-items: center; }');
+    addGlobalStyle('#buttonPaneThree { margin-bottom:1px; }');
+    if (primaryPanelID.getAttribute('Id') == "greenline") {
+        addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
+        addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
+        addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
+        addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
+        addGlobalStyle('.panel.panel-default { margin-top: 0px !important; }');
+    };
+    addGlobalStyle('.navbar { display: none; }');
+    addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');
 document.getElementById("banner_honeycomb").style.display = "none";
 document.getElementsByClassName("navbar navbar-inverse")[0].setAttribute("id", "theirnavbar");
 document.getElementById("theirnavbar").style.display = "none";
@@ -88,7 +91,7 @@ const mainRowButtons = [ //   Main Row buttons, ["Name as it appears on a button
     ["Eligibility","eligibilityButtons", "_self"], //Elig
     ["SA","saButtons", "_self"],
     ["Notices","noticesButtons","_self"],
-    ["Provider","providerButtons",""],
+    ["Provider Info","providerButtons",""],
     ["Billing","billingButtons",""],
     ["CSI","csiButtons",""],
     ["Transfer","transferButtons",""],
@@ -107,8 +110,8 @@ const rowThreeButtonArray = {
 		caseFraud:["Fraud", "CaseFraud", "_self", "Case Fraud", "CaseFraudSelf", "memberMainButtons"],
 		caseImmigration:["Immigration", "CaseImmigration", "_self", "Immigration", "CaseImmigrationSelf", "memberMainButtons"],
 		caseAlias:["Alias", "CaseAlias", "_self", "Case Alias", "CaseAliasSelf", "memberMainButtons"],
-		caseRemoveMember:["Remove Memb.", "CaseRemoveMember", "_self", "Remove a Member", "CaseRemoveMemberSelf", "memberMainButtons"],
-		caseMemberHistory:["Memb. History","CaseMemberHistory", "_self", "Member History", "CaseMemberHistorySelf", "memberMainButtons"],
+		caseRemoveMember:["Remove", "CaseRemoveMember", "_self", "Remove a Member", "CaseRemoveMemberSelf", "memberMainButtons"],
+		caseMemberHistory:["History","CaseMemberHistory", "_self", "Member History", "CaseMemberHistorySelf", "memberMainButtons"],
 		caseMemberHistoryPlus:["+","CaseMemberHistory", "_blank", "Member History", "CaseMemberHistoryBlank", "memberMainButtons"],
 	},
 	activityIncomeButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
@@ -397,8 +400,9 @@ if (window.location.href.indexOf("Alerts") > -1) {
     $('#caseOrProviderTable, #alertTable').click(function(event) {
         changeButtonText();
     });
-    waitForElm('#alertTable tr').then((elm) => {//test
-        console.log('works');
+    //waitForElm('#alertTable tr').then((elm) => {//test
+    waitForElm('#alertTable .selected').then((elm) => {//test
+        console.log($('#alertTable .selected').children().eq(0).text());
     changeButtonText();
     scrollIntoView();
     });
@@ -407,6 +411,7 @@ if (window.location.href.indexOf("Alerts") > -1) {
 
 function scrollIntoView() {
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    console.log(document.querySelector('#caseOrProviderTable .selected'));
 };
 
 function changeButtonText() {
@@ -437,6 +442,104 @@ function goDoTheThing() {
     };
 };*/
 //SECTION END Do action based on Alert Type
+
+//SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
+function billingFormInfo() {
+    let today = new Date();
+    let todayDate = cleanDate(today);
+    let caseNumber = $('#caseId').val();//Case Number
+    let caseName = $('#caseHeaderData').children().prop('innerText').slice(6);
+    let period = $('#selectPeriod').val();
+    let startDate = $('#selectPeriod').val().split(" ")[0];
+    let endDate = $('#selectPeriod').val().slice(13);
+    let weekTwoStart = $('#weekEnd').val();
+    let providerName = $('#providerInfoTable .selected td').eq(1).prop('innerHTML');
+    let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
+    let copayAmount = $('#copayAmount').val();
+    let childList = {};
+    let attendance6 = cleanDate(addDays(startDate, 7));
+    //let childList = {};
+    $('#childInfoTable tbody tr').each(function(index) {//child#.name:, child#.authHours:, child#.ageCat0:, child#.ageCat1:
+        $('#childInfoTable tbody tr').click().eq([index]);
+        childList["child" + index] = {};
+        childList["child" + index].name = $(this).children('td').eq(1).text();
+        childList["child" + index].authHours = $(this).children('td').eq(3).text();
+        childList["child" + index].ageCat0 = $('#ageRateCategory').val();
+        childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
+    });
+    function addDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+    function cleanDate(date) {
+        let result = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
+        return result;
+    };
+    const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, date:todayDate, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance6:attendance6, ...childList};
+    window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
+};
+if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//adding button
+    $('#csicTableData1').before(`
+<div style="overflow: auto" id="billingFormDiv">
+<div class="form-group centered-form-group">
+
+<div class="custombutton fake-custom-button centered-text" id="billingForm">Create Billing Form</div>
+<label for="copayAmount" class="control-label textR" style="height: 28px;"> Copay Amount: $</label>
+<input class="centered-text" style="height: 22px; width: 40px;" id="copayAmount"></input>
+<div class="custombutton fake-custom-button centered-text" id="providerAddressButton">Open Provider Address Page</div>
+</div>
+</div>
+`);
+    $('#billingForm').on("click", function() { billingFormInfo()});
+    $('#providerAddressButton').click(function() {
+        let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
+        window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
+    });
+};
+    if (window.location.href.indexOf("ProviderAddress") > -1) {
+        $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
+        $('#copyMailing').click(function() {
+            if ($('#addrBillFormDisplay').val() == "Site/Home") {
+            let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
+            let street2 = document.getElementById('mailingSiteHomeStreet2').value;
+            if (document.getElementById('mailingSiteHomeStreet2').value !== '') {
+                street2 = document.getElementById('mailingSiteHomeStreet2').value + "\n";
+            };
+            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + "\n" + street2 + document.getElementById('mailingSiteHomeCity').value + "," + state + "," + document.getElementById('mailingSiteHomeZipCode').value
+            navigator.clipboard.writeText(copyText)
+            } else {
+            let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
+            let street2 = document.getElementById('mailingStreet2').value;
+            if (document.getElementById('mailingStreet2').value !== '') {
+                street2 = document.getElementById('mailingStreet2').value + "\n";
+            };
+            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + "\n" + street2 + document.getElementById('mailingCity').value + "," + state + "," + document.getElementById('mailingZipCode').value
+            navigator.clipboard.writeText(copyText)
+            }
+        });
+    };
+//SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
+
+//SECTION START Child Support Referral form filling
+if (window.location.href.indexOf("CaseCSE") > -1) {//CS Referral & GC
+    let caseNumber = $('#caseId').val();
+    let cpInfo = $('#csePriTable .selected td').eq(1).text();
+    let ncpInfo = $('#csePriTable .selected td').eq(2).text();
+    //let childList = {child0:"", child1:"", child2:"", child3:"", child4:""};
+    let childList = {};
+    $('#childrenTable tbody tr').each(function(index) {
+        if ($(this).children('td').eq(1).text().length > 0) {
+            childList["child" + index] = $(this).children('td').eq(1).text();
+        };
+    });
+    $('.content_25pad-0top').children().first().append('<div class="panel-box-format"><div class="custombutton fake-custom-button" id="csForms">CS Forms</div></div>');
+    $('#csForms').click(function() {
+        const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
+        window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
+    });
+};
+//SECTION END Child Support Referral form filling
 
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {

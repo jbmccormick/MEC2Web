@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.42
+// @version      0.43
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -47,7 +47,7 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
     addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
     addGlobalStyle('.custom-form-button { margin-left: 10px; }');
-    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; }');
+    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; display: inline-flex; align-items: center; justify-content: flex-end; }');
     addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: flex-end; }');
     addGlobalStyle('.centered-form-group { /*display: inline-flex; */align-items: center; }');
     addGlobalStyle('#buttonPaneThree { margin-bottom:1px; }');
@@ -385,11 +385,11 @@ if (window.location.href.indexOf("Alerts") > -1) {
 //SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
-    let btnNavigation = document.createElement('button');
-    btnNavigation.type = 'button';
+    let btnNavigation = document.createElement('div');
+    btnNavigation.type = 'div';
     btnNavigation.innerHTML = "Select an alert";
     btnNavigation.id = "doTheThing";
-    btnNavigation.className = 'custombutton';
+    btnNavigation.className = 'custombutton fake-custom-button';
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
     //let clickedAlert = document.getElementById('alertTable');
     let clickedAlert = $('#alertTable');
@@ -531,6 +531,15 @@ if (window.location.href.indexOf("ProviderAddress") > -1) {
     });
 };
 //SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
+
+//SECTION START Open provider information page from Child's Provider page
+if (window.location.href.indexOf("CaseChildProvider") > -1) {
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" id="providerAddressButton">Provider Contact Info</div>')
+    $('#providerAddressButton').click(function() {
+        window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
+    });
+};
+//SECTION END Open provider information page from Child's Provider page
 
 //SECTION START Fill Child Support PDF Forms
 $('#selectPeriod').css("width", "25%");

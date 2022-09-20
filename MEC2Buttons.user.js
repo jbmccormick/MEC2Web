@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.41
+// @version      0.42
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -416,10 +416,9 @@ function scrollIntoView() {
 
 function changeButtonText() {
     let alertType = $('#alertTable .selected').children().eq(0).text()
-/*    if (alertType == '') {
-        document.getElementById('doTheThing').innerHTML = 'Both tables must have line selected'
-    };*/
-    if (alertType == 'Eligibility') {
+    if (alertType == '') {
+        document.getElementById('doTheThing').innerHTML = 'Click on Alert (needs to be fixed)'
+    } else if (alertType == 'Eligibility') {
         document.getElementById('doTheThing').innerHTML = alertType
     } else {
         document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
@@ -442,6 +441,25 @@ function goDoTheThing() {
     };
 };*/
 //SECTION END Do action based on Alert Type
+
+//SECTION START Copy client mail to address to clipboard
+if (window.location.href.indexOf("CaseAddress") > -1) {
+    $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
+    $('#copyMailing').click(function() {
+        let caseNameRaw = String($('#caseHeaderData').children().prop('innerText').slice(6));
+        let caseName = caseNameRaw.split(" ")[1] + " " + caseNameRaw.split(",")[0];
+        if ($('#mailingStreet1').val() !== "") {
+        let state = (document.getElementById('mailingStateProvince').value === "Minnesota") ? "MN":"WI";
+        let copyText = caseName + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
+        navigator.clipboard.writeText(copyText)
+        } else {
+        let state = (document.getElementById('residenceStateProvince').value === "Minnesota") ? "MN":"WI";
+        let copyText = caseName + "\n" + document.getElementById('residenceStreet1').value + " " + document.getElementById('residenceStreet2').value + "\n" + document.getElementById('residenceCity').value + ", " + state + " " + document.getElementById('residenceZipCode').value
+        navigator.clipboard.writeText(copyText)
+        };
+    });
+};
+//SECTION END Copy client mail to address to clipboard
 
 //SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
 function billingFormInfo() {
@@ -479,6 +497,7 @@ function billingFormInfo() {
     const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, date:todayDate, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance6:attendance6, ...childList};
     window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
 };
+
 if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//adding button
     $('#csicTableData1').before(`
 <div style="overflow: auto" id="billingFormDiv">
@@ -491,61 +510,51 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//ad
 </div>
 </div>
 `);
-    $('#billingForm').on("click", function() { billingFormInfo()});
-    $('#providerAddressButton').click(function() {
-        let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
-        window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
+$('#billingForm').on("click", function() { billingFormInfo()});
+$('#providerAddressButton').click(function() {
+    let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
+    window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
+});
+};
+if (window.location.href.indexOf("ProviderAddress") > -1) {
+    $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
+    $('#copyMailing').click(function() {
+        if ($('#addrBillFormDisplay').val() == "Site/Home") {
+        let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
+        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + " " + document.getElementById('mailingSiteHomeStreet2').value + "\n" + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
+        navigator.clipboard.writeText(copyText)
+        } else {
+        let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
+        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
+        navigator.clipboard.writeText(copyText)
+        };
     });
 };
-    if (window.location.href.indexOf("ProviderAddress") > -1) {
-        $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
-        $('#copyMailing').click(function() {
-            if ($('#addrBillFormDisplay').val() == "Site/Home") {
-            let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
-            /*let street2 = document.getElementById('mailingSiteHomeStreet2').value;
-            if (document.getElementById('mailingSiteHomeStreet2').value !== '') {
-                street2 = document.getElementById('mailingSiteHomeStreet2').value + "\n";
-            };*/
-            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + " " + document.getElementById('mailingSiteHomeStreet2').value + "\n" + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
-            navigator.clipboard.writeText(copyText)
-            } else {
-            let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
-            /*let street2 = document.getElementById('mailingStreet2').value;
-            if (document.getElementById('mailingStreet2').value !== '') {
-                street2 = document.getElementById('mailingStreet2').value + "\n";
-            };*/
-            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
-            navigator.clipboard.writeText(copyText)
-            }
-        });
-    };
 //SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
 
-//SECTION START Child Support Referral form filling
+//SECTION START Fill Child Support PDF Forms
 $('#selectPeriod').css("width", "25%");
-if (window.location.href.indexOf("CaseCSE") > -1) {//CS Referral & GC
+if (window.location.href.indexOf("CaseCSE") > -1) {
     let caseNumber = $('#caseId').val();
     let cpInfo = $('#csePriTable .selected td').eq(1).text();
     let ncpInfo = $('#csePriTable .selected td').eq(2).text();
-    //let childList = {child0:"", child1:"", child2:"", child3:"", child4:""};
     let childList = {};
     $('#childrenTable tbody tr').each(function(index) {
         if ($(this).children('td').eq(1).text().length > 0) {
             childList["child" + index] = $(this).children('td').eq(1).text();
         };
     });
-    //$('.content_25pad-0top').children().first().append('<div class="panel-box-format"><div class="custombutton fake-custom-button" id="csForms">CS Forms</div></div>');
     $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
     $('#csForms').click(function() {
         const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
         window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
     });
 };
-//SECTION END Child Support Referral form filling
+//SECTION END Fill Child Support PDF Forms
 
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {
-    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Please show the "Unlock" button.</div>')
+    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Show the "Unlock" button.</div>')
     $('#acceptMyTerms').click(function() { termsAccepted()} );
     function termsAccepted() {
         $("#caseLockStatusUnlockButtonArea").show();

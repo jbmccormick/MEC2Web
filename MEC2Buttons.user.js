@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.39
+// @version      0.40
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -502,19 +502,19 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//ad
         $('#copyMailing').click(function() {
             if ($('#addrBillFormDisplay').val() == "Site/Home") {
             let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
-            let street2 = document.getElementById('mailingSiteHomeStreet2').value;
+            /*let street2 = document.getElementById('mailingSiteHomeStreet2').value;
             if (document.getElementById('mailingSiteHomeStreet2').value !== '') {
                 street2 = document.getElementById('mailingSiteHomeStreet2').value + "\n";
-            };
-            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + "\n" + street2 + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
+            };*/
+            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + " " + document.getElementById('mailingSiteHomeStreet2').value + "\n" + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
             navigator.clipboard.writeText(copyText)
             } else {
             let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
-            let street2 = document.getElementById('mailingStreet2').value;
+            /*let street2 = document.getElementById('mailingStreet2').value;
             if (document.getElementById('mailingStreet2').value !== '') {
                 street2 = document.getElementById('mailingStreet2').value + "\n";
-            };
-            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + "\n" + street2 + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
+            };*/
+            let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
             navigator.clipboard.writeText(copyText)
             }
         });

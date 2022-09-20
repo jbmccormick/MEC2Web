@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.40
+// @version      0.41
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -522,6 +522,7 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//ad
 //SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
 
 //SECTION START Child Support Referral form filling
+$('#selectPeriod').css("width", "25%");
 if (window.location.href.indexOf("CaseCSE") > -1) {//CS Referral & GC
     let caseNumber = $('#caseId').val();
     let cpInfo = $('#csePriTable .selected td').eq(1).text();
@@ -533,7 +534,8 @@ if (window.location.href.indexOf("CaseCSE") > -1) {//CS Referral & GC
             childList["child" + index] = $(this).children('td').eq(1).text();
         };
     });
-    $('.content_25pad-0top').children().first().append('<div class="panel-box-format"><div class="custombutton fake-custom-button" id="csForms">CS Forms</div></div>');
+    //$('.content_25pad-0top').children().first().append('<div class="panel-box-format"><div class="custombutton fake-custom-button" id="csForms">CS Forms</div></div>');
+    $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
     $('#csForms').click(function() {
         const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
         window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");

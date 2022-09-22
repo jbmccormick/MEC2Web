@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.44
+// @version      0.45
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -458,10 +458,8 @@ if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.loca
     btnNavigation.id = "doTheThing";
     btnNavigation.className = 'custombutton fake-custom-button';
     anchorPoint.insertAdjacentElement('afterend', btnNavigation);
-    //let clickedAlert = document.getElementById('alertTable');
-    let clickedAlert = $('#alertTable');
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
-    //document.getElementById('doTheThing').innerHTML = document.getElementById('alertTable').getElementsByClassName('selected')[0].childNodes[0].innerText
+    let clickedAlert = $('#alertTable');
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     $('#caseOrProviderTable, #alertTable').click(function(event) {
@@ -470,12 +468,31 @@ if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.loca
     waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {//test
     onAlertsLoaded();
     changeButtonText();
-    scrollIntoView();
+    goScrollIntoView();
     });
 //};
 //SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 
-function scrollIntoView() {
+//SECTION START Copy Alert text, navigate to Case Notes
+function copyExplanation() {
+    let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
+    navigator.clipboard
+        .writeText(copyText)
+        .then(() => {
+        localStorage.setItem('mech2.caseNoteText', copyText);
+        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#caseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
+        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+        window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseNotes.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+    })
+        .catch(() => {
+        alert("Something went wrong");
+    });
+};
+$('#message').after('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
+$('#copyAlertButton').click(function() { copyExplanation()});
+//SECTION END Copy Alert text, navigate to Case Notes
+
+function goScrollIntoView() {
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 };
 
@@ -508,7 +525,7 @@ function goDoTheThing() {
 };*/
 //SECTION END Do action based on Alert Type
 
-//SECTION START Copy client mail to address to clipboard
+//SECTION START Copy client mail to address to clipboard on Case Address page
 if (window.location.href.indexOf("CaseAddress") > -1) {
     $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
     $('#copyMailing').click(function() {
@@ -525,7 +542,7 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
         };
     });
 };
-//SECTION END Copy client mail to address to clipboard
+//SECTION END Copy client mail to address to clipboard on Case Address page
 
 //SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
 function billingFormInfo() {

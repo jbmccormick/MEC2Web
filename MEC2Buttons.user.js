@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.43
+// @version      0.44
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -46,9 +46,10 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-7px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
     addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
     addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
-    addGlobalStyle('.custom-form-button { margin-left: 10px; }');
-    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; display: inline-flex; align-items: center; justify-content: flex-end; }');
-    addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: flex-end; }');
+    addGlobalStyle('.custom-form-button { margin-left: 10px; cursor: pointer; }');
+    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; display: inline-flex; align-items: center; justify-content: center; }');
+    addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: center; }');
+    addGlobalStyle('.centered-right-label { display: inline-flex; align-items: center; justify-content: flex-end; text-align: right; }');
     addGlobalStyle('.centered-form-group { /*display: inline-flex; */align-items: center; }');
     addGlobalStyle('#buttonPaneThree { margin-bottom:1px; }');
     if (primaryPanelID.getAttribute('Id') == "greenline") {
@@ -267,7 +268,7 @@ function btnRowThree(rowTwoButtonClicked){
 };
 function gotoPage(loadThisPage) {
     if (primaryPanelID.getAttribute('Id') == "greenline") {
-        console.log("There's no drop down to pull links from, figure out how to do it without.")
+        //console.log("There's no drop down to pull links from, figure out how to do it without.")
         return
     };
     let getLinkUsingId = document.getElementById(`${loadThisPage}`);
@@ -370,20 +371,86 @@ function traverseOnRowTwoClick(o) {
 traverseOnPageLoad(rowThreeButtonArray)
 //SECTION START Superfluous delete button
 if (window.location.href.indexOf("Alerts") > -1) {
-    let anchorPoint = document.getElementById('alertTotal');
-    let deleteButtonBottom = document.getElementById('delete');
-    let btnNavigation = document.createElement('button');
-    btnNavigation.type = 'button';
-    btnNavigation.innerHTML = "Delete Alert";
-    btnNavigation.id = "buttonDeleteTop";
-    btnNavigation.className = 'form-button custom-form-button';
-    btnNavigation.addEventListener("click", function() { deleteButtonBottom.click()});
-    anchorPoint.insertAdjacentElement('afterend', btnNavigation);
+    $('#alertTotal').after('<div class="form-button custom-form-button centered-text" id="buttonDeleteTop">Delete Alert</div>')
+    $('#buttonDeleteTop').click(function() { $('#delete').click()});
 };
 //SECTION END Superfluous delete button
 
+//SECTION START Wait for something to be available //https://stackoverflow.com/a/61511955
+function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+function waitForElmValue(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector).innerText !== "0") {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector).innerText !== "0") {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+/*
+To use it:
+    waitForElm('.some-class').then((elm) => {
+        console.log('Element is ready');
+        console.log(elm.textContent);
+    });
+Or with async/await:
+    const elm = await waitForElm('.some-class');
+*/
+//SECTION END Wait for something to be available
+
+//SECTION START Delete all alerts of current name onclick
+if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.location.href.indexOf("Alert") > -1) {
+    function onAlertsLoaded() {
+        let alertsToDelete = sessionStorage.getItem('alertsToDelete');
+        if (alertsToDelete !== undefined && alertsToDelete !== null) {
+            if ($('#caseOrProviderTable .selected td').eq(2).text() == alertsToDelete) {
+                if ($('#delete').prop('disabled')) {
+                    $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete all ended. Alert can\'t be deleted</div>');
+                    sessionStorage.removeItem('alertsToDelete');
+                    return;
+                } else {
+                    $('#delete').click()
+                };
+            } else {
+                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All Ended. All alerts from case deleted.</div>');
+                sessionStorage.removeItem('alertsToDelete');
+                return;
+            };
+        };
+    };
+    $('#delete').after('<div class="form-button custom-form-button centered-text" id="buttonDeleteAll">Delete All</div>');
+    $('#buttonDeleteAll').on("click", function() {
+        sessionStorage.setItem('alertsToDelete', $('#caseOrProviderTable .selected td').eq(2).text());
+        $('#delete').click()
+    });
+//};
+//SECTION END Delete all alerts of current name onclick
 //SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
-if (window.location.href.indexOf("Alerts") > -1) {
+//if (window.location.href.indexOf("Alerts") > -1) {
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('div');
     btnNavigation.type = 'div';
@@ -400,18 +467,16 @@ if (window.location.href.indexOf("Alerts") > -1) {
     $('#caseOrProviderTable, #alertTable').click(function(event) {
         changeButtonText();
     });
-    //waitForElm('#alertTable tr').then((elm) => {//test
-    waitForElm('#alertTable .selected').then((elm) => {//test
-        console.log($('#alertTable .selected').children().eq(0).text());
+    waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {//test
+    onAlertsLoaded();
     changeButtonText();
     scrollIntoView();
     });
-};
+//};
 //SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
 
 function scrollIntoView() {
     document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    console.log(document.querySelector('#caseOrProviderTable .selected'));
 };
 
 function changeButtonText() {
@@ -432,6 +497,7 @@ function goDoTheThing() {
         let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
         window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
     };
+};
 };
 /*if (window.location.href.indexOf("CaseNotes") > -1) {
     //if (localStorage.getItem("caseNotesLocal") !== "clear") {
@@ -534,7 +600,7 @@ if (window.location.href.indexOf("ProviderAddress") > -1) {
 
 //SECTION START Open provider information page from Child's Provider page
 if (window.location.href.indexOf("CaseChildProvider") > -1) {
-    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" id="providerAddressButton">Provider Contact Info</div>')
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerAddressButton">Provider Contact Info</div>')
     $('#providerAddressButton').click(function() {
         window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
     });
@@ -581,33 +647,4 @@ $('tbody').click(function(event) {
 //SECTION START Retract drop-down menu on page load
 $('.sub_menu').css('visibility', 'hidden');
 //SECTION END Retract drop-down menu on page load
-
-//SECTION START Wait for something to be available //https://stackoverflow.com/a/61511955
-function waitForElm(selector) {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        };
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector));
-                observer.disconnect();
-            };
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-};
-/*
-To use it:
-    waitForElm('.some-class').then((elm) => {
-        console.log('Element is ready');
-        console.log(elm.textContent);
-    });
-Or with async/await:
-    const elm = await waitForElm('.some-class');
-*/
-//SECTION END Wait for something to be available
 })();

@@ -559,7 +559,7 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
         let today = new Date();
         let todayDate = cleanDate(today);
         let caseNumber = $('#caseId').val();//Case Number
-        let caseName = $('#caseHeaderData').children().prop('innerText').slice(6);
+        let caseName = $('#caseHeaderData').children().prop('innerText').slice(5);
         let period = $('#selectPeriod').val();
         let startDate = $('#selectPeriod').val().split(" ")[0];
         let endDate = $('#selectPeriod').val().slice(13);

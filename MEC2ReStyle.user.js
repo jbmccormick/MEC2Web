@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.43
+// @version      0.44
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -73,6 +73,7 @@ addGlobalStyle('.container { position: relative; z-index: 1050; min-height: 0px 
 
 //SECTION START Removing items from the tabindex
 $('#footer_links, #footer_info, #popup').children().prop('tabindex', '-1');
+$('#quit, #countiesTable, #extendedEligibilityExpires, #redeterminationDate, #caseInputSubmit').prop('tabindex', '-1');//quit, countiesTable=application; redet date, eEE=activity pages; cIS=submit button
 //SECTION END Removing items from the tabindex
 
 /*if (window.location.href.indexOf("Alerts") == -1 && window.location.href.indexOf("CaseNotes") == -1) {
@@ -273,6 +274,12 @@ $('label').each( function() {//'label.textInherit' testing without textInherit
 
 // --- Single page fixes --- Single page fixes --- Single page fixes ---
 
+//SECTION START Fix wrongly sized columns for several labels on Case Address
+if (window.location.href.indexOf("CaseAddress") > -1) {
+    $('label.col-md-2').addClass('col-md-3').removeClass('col-md-2');
+};
+//SECTION END Fix wrongly sized columns for several labels on Case Address
+
 //SECTION START Active caseload numbers
 if (window.location.href.indexOf("ActiveCaseList") > -1) {
 $('h5').append(" " + $('td:contains("Active")').length + " active. " + ($('td:contains("Suspended")').length + $('td:contains("Temporarily Ineligible")').length) + " suspended/TI.")
@@ -281,19 +288,40 @@ $('h5').append(" " + $('td:contains("Active")').length + " active. " + ($('td:co
 
 //SECTION START CaseMember Shortening text fields so they fit in a col-md-4
 if (window.location.href.indexOf("CaseMember") > -1) {
-$( "label:contains('American Indian or Alaskan Native')" ).prop('innerText', 'American Indian or AK Native');
-$( "label:contains('Pacific Islander or  Native Hawaiian')" ).prop('innerText', 'Pacific Islander or HI Native');
+    $( "label:contains('American Indian or Alaskan Native')" ).prop('innerText', 'American Indian or AK Native');
+    $( "label:contains('Pacific Islander or  Native Hawaiian')" ).prop('innerText', 'Pacific Islander or HI Native');
 };
 //SECTION END CaseMember Shortening text fields so they fit in a col-md-4
 
 //SECTION START Remove unnecessary fields from Child Support Enforcement
 if (window.location.href.indexOf("CaseCSE") > -1) {
-$('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi').parents('.form-group').hide()
-let hidden = $('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi').parents('.form-group')
-$('#cseAbsentParentInfoLastName').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="abpsShowHide">Toggle extra info</div>');
-$('#abpsShowHide').click(function() { $(hidden).toggle() });
+    $('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi, #cseAbsentParentInfoAbsentParentId').parents('.form-group').hide()
+    let hiddenCSE = $('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi, #cseAbsentParentInfoAbsentParentId').parents('.form-group')
+    $('#cseAbsentParentInfoLastName').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="abpsShowHide">Toggle extra info</div>');
+    $('#abpsShowHide').click(function() { $(hiddenCSE).toggle() });
 };
 //SECTION END Remove unnecessary fields from Child Support Enforcement
+
+//SECTION START Remove unnecessary fields from CaseEarnedIncome
+if (window.location.href.indexOf("CaseEarnedIncome") > -1) {
+    $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone').parents('.form-group').hide()
+    let hiddenCEI1 = $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone').parents('.form-group')
+    $('#ceiIncomeType').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide1">Toggle extra info</div>');
+    $('#ceiShowHide1').click(function() { $(hiddenCEI1).toggle() });
+    //
+    $('#ceiCPUnitType, #ceiNbrUnits').parents('.form-group').hide()
+    let hiddenCEI2 = $('#ceiCPUnitType, #ceiNbrUnits').parents('.form-group')
+    $('#ceiPrjAmount').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide2">Toggle extra info</div>');
+    $('#ceiShowHide2').click(function() { $(hiddenCEI2).toggle() });
+    //
+    if ($('#providerName').val().length < 1) {
+        $('#providerName, #addressStreet').parents('.form-group').hide()
+        let hiddenCEI3 = $('#providerName, #addressStreet').parents('.form-group')
+        $('#providerSearch').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide3">Toggle extra info</div>');
+        $('#ceiShowHide3').click(function() { $(hiddenCEI3).toggle() });
+    };
+};
+//SECTION END Remove unnecessary fields from CaseEarnedIncome //"ceiEmpStreet","ceiEmpStreet2","ceiEmpCity","ceiEmpStateOrProvince","ceiPhone"
 
 //SECTION START CaseChildProvider hiding fields if provider type is not LNL
 function childProviderPage() {
@@ -351,33 +379,19 @@ $('#caseId, #selectPeriod').prop('tabindex', '-1');
 //$('#returnBtn').parent().appendTo('#clientSearchRequest');
 //SECTION END ClientSearch fixing button showing to the right of the table
 
- //SECTION START CaseEarnedIncome Custom collapse code
-if (window.location.href.indexOf("CaseEarnedIncome") > -1 || window.location.href.indexOf("CaseUnearnedIncome") > -1 || window.location.href.indexOf("Expenses") > -1) {
-    $( "h4:contains('Actual Income')" ).click( function () {$( "h4:contains('Actual Income')" ).siblings(1).toggleClass("collapse")} );
-    $( "h4:contains('Actual Income')" ).siblings().wrapAll('<div class="collapse"></div>');
-    if (window.location.href.indexOf("") > -1) {
-        let labelArray = ["ceiEmpStreet","ceiEmpStreet2","ceiEmpCity","ceiEmpStateOrProvince","ceiPhone"];
-        function toggleEarnedFields() {
-            $.each(labelArray, function(index, value) {
-                $('label[for=' + value + ']').parent().toggleClass("collapse");
-            });
-        };
-        toggleEarnedFields();
-        $( "label[for='ceiEmpCountry']" ).click( function() {toggleEarnedFields() });
-/*        $( "h4:contains('Annual Self-employment Calculation')" ).click( function () {$( "h4:contains('Annual Self-employment Calculation')" ).siblings(1).toggleClass("collapse")} );
-        $( "h4:contains('Annual Self-employment Calculation')" ).siblings().wrapAll('<div></div>');
-        if ($('#ceiIncomeType').val("Self-Employment")) {
-            $( "h4:contains('Annual Self-employment Calculation')" ).siblings(1).toggleClass("collapse");
-        }; */
-    };
+ //SECTION START CaseEarnedIncome CaseUnearnedIncome CaseExpense collapse unnecessary H4s
+if (window.location.href.indexOf("CaseEarnedIncome") > -1 || window.location.href.indexOf("CaseUnearnedIncome") > -1 || window.location.href.indexOf("CaseExpense") > -1) {
+    $( "h4:contains('Actual Income')" ).click();
+    $( "h4:contains('Student Income')" ).click();
+    $( "h4:contains('Actual Expense')" ).click();
 };
-//SECTION END CaseEarnedIncome Custom collapse code
+//SECTION END CaseEarnedIncome CaseUnearnedIncome CaseExpense collapse unnecessary H4s
 
-//SECTION START Adding clearfix class to 'row' except on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
+//SECTION START Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 if (window.location.href.indexOf("FinancialManualPayment") > -1) {
     $('.row').addClass('clearfix');
 };
-//SECTION END Adding clearfix class to 'row' except on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
+//SECTION END Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 
 //SECTION START FinancialBilling Fix to display table
 if (window.location.href.indexOf("FinancialBilling") > -1 && window.location.href.indexOf("FinancialBillingApproval") == -1 && window.location.href.indexOf("FinancialBillingRegistrationFeeTracking") == -1) {
@@ -397,12 +411,8 @@ if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1) {
 
 //SECTION START CaseEligibilityResultFamily Fix 'Select' elements to have class col-md-4 so they show the entire word
 if (window.location.href.indexOf("CaseEligibilityResultFamily") > -1) {
-    $('select').parent().each( function () {
-        if ($(this).hasClass('col-md-3')) {
-            $(this).removeClass('col-md-3').addClass('col-md-4');
-        }
-    });
-    $('div').removeClass('col-lg-8').addClass('col-lg-7');
+    $('select').parent('.col-md-3').removeClass('col-md-3').addClass('col-md-4');
+    $('label.col-lg-8').removeClass('col-lg-8').addClass('col-lg-7');
 };
 //SECTION END CaseEligibilityResultFamily Fix 'Select' elements to have class col-md-4 so they show the entire word
 

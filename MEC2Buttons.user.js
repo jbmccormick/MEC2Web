@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.45
+// @version      0.46
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -436,7 +436,7 @@ if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.loca
                     $('#delete').click()
                 };
             } else {
-                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All Ended. All alerts from case deleted.</div>');
+                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All Ended. All alerts deleted from case ' + alertsToDelete + '.</div>');
                 sessionStorage.removeItem('alertsToDelete');
                 return;
             };

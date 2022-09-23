@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.46
+// @version      0.47
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -429,14 +429,14 @@ if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.loca
         if (alertsToDelete !== undefined && alertsToDelete !== null) {
             if ($('#caseOrProviderTable .selected td').eq(2).text() == alertsToDelete) {
                 if ($('#delete').prop('disabled')) {
-                    $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete all ended. Alert can\'t be deleted</div>');
+                    $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. Alert can\'t be deleted</div>');
                     sessionStorage.removeItem('alertsToDelete');
                     return;
                 } else {
                     $('#delete').click()
                 };
             } else {
-                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All Ended. All alerts deleted from case ' + alertsToDelete + '.</div>');
+                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. All alerts deleted from case ' + alertsToDelete + '.</div>');
                 sessionStorage.removeItem('alertsToDelete');
                 return;
             };
@@ -545,29 +545,7 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
 //SECTION END Copy client mail to address to clipboard on Case Address page
 
 //SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
-function billingFormInfo() {
-    let today = new Date();
-    let todayDate = cleanDate(today);
-    let caseNumber = $('#caseId').val();//Case Number
-    let caseName = $('#caseHeaderData').children().prop('innerText').slice(6);
-    let period = $('#selectPeriod').val();
-    let startDate = $('#selectPeriod').val().split(" ")[0];
-    let endDate = $('#selectPeriod').val().slice(13);
-    let weekTwoStart = $('#weekEnd').val();
-    let providerName = $('#providerInfoTable .selected td').eq(1).prop('innerHTML');
-    let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
-    let copayAmount = $('#copayAmount').val();
-    let childList = {};
-    let attendance6 = cleanDate(addDays(startDate, 7));
-    //let childList = {};
-    $('#childInfoTable tbody tr').each(function(index) {//child#.name:, child#.authHours:, child#.ageCat0:, child#.ageCat1:
-        $('#childInfoTable tbody tr').click().eq([index]);
-        childList["child" + index] = {};
-        childList["child" + index].name = $(this).children('td').eq(1).text();
-        childList["child" + index].authHours = $(this).children('td').eq(3).text();
-        childList["child" + index].ageCat0 = $('#ageRateCategory').val();
-        childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
-    });
+if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
     function addDays(date, days) {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
@@ -577,11 +555,33 @@ function billingFormInfo() {
         let result = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
         return result;
     };
-    const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, date:todayDate, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance6:attendance6, ...childList};
-    window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
-};
+    function billingFormInfo() {
+        let today = new Date();
+        let todayDate = cleanDate(today);
+        let caseNumber = $('#caseId').val();//Case Number
+        let caseName = $('#caseHeaderData').children().prop('innerText').slice(6);
+        let period = $('#selectPeriod').val();
+        let startDate = $('#selectPeriod').val().split(" ")[0];
+        let endDate = $('#selectPeriod').val().slice(13);
+        let weekTwoStart = $('#weekEnd').val();
+        let providerName = $('#providerInfoTable .selected td').eq(1).prop('innerHTML');
+        let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
+        let copayAmount = $('#copayAmount').val();
+        let childList = {};
+        let attendance6 = cleanDate(addDays(startDate, 7));
+        //let childList = {};
+        $('#childInfoTable tbody tr').each(function(index) {//child#.name:, child#.authHours:, child#.ageCat0:, child#.ageCat1:
+            $('#childInfoTable tbody tr').click().eq([index]);
+            childList["child" + index] = {};
+            childList["child" + index].name = $(this).children('td').eq(1).text();
+            childList["child" + index].authHours = $(this).children('td').eq(3).text();
+            childList["child" + index].ageCat0 = $('#ageRateCategory').val();
+            childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
+        });
+        const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, date:todayDate, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance6:attendance6, ...childList};
+        window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
+    };
 
-if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//adding button
     $('#csicTableData1').before(`
 <div style="overflow: auto" id="billingFormDiv">
 <div class="form-group centered-form-group">
@@ -593,11 +593,11 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {//ad
 </div>
 </div>
 `);
-$('#billingForm').on("click", function() { billingFormInfo()});
-$('#providerAddressButton').click(function() {
-    let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
-    window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
-});
+    $('#billingForm').on("click", function() { billingFormInfo()});
+    $('#providerAddressButton').click(function() {
+        let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
+        window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
+    });
 };
 if (window.location.href.indexOf("ProviderAddress") > -1) {
     $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
@@ -627,17 +627,17 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
 //SECTION START Fill Child Support PDF Forms
 $('#selectPeriod').css("width", "25%");
 if (window.location.href.indexOf("CaseCSE") > -1) {
-    let caseNumber = $('#caseId').val();
-    let cpInfo = $('#csePriTable .selected td').eq(1).text();
-    let ncpInfo = $('#csePriTable .selected td').eq(2).text();
-    let childList = {};
-    $('#childrenTable tbody tr').each(function(index) {
-        if ($(this).children('td').eq(1).text().length > 0) {
-            childList["child" + index] = $(this).children('td').eq(1).text();
-        };
-    });
     $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
     $('#csForms').click(function() {
+        let caseNumber = $('#caseId').val();
+        let cpInfo = $('#csePriTable .selected td').eq(1).text();
+        let ncpInfo = $('#csePriTable .selected td').eq(2).text();
+        let childList = {};
+        $('#childrenTable tbody tr').each(function(index) {
+            if ($(this).children('td').eq(1).text().length > 0) {
+                childList["child" + index] = $(this).children('td').eq(1).text();
+            };
+        });
         const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
         window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
     });

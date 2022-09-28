@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.44
+// @version      0.45
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -26,7 +26,8 @@ addGlobalStyle('div.panel.panel-default { background-color: #f5f5f5; }');
 addGlobalStyle('input.form-control, select.form-control { /*margin-bottom: 3px !important; padding-bottom: 0px !important; padding-top: 0px !important;*/ height: 28px !important; }');//often applied to input elements
 addGlobalStyle('select.form-control { padding-left: 3px !important }');
 addGlobalStyle('select.form-control.borderless.padL0 { padding-left: 6px !important }');
-addGlobalStyle('.form-button { padding: 5px !important; text-align: center; min-width: 90px; margin-bottom: 5px; }');
+addGlobalStyle('.form-button { padding: 5px !important; text-align: center; min-width: 90px; margin-bottom: 5px; color: #111 !important; }');
+addGlobalStyle('input:disabled, select:disabled, textarea:disabled, input:read-only, select:read-only, textarea:read-only { color: #111 !important; }');
 addGlobalStyle('.form-button:disabled { color: rgba(0,0,0,50%); }');//
 addGlobalStyle('.wiz-form-button { background:none; background-color: #0080008c !important; color: black; border-radius: 4px; padding: 5px !important; text-align: center; width: 100px; }');
 addGlobalStyle('.wiz-form-button:active { border: 2px; }');
@@ -264,10 +265,9 @@ $('#updateDateLabel').parent().removeClass('col-md-4 col-lg-4').addClass('col-md
 //SECTION END Make all h4 clicky collapse
 
 //SECTION START Make labels the same height as their next neighbor
-$('label').each( function() {//'label.textInherit' testing without textInherit
+$('label').each( function() {
     if ($(this).next().prop('clientHeight') > 2 && $(this).next().prop('clientHeight') < 40) {
     $(this).height($(this).next().height());
-    //$(this).height($(this).next().height());
     };
 });
 //SECTION END Make labels the same height as their next neighbor
@@ -302,26 +302,41 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
 };
 //SECTION END Remove unnecessary fields from Child Support Enforcement
 
-//SECTION START Remove unnecessary fields from CaseEarnedIncome
+//SECTION START Remove unnecessary fields from CaseEarnedIncome, set country to USA when leaving Employer Name field
 if (window.location.href.indexOf("CaseEarnedIncome") > -1) {
-    $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone').parents('.form-group').hide()
-    let hiddenCEI1 = $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone').parents('.form-group')
+    let hiddenCEI1 = $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone, #ceiEmpCountry').parents('.form-group')
+    hiddenCEI1.hide();
     $('#ceiIncomeType').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide1">Toggle extra info</div>');
     $('#ceiShowHide1').click(function() { $(hiddenCEI1).toggle() });
     //
-    $('#ceiCPUnitType, #ceiNbrUnits').parents('.form-group').hide()
     let hiddenCEI2 = $('#ceiCPUnitType, #ceiNbrUnits').parents('.form-group')
+    hiddenCEI2.hide();
     $('#ceiPrjAmount').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide2">Toggle extra info</div>');
     $('#ceiShowHide2').click(function() { $(hiddenCEI2).toggle() });
     //
     if ($('#providerName').val().length < 1) {
-        $('#providerName, #addressStreet').parents('.form-group').hide()
+        //$('#providerName, #addressStreet').parents('.form-group').hide()
         let hiddenCEI3 = $('#providerName, #addressStreet').parents('.form-group')
+        hiddenCEI3.hide();
         $('#providerSearch').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide3">Toggle extra info</div>');
         $('#ceiShowHide3').click(function() { $(hiddenCEI3).toggle() });
     };
+    $('#ceiEmployer').blur(function() {
+        if ($('#edit').prop('disabled')) {
+            if ($('#ceiEmpCountry').val().length < 1) {
+            $('#ceiEmpCountry').val('USA')
+            };
+        };
+    });
 };
-//SECTION END Remove unnecessary fields from CaseEarnedIncome //"ceiEmpStreet","ceiEmpStreet2","ceiEmpCity","ceiEmpStateOrProvince","ceiPhone"
+//SECTION END Remove unnecessary fields from CaseEarnedIncome, set country to USA when leaving Employer Name field
+
+//SECTION END Remove unnecessary fields from CaseExpense
+let hiddenExp = $('#projectionExpenseUnitType, #projectionExpenseNumberOfUnits').parents('.form-group')
+hiddenExp.hide();
+$('#projectionExpenseAmount').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="ceiShowHide2">Toggle extra info</div>');
+$('#ceiShowHide2').click(function() { $(hiddenExp).toggle() });
+//SECTION END Remove unnecessary fields from CaseExpense
 
 //SECTION START CaseChildProvider hiding fields if provider type is not LNL
 function childProviderPage() {
@@ -362,6 +377,7 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
     $('div[class*=marginTop][class*=col-xs]').remove();
     $( "label:contains('Important')" ).removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-1 col-md-1 col-sm-1');
     $( "label:contains('Important')" ).prop("innerText", "!");
+    $('label:contains("!")').wrap('<div></div>')
     //$( "#h4AddInfoFirstDivSib" ).children( "div:nth-of-type(1)" ).removeClass("col-lg-5 col-md-5 col-sm-5 col-xs-5").addClass("col-lg-6 col-md-6")
     let noteCreator = $('label[for="noteCreator"]').parent();
     let noteSummary = $('label[for="noteSummary"]').parent();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.47
+// @version      0.48
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -527,18 +527,27 @@ function goDoTheThing() {
 
 //SECTION START Copy client mail to address to clipboard on Case Address page
 if (window.location.href.indexOf("CaseAddress") > -1) {
+    function firstNameSplitter(name) {
+        if (name.split(",")[1].split(" ").length > 3) {
+            return name.split(",")[1].split(" ")[1] + " " + name.split(",")[1].split(" ")[2]
+        } else {
+            return name.split(",")[1].split(" ")[1]
+        };
+    };
     $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
     $('#copyMailing').click(function() {
-        let caseNameRaw = String($('#caseHeaderData').children().prop('innerText').slice(6));
-        let caseName = caseNameRaw.split(" ")[1] + " " + caseNameRaw.split(",")[0];
+        let caseNameRaw = String($('#caseHeaderData').children().prop('innerText').slice(5));
+        let lastName = caseNameRaw.split(",")[0];
+        let firstName = firstNameSplitter(caseNameRaw)
+        let caseNameSpaces = caseNameRaw.split(" ");
         if ($('#mailingStreet1').val() !== "") {
-        let state = (document.getElementById('mailingStateProvince').value === "Minnesota") ? "MN":"WI";
-        let copyText = caseName + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
-        navigator.clipboard.writeText(copyText)
+            let state = (document.getElementById('mailingStateProvince').value === "Minnesota") ? "MN":"WI";
+            let copyText = firstName + " " + lastName + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
+            navigator.clipboard.writeText(copyText)
         } else {
-        let state = (document.getElementById('residenceStateProvince').value === "Minnesota") ? "MN":"WI";
-        let copyText = caseName + "\n" + document.getElementById('residenceStreet1').value + " " + document.getElementById('residenceStreet2').value + "\n" + document.getElementById('residenceCity').value + ", " + state + " " + document.getElementById('residenceZipCode').value
-        navigator.clipboard.writeText(copyText)
+            let state = (document.getElementById('residenceStateProvince').value === "Minnesota") ? "MN":"WI";
+            let copyText = firstName + " " + lastName + "\n" + document.getElementById('residenceStreet1').value + " " + document.getElementById('residenceStreet2').value + "\n" + document.getElementById('residenceCity').value + ", " + state + " " + document.getElementById('residenceZipCode').value
+            navigator.clipboard.writeText(copyText)
         };
     });
 };

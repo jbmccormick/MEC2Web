@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.48
+// @version      0.49
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -536,7 +536,7 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
     };
     $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
     $('#copyMailing').click(function() {
-        let caseNameRaw = String($('#caseHeaderData').children().prop('innerText').slice(5));
+        let caseNameRaw = $('label[for="caseHeaderName"]').parent().contents().eq(2).text();
         let lastName = caseNameRaw.split(",")[0];
         let firstName = firstNameSplitter(caseNameRaw)
         let caseNameSpaces = caseNameRaw.split(" ");

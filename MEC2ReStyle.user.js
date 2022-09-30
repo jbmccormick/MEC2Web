@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.45
+// @version      0.46
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -27,7 +27,7 @@ addGlobalStyle('input.form-control, select.form-control { /*margin-bottom: 3px !
 addGlobalStyle('select.form-control { padding-left: 3px !important }');
 addGlobalStyle('select.form-control.borderless.padL0 { padding-left: 6px !important }');
 addGlobalStyle('.form-button { padding: 5px !important; text-align: center; min-width: 90px; margin-bottom: 5px; color: #111 !important; }');
-addGlobalStyle('input:disabled, select:disabled, textarea:disabled, input:read-only, select:read-only, textarea:read-only { color: #111 !important; }');
+addGlobalStyle('input:disabled, select:disabled, textarea:disabled, input:read-only, select:read-only, textarea:read-only, input, select, textarea { color: #111 !important; }');
 addGlobalStyle('.form-button:disabled { color: rgba(0,0,0,50%); }');//
 addGlobalStyle('.wiz-form-button { background:none; background-color: #0080008c !important; color: black; border-radius: 4px; padding: 5px !important; text-align: center; width: 100px; }');
 addGlobalStyle('.wiz-form-button:active { border: 2px; }');
@@ -36,7 +36,7 @@ addGlobalStyle('.error_alertbox_new { margin: 5px !important; padding: 5px !impo
 addGlobalStyle('body { background-color: #eee; }');
 addGlobalStyle('.panel-box-format { margin-bottom: 2px !important; margin-top: 2px !important; padding-bottom: 5px !important; background-color: #faf9f5 !important; }');//Shrinks space between green panels
 //addGlobalStyle('h1 { /*margin-bottom: 4px !important; margin-top: 4px !important;*/margin: 4px !important; }');//Shrinks space around page titles //Changing parent element with jQuery
-addGlobalStyle('h4 { margin-bottom: 5px !important; margin-top: 5px !important; }');
+addGlobalStyle('h4 { margin-bottom: 5px !important; margin-top: 5px !important; background-color: #f3f3f3;}');
 addGlobalStyle('form { margin: 0px !important; }');//Shrinks margin from 'form' elements
 addGlobalStyle('label { margin: 0px !important; }');
 addGlobalStyle('.custom-label { padding-left: 10px !important; padding-right: 10px !important; }');
@@ -77,6 +77,12 @@ $('#footer_links, #footer_info, #popup').children().prop('tabindex', '-1');
 $('#quit, #countiesTable, #extendedEligibilityExpires, #redeterminationDate, #caseInputSubmit').prop('tabindex', '-1');//quit, countiesTable=application; redet date, eEE=activity pages; cIS=submit button
 //SECTION END Removing items from the tabindex
 
+//SECTION START Make 'Report a Problem' open in new tab
+if ($('#page-wrap').length > 0) {
+    document.getElementById('Report a Problem').childNodes[0].setAttribute('target', '_blank');
+};
+//SECTION END Make 'Report a Problem' open in new tab
+
 /*if (window.location.href.indexOf("Alerts") == -1 && window.location.href.indexOf("CaseNotes") == -1) {
 addGlobalStyle('label.textInherit { display: inline-flex; align-items: center; justify-content: flex-end; }');
 };*/
@@ -93,7 +99,6 @@ $('input[id$="ZipCodePlus4"]').hide();
 $('.col-lg-3.col-md-2.col-sm-2.control-label.textR.textInherit').removeClass('col-md-2').addClass('col-md-3');
 $('div[id$="ZipDash"]').add($('div[id$="ZipDash"]').next()).remove();
 $('.col-xs-3.col-sm-3.col-md-3.col-lg-1').removeClass('col-md-3').addClass('col-md-1');
-
 /*SECTION START Moving buttons to bottom and sticking them there
     //if (localStorage.stuckToBottomCheck > 0) {
 const noCustomFooter = [//https://bobbyhadz.com/blog/javascript-check-if-value-is-not-in-array
@@ -347,8 +352,8 @@ function childProviderPage() {
             $('#careInHome').val("N");
             $('#relatedToChild').val("N");
         } else {
-        $('input[type=checkbox]:checked').click();
-        $('input[type=checkbox]').eq(1).click();
+            $('input[type=checkbox]:checked').click();
+            $('input[type=checkbox]').eq(1).click();
         };
         $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group').hide();
     } else {
@@ -356,9 +361,14 @@ function childProviderPage() {
     };
 };
 if (window.location.href.indexOf("CaseChildProvider") > -1) {
+    let $newPair1 = $('label[for="providerLivesWithChild"]').add($('label[for="providerLivesWithChild"]').siblings());
+    let $newPair2 = $('label[for="relatedToChild"]').add($('label[for="relatedToChild"]').siblings());
+    let $pairents = $('label[for="providerLivesWithChild"]').parents('.form-group').add($('label[for="relatedToChild"]').parents('.form-group'));
+    $('label[for="childCareMatchesEmployer"]').parent().append($newPair1);
+    $('label[for="careInHome"]').parent().append($newPair2);
+    $pairents.remove();
     childProviderPage();
     $('#childProviderTable').on("click", childProviderPage());
-    //$('#providerId').focusin(function() {
     $('#providerId').change(function() {
         if ($('#instructions').length < 1) { $('#providerSearch').parent().parent().append('<div id="instructions" class="col-lg-4 col-md-4">Tab twice after entering Provider ID to update fields</div>') };
     });
@@ -446,6 +456,7 @@ $('#inputWorkerId').add($("#inputWorkerId").prev()).removeAttr('style').addClass
 $('#inputAlertType').add($("#inputAlertType").prev()).removeAttr('style').addClass('col-md-6').wrapAll( "<div class='col-md-3'></div>");
 $('#workerCreatedType').removeAttr('style').addClass( "col-md-3");
 $('#alertInputSubmit').removeAttr('style').addClass( "col-md-2");*/
+$('#providerId, #effectiveDate').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-4 col-md-4');
 $('.col-lg-12').addClass('clearfix');
 addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $("#alertTable").on('click', function() {
@@ -454,12 +465,6 @@ addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px;
     });
 };
 //SECTION END Resize the Alert page's Explanation viewable area
-
-//SECTION START Custom text for CaseWrapUp
-if (window.location.href.indexOf("CaseWrapUp") > -1) {
-    document.getElementById('caseWrapUpTableData').firstElementChild.innerText = "Double check which period you made changes in before Wrap Up. Double Wrap Up has been locking cases."
-};
-//SECTION END Custom text for CaseWrapUp
 
 //SECTION START Custom fix for CaseOverview
 if (window.location.href.indexOf("CaseOverview") > -1) {

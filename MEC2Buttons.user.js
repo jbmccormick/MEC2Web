@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.49
+// @version      0.50
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -173,6 +173,7 @@ const rowThreeButtonArray = {
 	},
 	providerButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		providerOverview:["Overview","getProviderOverview", "_self", "Provider Overview", "ProviderOverviewSelf", "providerButtons"],
+        providerNotes:["Notes","ProviderNotes", "_self", "Provider Notes", "ProviderNotesSelf", "providerButtons"],
 		providerSearch:["Search","ProviderSearch", "_blank", "Provider Search", "ProviderSearchSelf", "providerButtons"],
 		providerInformation:["Info", "ProviderInformation", "_self", "Provider Information", "ProviderInformationSelf", "providerButtons"],
 		providerAddress:["Address", "ProviderAddress", "_self", "Provider Address", "ProviderAddressSelf", "providerButtons"],

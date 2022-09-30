@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.46
+// @version      0.47
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -66,7 +66,9 @@ addGlobalStyle('.h1-parent-row { padding: 5px 10px 5px 20px }');
 //addGlobalStyle('.modal-backdrop { position: relative; opacity: 0;}');
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-check-inline { height: 15px !important; }');
-
+addGlobalStyle('#memberComments, #comments { width: 61ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//60 char col x 15 char row
+addGlobalStyle('#noteStringText { width: 101ch !important; height: 78.3ch !important; padding: 0px !important; overflow: hidden !important; }');//100 char col x 30 char row
+addGlobalStyle('.col-lg-7.col-md-7 > #message { width: 51ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//50 char col x 15 char row
 //SECTION START Styles for moving buttons to the bottom and affixing them
 addGlobalStyle('.custom-footer { width: auto; position:fixed; bottom:0px; z-index: 1051; background-color: #eee; padding: 5px 5px 0px 5px !important; border: 1px #000 solid; }');
 addGlobalStyle('.container { position: relative; z-index: 1050; min-height: 0px !important; }');

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.50
+// @version      0.51
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -48,6 +48,7 @@ function addGlobalStyle(css) { //To allow for adding CSS styles
     addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
     addGlobalStyle('.custom-form-button { margin-left: 10px; cursor: pointer; }');
     addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; display: inline-flex; align-items: center; justify-content: center; }');
+    addGlobalStyle('.fake-custom-button-nodisable { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
     addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: center; }');
     addGlobalStyle('.centered-right-label { display: inline-flex; align-items: center; justify-content: flex-end; text-align: right; }');
     addGlobalStyle('.centered-form-group { /*display: inline-flex; */align-items: center; }');
@@ -424,7 +425,7 @@ Or with async/await:
 //SECTION END Wait for something to be available
 
 //SECTION START Delete all alerts of current name onclick
-if (window.location.href.indexOf("AlertWorkerCreatedAlert") == -1 && window.location.href.indexOf("Alert") > -1) {
+if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
     function onAlertsLoaded() {
         let alertsToDelete = sessionStorage.getItem('alertsToDelete');
         if (alertsToDelete !== undefined && alertsToDelete !== null) {
@@ -507,6 +508,7 @@ function changeButtonText() {
         document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
     };
 };
+//SECTION START Do action based on Alert Type
 function goDoTheThing() {
     //rewrite this section. Make arrays based on category, get category and match to startsWith?
     let messageText = document.getElementById('message');//alertTable
@@ -555,16 +557,16 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
 //SECTION END Copy client mail to address to clipboard on Case Address page
 
 //SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+function cleanDate(date) {
+    let result = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
+    return result;
+};
 if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
-    function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-    }
-    function cleanDate(date) {
-        let result = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
-        return result;
-    };
     function billingFormInfo() {
         let today = new Date();
         let todayDate = cleanDate(today);
@@ -627,12 +629,28 @@ if (window.location.href.indexOf("ProviderAddress") > -1) {
 
 //SECTION START Open provider information page from Child's Provider page
 if (window.location.href.indexOf("CaseChildProvider") > -1) {
-    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerAddressButton">Provider Contact Info</div>')
-    $('#providerAddressButton').click(function() {
-        window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
-    });
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerAddressButton">Provider Address</div>')
+        $('#providerAddressButton').click(function() {
+            window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
+        });
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerInfoButton">Provider Contact</div>')
+        $('#providerInfoButton').click(function() {
+            window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
+        });
 };
 //SECTION END Open provider information page from Child's Provider page
+
+//SECTION START Add 25 day delay to approving MFIP close and TY/BSF open
+if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1) {
+    $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval">MFIP Close Delay Alert</div>')
+        $('#delayApproval').click(function() {
+            let datePlus25 = cleanDate(addDays(new Date, 25));
+            $('#message').val("Approve new results (BSF/TY/extended eligibility) if MFIP not reopened.");
+            $('#effectiveDate').val(datePlus25);
+            $('#save').focus();
+        });
+};
+//SECTION END Add date delay to approving MFIP close and TY/BSF open
 
 //SECTION START Fill Child Support PDF Forms
 $('#selectPeriod').css("width", "25%");
@@ -657,11 +675,11 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {
     $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Show the "Unlock" button.</div>')
-    $('#acceptMyTerms').click(function() { termsAccepted()} );
-    function termsAccepted() {
+    $('#acceptMyTerms').click(function() { /*termsAccepted()} );
+    function termsAccepted() {*/
         $("#caseLockStatusUnlockButtonArea").show();
         $("#acceptMyTerms").remove();
-    };
+    });
 };
 //SECTION END CaseLockStatus Reveal Unlock button
 
@@ -674,4 +692,49 @@ $('tbody').click(function(event) {
 //SECTION START Retract drop-down menu on page load
 $('.sub_menu').css('visibility', 'hidden');
 //SECTION END Retract drop-down menu on page load
+
+//SECTION START Temp end date for KEYZone Sites
+if (window.location.href.indexOf("CaseChildProvider") > -1) {
+    if ($('#page-wrap').length == 0 && $('#selectPeriod').val() == "10/17/2022 - 10/30/2022" && $('tbody tr td:contains("KEYZone")').length > 0) {
+        $('#providerType').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" id="endKeyZone" style="display: inline-flex; margin-left: 10px !important;">End KEYZone SA</div>');
+        //$('#providerType').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" id="newKeyZone" style="display: inline-flex; margin-left: 10px !important;">New KEYZone SA</div>');
+        //$('#childProviderTableData').after('<select id="newKeyZone" name="newKeyZone" class="form-control" title="New KEYZone Entry" tabindex="1"><option value="">Select KEYZone Site</option><option value="41103">Piedmont</option><option value="41105">Stowe</option><option value="41106">Homecroft</option><option value="41107">Lakewood</option><option value="41108">Myers-Wilkins</option><option value="41109">Congdon</option><option value="41110">Laura MacArthur</option><option value="41112">Lester Park</option><option value="41111">Lowell</option></select>');
+        $('#childProviderTableData').after(`
+        <select id="newKeyZone" name="newKeyZone" class="form-control" title="New KEYZone Entry" tabindex="1">
+        <option value="">Select KEYZone Site</option>
+        <option value="41109">Congdon</option>
+        <option value="41106">Homecroft</option>
+        <option value="41107">Lakewood</option>
+        <option value="41110">Laura MacArthur</option>
+        <option value="41112">Lester Park</option>
+        <option value="41111">Lowell</option>
+        <option value="41108">Myers-Wilkins</option>
+        <option value="41103">Piedmont</option>
+        <option value="41105">Stowe</option>
+        </select>`);
+    };
+    $('#endKeyZone').click(function() {
+        sessionStorage.setItem('previousSA', $('#hoursOfCareAuthorized').val());
+        sessionStorage.setItem('childRef', $('#childProviderTableData .selected td').eq(0).text());
+        $('#primaryBeginDate').val("");
+        $('#secondaryBeginDate').val("10/17/2022");
+        $('#secondaryEndDate').val("10/17/2022");
+        $('#carePeriodEndDate').val("10/17/2022");
+        $('#hoursOfCareAuthorized').val("1");
+        $('#careEndReason').val("NL");
+    });
+    $('#newKeyZone').change(function() {
+        $('#providerType').val("License Exempt Center");
+        $('#providerLivesWithChild').val("N").prop('tabindex', '-1');
+        $('#careInHome').val("N").prop('tabindex', '-1');
+        $('#relatedToChild').val("N").prop('tabindex', '-1');
+        $('#providerSearch, #providerId, #primaryBeginDate, #primaryEndDate, #secondaryBeginDate, #secondaryEndDate, #careEndReason, #carePeriodBeginDate, #carePeriodEndDate').prop('tabindex', '-1');
+        $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group').hide();
+        $('#memberReferenceNumberNewMember').val(sessionStorage.getItem('childRef'))
+        $('#providerId').val($('#newKeyZone').val());
+        $('#primaryBeginDate').val("10/17/2022");
+        $('#carePeriodBeginDate').val("10/17/2022");
+        $('#hoursOfCareAuthorized').val(sessionStorage.getItem('previousSA'));
+    });
+};
 })();

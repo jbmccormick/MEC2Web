@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.51
+// @version      0.52
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -328,7 +328,7 @@ function newTabFieldButtons() { //Text field to enter a case number to open in a
         };
 };
 function openCaseNumber(e) {
-    const enteredCaseNumber = document.getElementById('newTabField').value;
+    const enteredCaseNumber = document.getElementById('newTabField').value;//$('#newTabField').val()
     if (e == "CaseNotes") {
         window.open('/ChildCare/CaseNotes.htm?parm2=' + enteredCaseNumber, '_blank');
     } else {
@@ -451,8 +451,8 @@ if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
     });
 //};
 //SECTION END Delete all alerts of current name onclick
-//SECTION START Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
-//if (window.location.href.indexOf("Alerts") > -1) {
+//SECTION START Do action based on Alert Type
+//if (window.location.href.indexOf("Alerts.htm") > -1) {
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('div');
     btnNavigation.type = 'div';
@@ -473,7 +473,7 @@ if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
     goScrollIntoView();
     });
 //};
-//SECTION END Do action based on Alert Type - need to store the table data onclick or fix their table de-selection
+//SECTION END Do action based on Alert Type
 
 //SECTION START Copy Alert text, navigate to Case Notes
 function copyExplanation() {
@@ -641,7 +641,7 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
 //SECTION END Open provider information page from Child's Provider page
 
 //SECTION START Add 25 day delay to approving MFIP close and TY/BSF open
-if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1) {
+if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1 && window.location.href.indexOf("pageUrl") < 0) {
     $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval">MFIP Close Delay Alert</div>')
         $('#delayApproval').click(function() {
             let datePlus25 = cleanDate(addDays(new Date, 25));
@@ -688,6 +688,15 @@ $('tbody').click(function(event) {
     $(event.target).parents('tr').addClass('selected');//.closest('tr') would also work
 });
 //SECTION END Fix for table entries losing selected class when clicked on
+
+//SECTION START Add open CaseMemberHistory page from CaseMember button
+if (window.location.href.indexOf("CaseMember") > -1 && $('#page-wrap').length == 0) {
+    $('label[for="memberReferenceNumber"]').attr('id','openHistory').css('border-width','1px').css('border-color','gray').css('border-style','solid');
+    $('#openHistory').click(function() {
+        window.open('/ChildCare/CaseMemberHistory.htm?parm2=' + $('#caseId').val(), '_blank');
+    });
+};
+//SECTION END Add open Member History page from MemberI
 
 //SECTION START Retract drop-down menu on page load
 $('.sub_menu').css('visibility', 'hidden');

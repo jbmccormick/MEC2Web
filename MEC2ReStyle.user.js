@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.47
+// @version      0.48
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -66,7 +66,7 @@ addGlobalStyle('.h1-parent-row { padding: 5px 10px 5px 20px }');
 //addGlobalStyle('.modal-backdrop { position: relative; opacity: 0;}');
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-check-inline { height: 15px !important; }');
-addGlobalStyle('#memberComments, #comments { width: 61ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//60 char col x 15 char row
+addGlobalStyle('#memberComments, #comments, #textbox2 { width: 61ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//60 char col x 15 char row
 addGlobalStyle('#noteStringText { width: 101ch !important; height: 78.3ch !important; padding: 0px !important; overflow: hidden !important; }');//100 char col x 30 char row
 addGlobalStyle('.col-lg-7.col-md-7 > #message { width: 51ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//50 char col x 15 char row
 //SECTION START Styles for moving buttons to the bottom and affixing them
@@ -99,7 +99,7 @@ $( ".padding-top-5px" ).removeClass( "padding-top-5px" );
 $('.col-lg-offset-3').addClass('col-md-offset-3');
 $('input[id$="ZipCodePlus4"]').hide();
 $('.col-lg-3.col-md-2.col-sm-2.control-label.textR.textInherit').removeClass('col-md-2').addClass('col-md-3');
-$('div[id$="ZipDash"]').add($('div[id$="ZipDash"]').next()).remove();
+$('div[id$="ZipDash"]').add($('div[id$="ZipDash"]').next()).hide();
 $('.col-xs-3.col-sm-3.col-md-3.col-lg-1').removeClass('col-md-3').addClass('col-md-1');
 /*SECTION START Moving buttons to bottom and sticking them there
     //if (localStorage.stuckToBottomCheck > 0) {
@@ -484,7 +484,7 @@ if (window.location.href.indexOf("CaseSpecialLetter") > -1) {
 
 //TODO
 //SECTION START CaseSpecialActivity Duplicate start date into end date for Ext Elig
-//on focus lost for #activityBegin, change value of #activityEnd to be #activityBegin
+//on focus lost for #extendedEligibilityBegin, change value of #extendedEligibilityExpires to be #extendedEligibilityBegin
 //SECTION END CaseSpecialActivity Duplicate start date into end date for Ext Elig
 
 //SECTION START Custom fix and text for CaseEligibilityResultSelection

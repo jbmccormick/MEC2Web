@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.48
+// @version      0.49
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,6 +12,7 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
+let viewMode = $('#page-wrap').length;
 function addGlobalStyle(css) { //To allow for adding CSS styles
     var head, style;
     head = document.getElementsByTagName('head')[0];
@@ -66,7 +67,7 @@ addGlobalStyle('.h1-parent-row { padding: 5px 10px 5px 20px }');
 //addGlobalStyle('.modal-backdrop { position: relative; opacity: 0;}');
 addGlobalStyle('.form-group { margin-bottom: 3px !important; }');
 addGlobalStyle('.form-check-inline { height: 15px !important; }');
-addGlobalStyle('#memberComments, #comments, #textbox2 { width: 61ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//60 char col x 15 char row
+addGlobalStyle('#memberComments, #comments, #textbox2 { width: 61ch !important;/* height: 39.1ch !important;*/ padding: 0px !important; overflow: hidden !important; }');//60 char col x 15 char row
 addGlobalStyle('#noteStringText { width: 101ch !important; height: 78.3ch !important; padding: 0px !important; overflow: hidden !important; }');//100 char col x 30 char row
 addGlobalStyle('.col-lg-7.col-md-7 > #message { width: 51ch !important; height: 39.1ch !important; padding: 0px !important; overflow: hidden !important; }');//50 char col x 15 char row
 //SECTION START Styles for moving buttons to the bottom and affixing them
@@ -77,6 +78,9 @@ addGlobalStyle('.container { position: relative; z-index: 1050; min-height: 0px 
 //SECTION START Removing items from the tabindex
 $('#footer_links, #footer_info, #popup').children().prop('tabindex', '-1');
 $('#quit, #countiesTable, #extendedEligibilityExpires, #redeterminationDate, #caseInputSubmit').prop('tabindex', '-1');//quit, countiesTable=application; redet date, eEE=activity pages; cIS=submit button
+if (window.location.href.indexOf("ProviderSearch") > -1) {
+    $('#ssn, #itin, #fein, #licenseNumber, #middleInitName').prop('tabindex', '-1');
+};
 //SECTION END Removing items from the tabindex
 
 //SECTION START Make 'Report a Problem' open in new tab
@@ -539,7 +543,7 @@ $(this).prependTo($(this).parent());
 
 //SECTION START Next/Prev buttons next to period drop down
 let selectPeriodDropdown = document.getElementById('selectPeriod');
-    if (selectPeriodDropdown) {
+    if (selectPeriodDropdown && $('#selectPeriod[type="hidden"]').length < 1) {
         let back = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-chevron-left'></span>";
         let backgo = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-fast-backward'></span>";
         let forward = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-chevron-right'></span>";

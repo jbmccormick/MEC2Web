@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.49
+// @version      0.50
 // @description  Remove extra parts of the MEC2 page
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -335,7 +335,8 @@ if (window.location.href.indexOf("CaseEarnedIncome") > -1) {
     $('#ceiEmployer').blur(function() {
         if ($('#edit').prop('disabled')) {
             if ($('#ceiEmpCountry').val().length < 1) {
-            $('#ceiEmpCountry').val('USA')
+                $('#ceiEmpCountry').val('USA');
+                $('#ceiEmpStateOrProvince').val('Minnesota');
             };
         };
     });
@@ -426,7 +427,7 @@ if (window.location.href.indexOf("FinancialManualPayment") > -1) {
 //SECTION END Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 
 //SECTION START FinancialBilling Fix to display table
-if (window.location.href.indexOf("FinancialBilling") > -1 && window.location.href.indexOf("FinancialBillingApproval") == -1 && window.location.href.indexOf("FinancialBillingRegistrationFeeTracking") == -1) {
+if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
     addGlobalStyle('.form-control.borderless.padL0.padR0 { padding: 0px !important; }');
     //let target = document.getElementById('billingRegistrationFeesTable_wrapper').parentNode;
     document.getElementById('billingRegistrationFeesTable_wrapper').parentNode.previousElementSibling.classList.remove('clearfix');

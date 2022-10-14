@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.52
+// @version      0.53
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,6 +12,7 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
+let viewMode = $('#page-wrap').length;
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
 let primaryPanelID = document.getElementById("page-wrap")
 let panelDefault = document.getElementsByClassName('panel-default')[0];
@@ -276,7 +277,7 @@ function gotoPage(loadThisPage) {
     let getLinkUsingId = document.getElementById(`${loadThisPage}`);
     if (primaryPanelID.getAttribute('Id') == "greenline") { window.open("/ChildCare/"`${loadThisPage}`, "_blank"); };
     window.open(document.getElementById(getLinkUsingId.getAttribute('data-pagelinkusingid')).firstElementChild.getAttribute('href'), document.getElementById(`${loadThisPage}`).getAttribute('data-howtoopen'));
-    };
+};
 /*function gotoPage(loadThisPage) { //backup code for going to pages
     const paramsString = window.location.search;
     let searchParams = new URLSearchParams(paramsString);
@@ -561,17 +562,17 @@ function addDays(date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
-}
-function cleanDate(date) {
-    let result = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
-    return result;
+    //return new Date(date).setDate(result.getDate() + days);
 };
+function toTitleCase(str) {
+  return str.toLowerCase().split(' ').map(function (word) {
+    return (word.charAt(0).toUpperCase() + word.slice(1));
+  }).join(' ');
+}
 if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
     function billingFormInfo() {
-        let today = new Date();
-        let todayDate = cleanDate(today);
         let caseNumber = $('#caseId').val();//Case Number
-        let caseName = $('#caseHeaderData').children().prop('innerText').slice(5);
+        let caseName = toTitleCase($('#caseHeaderData').children().prop('innerText').slice(5));
         let period = $('#selectPeriod').val();
         let startDate = $('#selectPeriod').val().split(" ")[0];
         let endDate = $('#selectPeriod').val().slice(13);
@@ -580,17 +581,26 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
         let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
         let copayAmount = $('#copayAmount').val();
         let childList = {};
-        let attendance6 = cleanDate(addDays(startDate, 7));
+        let attendance0 = new Date(startDate).toLocaleDateString('en-US', {
+                year: "2-digit",
+                month: "numeric",
+                day: "numeric",
+        });
+        let attendance6 = addDays(startDate, 7).toLocaleDateString('en-US', {
+                year: "2-digit",
+                month: "numeric",
+                day: "numeric",
+        });
         //let childList = {};
         $('#childInfoTable tbody tr').each(function(index) {//child#.name:, child#.authHours:, child#.ageCat0:, child#.ageCat1:
             $('#childInfoTable tbody tr').click().eq([index]);
             childList["child" + index] = {};
-            childList["child" + index].name = $(this).children('td').eq(1).text();
+            childList["child" + index].name = toTitleCase($(this).children('td').eq(1).text());
             childList["child" + index].authHours = $(this).children('td').eq(3).text();
             childList["child" + index].ageCat0 = $('#ageRateCategory').val();
             childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
         });
-        const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, date:todayDate, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance6:attendance6, ...childList};
+        const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance0:attendance0, attendance6:attendance6, ...childList};
         window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
     };
 
@@ -644,7 +654,11 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
 if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1 && window.location.href.indexOf("pageUrl") < 0) {
     $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval">MFIP Close Delay Alert</div>')
         $('#delayApproval').click(function() {
-            let datePlus25 = cleanDate(addDays(new Date, 25));
+            let datePlus25 = addDays(new Date(), 25).toLocaleDateString('en-US', {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+            });
             $('#message').val("Approve new results (BSF/TY/extended eligibility) if MFIP not reopened.");
             $('#effectiveDate').val(datePlus25);
             $('#save').focus();
@@ -689,18 +703,42 @@ $('tbody').click(function(event) {
 });
 //SECTION END Fix for table entries losing selected class when clicked on
 
-//SECTION START Add open CaseMemberHistory page from CaseMember button
+//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
 if (window.location.href.indexOf("CaseMember") > -1 && $('#page-wrap').length == 0) {
     $('label[for="memberReferenceNumber"]').attr('id','openHistory').css('border-width','1px').css('border-color','gray').css('border-style','solid');
     $('#openHistory').click(function() {
         window.open('/ChildCare/CaseMemberHistory.htm?parm2=' + $('#caseId').val(), '_blank');
     });
 };
-//SECTION END Add open Member History page from MemberI
+//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
 
 //SECTION START Retract drop-down menu on page load
 $('.sub_menu').css('visibility', 'hidden');
 //SECTION END Retract drop-down menu on page load
+
+//SECTION START Naviation buttons to Eligibility Selection, Service Authorization Overview, and Case Overview from CaseWrapUp page
+if (window.location.href.indexOf("CaseWrapUp") > -1 && $('#done').attr('Disabled')) {
+    let parm3var = '&parm3=' + document.getElementById('selectPeriod').value.replace(' - ', '').replaceAll('/','');
+    $('#caseHeaderData').after(`<div>
+    <div id="goEligibility" class="fake-custom-button-nodisable fake-custom-button">Eligibility</div>
+    <div id="goSAOverview" class="fake-custom-button-nodisable fake-custom-button">SA Overview</div>
+    <div id="goSAApproval" class="fake-custom-button-nodisable fake-custom-button">SA Approval</div>
+    <div id="goCaseOverview" class="fake-custom-button-nodisable fake-custom-button">Case Overview</div>
+    </div>`)
+    $('#goEligibility').click(function() {
+        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
+    });
+    $('#goSAOverview').click(function() {
+        window.open('/ChildCare/CaseServiceAuthorizationOverview.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
+    });
+    $('#goSAApproval').click(function() {
+        window.open('/ChildCare/CaseServiceAuthorizationApproval.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
+    });
+    $('#goCaseOverview').click(function() {
+        window.open('/ChildCare/CaseOverview.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
+    });
+};
+//SECTION END Naviation buttons to Eligibility Selection, Service Authorization Overview, and Case Overview from CaseWrapUp page
 
 //SECTION START Temp end date for KEYZone Sites
 if (window.location.href.indexOf("CaseChildProvider") > -1) {

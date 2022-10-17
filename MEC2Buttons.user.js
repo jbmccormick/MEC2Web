@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.53
+// @version      0.54
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -576,7 +576,6 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
         let period = $('#selectPeriod').val();
         let startDate = $('#selectPeriod').val().split(" ")[0];
         let endDate = $('#selectPeriod').val().slice(13);
-        let weekTwoStart = $('#weekEnd').val();
         let providerName = $('#providerInfoTable .selected td').eq(1).prop('innerHTML');
         let providerId = $('#providerInfoTable .selected td').eq(0).prop('innerHTML');
         let copayAmount = $('#copayAmount').val();
@@ -586,7 +585,7 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
                 month: "numeric",
                 day: "numeric",
         });
-        let attendance6 = addDays(startDate, 7).toLocaleDateString('en-US', {
+        let attendance7 = addDays(startDate, 7).toLocaleDateString('en-US', {
                 year: "2-digit",
                 month: "numeric",
                 day: "numeric",
@@ -600,8 +599,8 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
             childList["child" + index].ageCat0 = $('#ageRateCategory').val();
             childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
         });
-        const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, startDate:startDate, endDate:endDate, weekTwoStart:weekTwoStart, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance0:attendance0, attendance6:attendance6, ...childList};
-        window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
+        const formInfo = {pdfType:"BillingForm", xNumber:localStorage.getItem("userIdNumber"), caseName:caseName, caseNumber:caseNumber, startDate:startDate, endDate:endDate, providerId:providerId, providerName:providerName, copayAmount:copayAmount, attendance0:attendance0, attendance7:attendance7, ...childList};
+        window.open("http://nt-webster/slcportal/Portals/65/Divisions/FAD/IM/CCAP/index.html?parm1=" + JSON.stringify(formInfo), "_blank");
     };
 
     $('#csicTableData1').before(`
@@ -681,7 +680,7 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
             };
         });
         const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
-        window.open("http://127.0.0.1:8887?parm1=" + JSON.stringify(formInfo), "_blank");
+        window.open("http://nt-webster/slcportal/Portals/65/Divisions/FAD/IM/CCAP/index.html?parm1=" + JSON.stringify(formInfo), "_blank");
     });
 };
 //SECTION END Fill Child Support PDF Forms

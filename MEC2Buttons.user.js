@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.54
+// @version      0.60
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,60 +12,34 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
-let viewMode = $('#page-wrap').length;
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
-let primaryPanelID = document.getElementById("page-wrap")
-let panelDefault = document.getElementsByClassName('panel-default')[0];
-if (!document.getElementById("page-wrap")) {
-    primaryPanelID = document.getElementById("greenline");
-};
-let buttonDivOne = document.createElement('div');
-    buttonDivOne.id = "buttonPaneOne";
-let buttonDivTwo = document.createElement('div');
-	buttonDivTwo.id = "buttonPaneTwo"
-let buttonDivThree = document.createElement('div');
-	buttonDivThree.id = "buttonPaneThree"
-primaryPanelID.insertAdjacentElement("afterend", buttonDivOne);
-    buttonDivOne.insertAdjacentElement("afterend", buttonDivTwo);
-    buttonDivTwo.insertAdjacentElement("afterend", buttonDivThree);
+let primaryPanelID = document.getElementById("page-wrap") ? document.getElementById("page-wrap") : document.getElementById("greenline");
+$(primaryPanelID).after('<div><div class="button-row" id="buttonPaneOne"></div><div class="button-row" id="buttonPaneTwo"></div><div class="button-row" id="buttonPaneThree"></div></div><div id="buttonHouse" class="button-house"></div>');
+$('#buttonHouse').siblings('br').remove();
+let buttonDivOne = document.getElementById('buttonPaneOne');
+let buttonDivTwo = document.getElementById('buttonPaneTwo');
+let buttonDivThree = document.getElementById('buttonPaneThree');
 let searchIcon = "<span style='font-size:80%;'>&#128269</span>";//🔍	128269	1F50D
-let thisPageName = window.location.pathname.substring(
-    window.location.pathname.indexOf("/ChildCare/") + 11,
-    window.location.pathname.lastIndexOf(".")
-);
-function addGlobalStyle(css) { //To allow for adding CSS styles
-    var head, style;
-    head = document.getElementsByTagName('head')[0];
-    if (!head) { return; }
-    style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = css;
-    head.appendChild(style);
-}
-    addGlobalStyle('.custombutton { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-    addGlobalStyle('.custombuttonsearch { cursor: pointer; padding: 3px 4px; margin-left: 3px; border: 2px solid; border-radius:4px; }'); //button style
-    addGlobalStyle('.custombuttonplus { border-left: 0px; margin-left:-7px; border-top-left-radius:0px; border-bottom-left-radius:0px; }'); //button style
-    addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
-    addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
-    addGlobalStyle('.custom-form-button { margin-left: 10px; cursor: pointer; }');
-    addGlobalStyle('.fake-custom-button { background-color: #dcdcdc !important; width: fit-content; height: 25px; padding: 0px 6px 0px 6px !important; display: inline-flex; align-items: center; justify-content: center; }');
-    addGlobalStyle('.fake-custom-button-nodisable { cursor: pointer; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-    addGlobalStyle('.centered-text { display: inline-flex; align-items: center; justify-content: center; }');
-    addGlobalStyle('.centered-right-label { display: inline-flex; align-items: center; justify-content: flex-end; text-align: right; }');
-    addGlobalStyle('.centered-form-group { /*display: inline-flex; */align-items: center; }');
-    addGlobalStyle('#buttonPaneThree { margin-bottom:1px; }');
-    if (primaryPanelID.getAttribute('Id') == "greenline") {
-        addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }'); //button style
-        addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }'); //button style
-        addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }'); //button hover style
-        addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
-        addGlobalStyle('.panel.panel-default { margin-top: 0px !important; }');
-    };
-    addGlobalStyle('.navbar { display: none; }');
-    addGlobalStyle('#page-wrap { padding-bottom:10px !important; height:40px !important; line-height:20px !important }');
-document.getElementById("banner_honeycomb").style.display = "none";
-document.getElementsByClassName("navbar navbar-inverse")[0].setAttribute("id", "theirnavbar");
-document.getElementById("theirnavbar").style.display = "none";
+let thisPageName = window.location.pathname.substring(window.location.pathname.indexOf("/ChildCare/") + 11, window.location.pathname.lastIndexOf("."));
+if (primaryPanelID.getAttribute('Id') == "greenline") {
+	addGlobalStyle('.custombutton { color: DarkGrey; cursor: no-drop; padding: 3px 4px; margin: 1px; border: 2px solid; border-radius:4px; }');
+	addGlobalStyle('.custombuttonplus { border-left: 0; margin-left:-7px; border-top-left-radius:0; border-bottom-left-radius:0; }');
+	addGlobalStyle('.custombutton:hover { background-color: #DAF7A6; }');
+	addGlobalStyle('.custombuttonclicked { background-color: #A6EDF7; }');
+	addGlobalStyle('.panel.panel-default { margin-top: 0px !important; }');
+};
+let viewMode = $('#page-wrap').length;
+$('head').append('<link rel="icon" type="image/png" href="https://www.dhs.state.mn.us/main/groups/secure/documents/twocolumns/~export/DHS16_139409~293~MANUALS_HCT/59499.png">');
+
+//SECTION START Fix for table entries losing selected class when clicked on
+$('tbody').click(function(event) {
+    $(event.target).parents('tr').addClass('selected');
+});
+//SECTION END Fix for table entries losing selected class when clicked on
+
+`///////////////////////////////// NAVIGATION BUTTONS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
+
+//SECTION START Declaring navigation button arrays
 const gotoButtons = [ //Goto Buttons, ["Name as it appears on a button","gotoPageName", "_self or _blank", "Id of parent", "Id of Button'],
     ["Alerts","Alerts", "_self", "Alerts", "AlertsSelf"],
     ["+","Alerts", "_blank", "Alerts", "AlertsBlank"],
@@ -82,8 +56,6 @@ const gotoButtons = [ //Goto Buttons, ["Name as it appears on a button","gotoPag
 	["+","PendingCaseList", "_blank", "Pending Case List", "PendingCaseListBlank"],
 	["Inactive","InactiveCaseList", "_self", "Inactive Case List", "InactiveCaseListSelf"],
 	["+","InactiveCaseList", "_blank", "Inactive Case List", "InactiveCaseListBlank"],
-//	["Redet","RedeterminationCaseList", "_self", "Redetermination List", "RedeterminationListSelf"],
-//	["+","RedeterminationCaseList", "_blank", "Redetermination List", "RedeterminationListBlank"],
     ["New App","CaseApplicationInitiation","_self","Case Application Initiation","NewAppSelf"],
     ["+","CaseApplicationInitiation","_blank","Case Application Initiation","NewAppBlank"],
 ];
@@ -176,7 +148,7 @@ const rowThreeButtonArray = {
 	providerButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		providerOverview:["Overview","getProviderOverview", "_self", "Provider Overview", "ProviderOverviewSelf", "providerButtons"],
         providerNotes:["Notes","ProviderNotes", "_self", "Provider Notes", "ProviderNotesSelf", "providerButtons"],
-		providerSearch:["Search","ProviderSearch", "_blank", "Provider Search", "ProviderSearchSelf", "providerButtons"],
+		//providerSearch:["Search","ProviderSearch", "_blank", "Provider Search", "ProviderSearchSelf", "providerButtons"],
 		providerInformation:["Info", "ProviderInformation", "_self", "Provider Information", "ProviderInformationSelf", "providerButtons"],
 		providerAddress:["Address", "ProviderAddress", "_self", "Provider Address", "ProviderAddressSelf", "providerButtons"],
 		providerNotices:["Notices", "ProviderNotices", "_self", "Provider Notices", "ProviderNoticesSelf", "providerButtons"],
@@ -187,6 +159,8 @@ const rowThreeButtonArray = {
 		providerLicense:["License", "ProviderLicense", "_self", "License", "ProviderLicenseSelf", "providerButtons"],
 		providerAlias:["Alias", "ProviderAlias", "_self", "Provider Alias", "ProviderAliasSelf", "providerButtons"],
 		providerRegistrationAndRenewal:["Registration", "ProviderRegistrationAndRenewal", "_self", "Registration Renewal", "ProviderRegistrationSelf", "providerButtons"],
+        providerTaxInfo:["Tax", "ProviderTaxInfo", "_self", "Tax Info", "ProviderTaxInfoSelf", "providerButtons"],
+        providerPaymentHistory:["Pay History", "ProviderPaymentHistory", "_self", "Provider Payment History", "ProviderPaymentHistory", "providerButtons"],
 	},
 	transferButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		caseTransfer:["Case Transfer", "CaseTransfer", "_self", "Case Transfer", "CaseTransferSelf", "transferButtons"],
@@ -210,6 +184,9 @@ const rowThreeButtonArray = {
 	},
 */
 };
+//SECTION END Declaring navigation button arrays
+
+//SECTION START Placing navigation buttons on the page
 for(let i = 0; i < gotoButtons.length; i++){ //creating buttons for each program area
 	let btnNavigation = document.createElement('button');
 	btnNavigation.innerHTML = gotoButtons[i][0];
@@ -241,6 +218,9 @@ for(let i = 0; i < mainRowButtons.length; i++){
 	buttonDivTwo.appendChild(btnNavigation);
 	btnNavigation.addEventListener("click", function() { btnRowThree(this.id)}); //sends the mainRowButtons array value 1 to btnRowThree
 };
+//SECTION END Placing navigation buttons on the page
+
+//SECTION START Reactive row three from click or page load
 function btnRowThree(rowTwoButtonClicked){
     if (primaryPanelID.getAttribute('Id') == "greenline") { return };
     while (buttonDivThree.firstChild) {//replace with ${buttonDivThree}.empty()?
@@ -258,7 +238,6 @@ function btnRowThree(rowTwoButtonClicked){
 		btnNavigation.setAttribute("data-pageLinkUsingId", [buttonArray[3]]);
         btnNavigation.id = buttonArray[4];
         btnNavigation.type = 'button';
-        //btnNavigation.className = 'custombutton';
         if (buttonArray[0] == "+") {
             btnNavigation.className = 'custombutton custombuttonplus';
         } else {
@@ -269,81 +248,22 @@ function btnRowThree(rowTwoButtonClicked){
     };
     traverseOnRowTwoClick(rowThreeButtonArray[rowTwoButtonClicked]);
 };
+//SECTION END Reactive row three from click or page load
+
+//SECTION START Using Id from button click to load href of associated element
 function gotoPage(loadThisPage) {
     if (primaryPanelID.getAttribute('Id') == "greenline") {
-        //console.log("There's no drop down to pull links from, figure out how to do it without.")
         return
     };
     let getLinkUsingId = document.getElementById(`${loadThisPage}`);
     if (primaryPanelID.getAttribute('Id') == "greenline") { window.open("/ChildCare/"`${loadThisPage}`, "_blank"); };
     window.open(document.getElementById(getLinkUsingId.getAttribute('data-pagelinkusingid')).firstElementChild.getAttribute('href'), document.getElementById(`${loadThisPage}`).getAttribute('data-howtoopen'));
 };
-/*function gotoPage(loadThisPage) { //backup code for going to pages
-    const paramsString = window.location.search;
-    let searchParams = new URLSearchParams(paramsString);
-    let parm2var = searchParams.get('parm2');
-    let pageToLoad = document.getElementById(`${loadThisPage}`);
-    let pageName = pageToLoad.getAttribute('data-pageName');
-    if (document.body.contains(document.getElementById("caseId"))) {
-        let caseNum = document.getElementById("caseId").value;
-        if (caseNum > 0) {
-            //alert("caseNum ver");
-            window.open(`/ChildCare/${pageName}.htm?parm2=${caseNum}`, pageToLoad.getAttribute('data-howtoopen'));
-        }
-    };
-    if (parm2var > 0) {
-        //alert("parm2var ver");
-        window.open(`/ChildCare/${pageName}.htm?parm2=${parm2var}`, pageToLoad.getAttribute('data-howtoopen'));
-    } else {
-        //alert("no case number ver");
-        window.open(`/ChildCare/${pageName}.htm`, pageToLoad.getAttribute('data-howtoopen'));
-    };
-}; */
-//Text Field and Buttons for case number in new tab
-const openNotesOrOverview = [ // ["button innerHTML", "PageName", "ButtonID"]
-    ["Notes", "CaseNotes", "FieldNotesNT"],
-    ["Overview", "CaseOverview", "FieldOverviewNT"],
-];
-function newTabFieldButtons() { //Text field to enter a case number to open in a new tab
-    let buttonDivOne = document.getElementById("buttonPaneOne");
-    let newTabFieldVar = document.createElement('input');
-    newTabFieldVar.setAttribute('id', 'newTabField');
-    newTabFieldVar.setAttribute('type', 'text');
-    newTabFieldVar.setAttribute('maxlength', '8');
-    newTabFieldVar.setAttribute('size', '8');
-    //let label = document.createElement('label');
-    //label.setAttribute('for', 'newTabField');
-    //label.innerHTML = '&nbsp;&nbsp;Case:&nbsp;';
-    //buttonDivOne.appendChild(label);
-    buttonDivOne.appendChild(newTabFieldVar);
-        for(let i = 0; i < openNotesOrOverview.length; i++){
-            let buttonDivOne = document.getElementById("buttonPaneOne");
-            let btnNavigation = document.createElement('button');
-            btnNavigation.type = 'button';
-            btnNavigation.innerHTML = [openNotesOrOverview[i][0]]
-            btnNavigation.setAttribute("data-pageName", [openNotesOrOverview[i][1]]);
-            btnNavigation.id = [openNotesOrOverview[i][2]];
-            btnNavigation.className = 'custombuttonsearch';
-            btnNavigation.addEventListener("click", function() { openCaseNumber(this.getAttribute('data-pageName'))});
-            buttonDivOne.appendChild(btnNavigation);
-        };
-};
-function openCaseNumber(e) {
-    const enteredCaseNumber = document.getElementById('newTabField').value;//$('#newTabField').val()
-    if (e == "CaseNotes") {
-        window.open('/ChildCare/CaseNotes.htm?parm2=' + enteredCaseNumber, '_blank');
-    } else {
-        window.open('/ChildCare/CaseOverview.htm?parm2=' + enteredCaseNumber, '_blank');
-    };
-};
-newTabFieldButtons();
-// buttonClicked, traverseOnPageLoad, traverseOnRowTwoClick are to highlight buttons based on the current page
+//SECTION END Using Id from button click to load href of associated element
+
+//SECTION START Highlight row 2 buttons
 function buttonClicked(){
 $('.custombuttonclicked').removeClass('custombuttonclicked');
-/*    let clickedButtons = document.getElementsByClassName('custombuttonclicked');
-      for(let i = 0; i < clickedButtons.length; i++) {
-          clickedButtons[i].classList.remove('custombuttonclicked');
-      }*/
 };
 function traverseOnPageLoad(o) {
     if (primaryPanelID.getAttribute('Id') == "greenline") { return };
@@ -372,65 +292,80 @@ function traverseOnRowTwoClick(o) {
     };
 };
 traverseOnPageLoad(rowThreeButtonArray)
-//SECTION START Superfluous delete button
-if (window.location.href.indexOf("Alerts") > -1) {
-    $('#alertTotal').after('<div class="form-button custom-form-button centered-text" id="buttonDeleteTop">Delete Alert</div>')
-    $('#buttonDeleteTop').click(function() { $('#delete').click()});
-};
-//SECTION END Superfluous delete button
+//SECTION END Highlight row 2 buttons
 
-//SECTION START Wait for something to be available //https://stackoverflow.com/a/61511955
-function waitForElm(selector) {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
+//SECTION START Create text field and buttons for case number to open in new tab
+const openNotesOrOverview = [ // ["button innerHTML", "PageName", "ButtonID"]
+    ["Notes", "CaseNotes", "FieldNotesNT"],
+    ["Overview", "CaseOverview", "FieldOverviewNT"],
+];
+function newTabFieldButtons() { //Text field to enter a case number to open in a new tab
+    let buttonDivOne = document.getElementById("buttonPaneOne");
+    let newTabFieldVar = document.createElement('input');
+    newTabFieldVar.setAttribute('id', 'newTabField');
+    newTabFieldVar.setAttribute('type', 'text');
+    newTabFieldVar.setAttribute('maxlength', '8');
+    newTabFieldVar.setAttribute('size', '8');
+    buttonDivOne.appendChild(newTabFieldVar);
+        for(let i = 0; i < openNotesOrOverview.length; i++){
+            let buttonDivOne = document.getElementById("buttonPaneOne");
+            let btnNavigation = document.createElement('button');
+            btnNavigation.type = 'button';
+            btnNavigation.innerHTML = [openNotesOrOverview[i][0]]
+            btnNavigation.setAttribute("data-pageName", [openNotesOrOverview[i][1]]);
+            btnNavigation.id = [openNotesOrOverview[i][2]];
+            btnNavigation.className = 'custombuttonsearch';
+            btnNavigation.addEventListener("click", function() { openCaseNumber(this.getAttribute('data-pageName'))});
+            buttonDivOne.appendChild(btnNavigation);
         };
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector));
-                observer.disconnect();
-            };
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
 };
-function waitForElmValue(selector) {
-    return new Promise(resolve => {
-        if (document.querySelector(selector).innerText !== "0") {
-            return resolve(document.querySelector(selector));
-        };
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector).innerText !== "0") {
-                resolve(document.querySelector(selector));
-                observer.disconnect();
-            };
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
+function openCaseNumber(e) {
+    const enteredCaseNumber = document.getElementById('newTabField').value;//$('#newTabField').val()
+    if (e == "CaseNotes") {
+        window.open('/ChildCare/CaseNotes.htm?parm2=' + enteredCaseNumber, '_blank');
+    } else {
+        window.open('/ChildCare/CaseOverview.htm?parm2=' + enteredCaseNumber, '_blank');
+    };
 };
-/*
-To use it:
-    waitForElm('.some-class').then((elm) => {
-        console.log('Element is ready');
-        console.log(elm.textContent);
-    });
-Or with async/await:
-    const elm = await waitForElm('.some-class');
-*/
-//SECTION END Wait for something to be available
+newTabFieldButtons();
+!viewMode && ($('#buttonPaneTwo, #buttonPaneThree').hide());
+//SECTION END Create text field and buttons for case number to open in new tab
+`///////////////////////////////// NAVIGATION BUTTONS SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-//SECTION START Delete all alerts of current name onclick
-if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
+///////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
+
+//SECTION START Active caseload numbers
+if (window.location.href.indexOf("ActiveCaseList") > -1) {
+    $('h5').append(" " + $('td:contains("Active")').length + " active. " + ($('td:contains("Suspended")').length + $('td:contains("Temporarily Ineligible")').length) + " suspended/TI.")
+};
+//SECTION END Active caseload numbers
+
+//SECTION START Sort caseload lists by client name, ascending
+if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
+    document.getElementsByClassName('sorting')[1].click()
+};
+//SECTION END Sort caseload lists by client name, ascending
+
+////// ALERTS.htm start //////
+if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
+    //SECTION START Superfluous delete button
+    $('#alertsPanelData').css('overflow','visible');
+    $('#alertTotal').after('<div class="form-button custom-form-button centered-text" id="deleteTop">Delete Alert</div>')
+    $('#deleteTop').click(function() { $('#delete').click()});
+    //SECTION END Superfluous delete button
+
+    //SECTION START Delete all alerts of current name onclick
     function onAlertsLoaded() {
         let alertsToDelete = sessionStorage.getItem('alertsToDelete');
         if (alertsToDelete !== undefined && alertsToDelete !== null) {
-            if ($('#caseOrProviderTable .selected td').eq(2).text() == alertsToDelete) {
+            let alertsToDeleteCase = $('#caseOrProviderAlertsTable tr').filter(':contains(' + alertsToDelete + ')');
+            //if ($('#caseOrProviderAlertsTable .selected td').eq(2).text() == alertsToDelete) {
+            if (alertsToDeleteCase.length > 0) {
+                if (!$(alertsToDeleteCase).hasClass('selected')) {
+                    alertsToDeleteCase.click();
+                    //$('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. It\'s too slow.</div>');
+                    //return
+                }
                 if ($('#delete').prop('disabled')) {
                     $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. Alert can\'t be deleted</div>');
                     sessionStorage.removeItem('alertsToDelete');
@@ -445,15 +380,15 @@ if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
             };
         };
     };
-    $('#delete').after('<div class="form-button custom-form-button centered-text" id="buttonDeleteAll">Delete All</div>');
-    $('#buttonDeleteAll').on("click", function() {
-        sessionStorage.setItem('alertsToDelete', $('#caseOrProviderTable .selected td').eq(2).text());
+    //$('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All">Delete All</div>');
+    $('#deleteAll').val('Delete All').on("click", function() {
+        sessionStorage.setItem('alertsToDelete', $('#caseOrProviderAlertsTable .selected td').eq(2).text());
         $('#delete').click()
     });
-//};
-//SECTION END Delete all alerts of current name onclick
-//SECTION START Do action based on Alert Type
-//if (window.location.href.indexOf("Alerts.htm") > -1) {
+    //};
+    //SECTION END Delete all alerts of current name onclick
+
+    //SECTION START Do action based on Alert Type
     let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('div');
     btnNavigation.type = 'div';
@@ -464,70 +399,105 @@ if (window.location.href.indexOf("Alert") > -1 && $('#new').length > 0) {
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
     let clickedAlert = $('#alertTable');
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
-    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-    $('#caseOrProviderTable, #alertTable').click(function(event) {
+    document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })//table name changed from caseOrProviderTable
+    $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
         changeButtonText();
     });
-    waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {//test
-    onAlertsLoaded();
-    changeButtonText();
-    goScrollIntoView();
+    waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
+        onAlertsLoaded();
+        changeButtonText();
+        goScrollIntoView();
     });
-//};
-//SECTION END Do action based on Alert Type
+    //SECTION END Do action based on Alert Type
 
-//SECTION START Copy Alert text, navigate to Case Notes
-function copyExplanation() {
-    let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
-    navigator.clipboard
-        .writeText(copyText)
-        .then(() => {
-        localStorage.setItem('mech2.caseNoteText', copyText);
-        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#caseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
-        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-        window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseNotes.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
-    })
-        .catch(() => {
-        alert("Something went wrong");
+    function goScrollIntoView() {
+        document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    };
+
+    function changeButtonText() {
+        let alertType = $('#alertTable .selected').children().eq(0).text()
+        if (alertType == '') {
+            document.getElementById('doTheThing').innerHTML = 'Click on Alert'
+        } else if (alertType == 'Eligibility') {
+            document.getElementById('doTheThing').innerHTML = alertType
+        } else {
+            document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
+        };
+    };
+    const alertCategories = {
+    };
+    //SECTION START Do action based on Alert Type
+    function goDoTheThing() {
+        //rewrite this section. Make arrays based on category, get category and match to startsWith?
+        let messageText = document.getElementById('message');//alertTable
+        if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
+            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
+            let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+            window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        };
+    };
+    //SECTION END Do action based on Alert Type
+
+    //SECTION START Copy Alert text, navigate to Case Notes
+    function copyExplanation() {
+        let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
+        navigator.clipboard
+            .writeText(copyText)
+            .then(() => {
+            localStorage.setItem('mech2.caseNoteText', copyText);
+            snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
+            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#caseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
+            let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+            window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseNotes.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        })
+            .catch(() => {
+            alert("Something went wrong");
+        });
+    };
+    $('#message').after('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
+    $('#copyAlertButton').click(function() { copyExplanation()});
+    //SECTION END Copy Alert text, navigate to Case Notes
+
+    //SECTION START Moving Worker ID and Worker Name to the section they are displayed in
+    $('#inputWorkerId').parent().attr('id','workerIdRow')
+    $('#workerName').parent().attr('id','workerNameRow')
+    $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderTable_wrapper').parent())
+    //SECTION END Moving Worker ID and Worker Name to the section they are displayed in
+
+    //SECTION START Resize the Alert page's Explanation viewable area
+    $('.h1-parent-row').siblings('br[clear!="all"]').remove();
+    $('.col-lg-12').addClass('clearfix');
+    addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
+    $("#alertTable").on('click', function() {
+        $("#message").css('height', '100px');
+        $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
     });
 };
-$('#message').after('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
-$('#copyAlertButton').click(function() { copyExplanation()});
-//SECTION END Copy Alert text, navigate to Case Notes
+//SECTION END Resize the Alert page's Explanation viewable area
+////// ALERTS.htm end //////
 
-function goScrollIntoView() {
-    document.querySelector('#caseOrProviderTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+//SECTION START Add 25 day delay to approving MFIP close and TY/BSF open
+if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1 && window.location.href.indexOf("pageUrl") < 0) {
+    $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval">MFIP Close Delay Alert</div>')
+        $('#delayApproval').click(function() {
+            let datePlus25 = addDays(new Date(), 25).toLocaleDateString('en-US', {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+            });
+            $('#message').val("Approve new results (BSF/TY/extended eligibility) if MFIP not reopened.");
+            $('#effectiveDate').val(datePlus25);
+            $('#save').focus();
+        });
 };
+//SECTION END Add date delay to approving MFIP close and TY/BSF open
 
-function changeButtonText() {
-    let alertType = $('#alertTable .selected').children().eq(0).text()
-    if (alertType == '') {
-        document.getElementById('doTheThing').innerHTML = 'Click on Alert (needs to be fixed)'
-    } else if (alertType == 'Eligibility') {
-        document.getElementById('doTheThing').innerHTML = alertType
-    } else {
-        document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
-    };
+//SECTION START Fix button placement on CaseAction
+if (window.location.href.indexOf("CaseAction") > -1) {
+    $('#edit').parents('.form-group').after($('#edit').parent().children());
+    addGlobalStyle('input.form-button { margin-left: 10px !important; }');
 };
-//SECTION START Do action based on Alert Type
-function goDoTheThing() {
-    //rewrite this section. Make arrays based on category, get category and match to startsWith?
-    let messageText = document.getElementById('message');//alertTable
-    if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
-        let parm2var = document.getElementById('caseOrProviderTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
-        let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
-    };
-};
-};
-/*if (window.location.href.indexOf("CaseNotes") > -1) {
-    //if (localStorage.getItem("caseNotesLocal") !== "clear") {
-    if (localStorage.getItem("caseNotesLocal") == "redetermination") {
-        localStorage.setItem("caseNotesLocal", )
-        //$('#new').click()
-    };
-};*/
-//SECTION END Do action based on Alert Type
+//SECTION END Fix button placement on CaseAction
 
 //SECTION START Copy client mail to address to clipboard on Case Address page
 if (window.location.href.indexOf("CaseAddress") > -1) {
@@ -538,7 +508,7 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
             return name.split(",")[1].split(" ")[1]
         };
     };
-    $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
+    $('#effectiveDate').parent().after('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Copy Mail Address</div>');
     $('#copyMailing').click(function() {
         let caseNameRaw = $('label[for="caseHeaderName"]').parent().contents().eq(2).text();
         let lastName = caseNameRaw.split(",")[0];
@@ -548,27 +518,448 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
             let state = (document.getElementById('mailingStateProvince').value === "Minnesota") ? "MN":"WI";
             let copyText = firstName + " " + lastName + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
             navigator.clipboard.writeText(copyText)
+            snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
         } else {
             let state = (document.getElementById('residenceStateProvince').value === "Minnesota") ? "MN":"WI";
             let copyText = firstName + " " + lastName + "\n" + document.getElementById('residenceStreet1').value + " " + document.getElementById('residenceStreet2').value + "\n" + document.getElementById('residenceCity').value + ", " + state + " " + document.getElementById('residenceZipCode').value
             navigator.clipboard.writeText(copyText)
+            snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
         };
     });
 };
 //SECTION END Copy client mail to address to clipboard on Case Address page
 
-//SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
-function addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-    //return new Date(date).setDate(result.getDate() + days);
+//SECTION START CaseAddress changes and fixes
+if (window.location.href.indexOf("CaseAddress") > -1) {
+    $('label.col-md-2').addClass('col-md-3').removeClass('col-md-2');//Fix wrongly sized columns for several labels on Case Address
+    $('#mailingStreet1').val() == '' && !$('#edit').prop('disabled') && ($('h4:contains("Mailing Address")').click());//Shrink extra parts of page if blank
+    if (viewMode) {
+        $('#phone2, #phone3, #residenceStreet2, #contactNotes, #email').each(function() {
+            $(this).val() == '' && ($(this).parents('.form-group').addClass('collapse'))
+        });
+    };
 };
-function toTitleCase(str) {
-  return str.toLowerCase().split(' ').map(function (word) {
-    return (word.charAt(0).toUpperCase() + word.slice(1));
-  }).join(' ');
-}
+//SECTION END CaseAddress changes and fixes
+
+//SECTION START Open provider information page from Child's Provider page
+if (window.location.href.indexOf("CaseChildProvider") > -1) {
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerAddressButton">Provider Address</div>')
+        $('#providerAddressButton').click(function() {
+            window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
+        });
+    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerInfoButton">Provider Contact</div>')
+        $('#providerInfoButton').click(function() {
+            window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
+        });
+};
+//SECTION END Open provider information page from Child's Provider page
+
+//SECTION START Fill Child Support PDF Forms
+if (window.location.href.indexOf("CaseCSE") > -1) {
+    //$('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
+    $('#actualDate').parent().after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="float: right";">Generate CS Forms</div>');
+    $('#csForms').click(function() {
+        let caseNumber = $('#caseId').val();
+        let cpInfo = $('#csePriTable .selected td').eq(1).text();
+        let ncpInfo = $('#csePriTable .selected td').eq(2).text();
+        let childList = {};
+        $('#childrenTable tbody tr').each(function(index) {
+            if ($(this).children('td').eq(1).text().length > 0) {
+                childList["child" + index] = $(this).children('td').eq(1).text();
+            };
+        });
+        const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
+        window.open("http://nt-webster/slcportal/Portals/65/Divisions/FAD/IM/CCAP/index.html?parm1=" + JSON.stringify(formInfo), "_blank");
+    });
+};
+//SECTION END Fill Child Support PDF Forms
+
+//SECTION START Remove unnecessary fields from Child Support Enforcement
+if (window.location.href.indexOf("CaseCSE") > -1) {
+    let $hiddenCSE = $('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi, #cseAbsentParentInfoAbsentParentId').parents('.form-group')
+    $($hiddenCSE).hide();
+    $('#cseAbsentParentInfoLastName').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="abpsShowHide">Toggle extra info</div>');
+    $('#abpsShowHide').click(function() { $($hiddenCSE).toggle() });
+    let $goodCause = $('#cseGoodCauseClaimStatus').parents('.form-group').siblings().not('h4')
+    function hideBlankGoodCause() {
+        if ($('#cseGoodCauseClaimStatus').val() == 'Not Claimed') {
+            $goodCause.hide();
+        };
+    };
+    hideBlankGoodCause();
+    $('#cseGoodCauseClaimStatus').change(hideBlankGoodCause());
+    $('#csePriTable').click(function() { cseReviewDate() });
+    function cseReviewDate() {
+        if ($('#cseGoodCauseClaimStatus').val() == 'Granted') {
+            $('#cseGoodCauseReviewNextGCReviewDate').parents('.form-group').show();
+        } else {
+            $('#cseGoodCauseReviewNextGCReviewDate').parents('.form-group').hide();
+        };
+    };
+    $('#cseGoodCauseClaimStatus').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="cseGoodCauseClaimStatusToggle">Toggle extra info</div>');
+    $('#cseGoodCauseClaimStatusToggle').click(function() { $goodCause.toggle() });
+};
+//SECTION END Remove unnecessary fields from Child Support Enforcement
+
+//CSE focus start
+if (window.location.href.indexOf("CaseCSE") > -1 && !viewMode) {
+    if ($('#csePriNewReferenceNumber').length == 0) {
+        $('#cseChildrenGridChildNewReferenceNumber').focus();
+    } else {
+        $('#csePriNewReferenceNumber').focus();
+    };
+};
+//CSE focus end
+
+//SECTION START CaseChildProvider hiding fields if provider type is not LNL
+if (window.location.href.indexOf("CaseChildProvider") > -1) {
+function childProviderPage() {
+    $('#instructions').remove();
+    if ($('#providerType').val() !== "Legal Non-licensed" && $('#providerType').val() !== "") {
+        if (!$('#providerLivesWithChild').prop('disabled')) {//if in edit mode
+            $('#providerLivesWithChild').val("N");
+            $('#careInHome').val("N");
+            $('#relatedToChild').val("N");
+        } else {
+            $('input[type=checkbox]:checked').click();
+            $('input[type=checkbox]').eq(1).click();
+        };
+        $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group').addClass('collapse')//.hide();
+    } else {
+        $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group').removeClass('collapse')//.show();
+    };
+};
+    $('label[for="providerLivesWithChild"]').text('Lives with Child: ').removeClass('col-md-3 col-lg-3').addClass('col-md-2 col-lg-2');
+    $('label[for="providerLivesWithChild"]').add($('label[for="providerLivesWithChild"]').siblings()).appendTo($('label[for="childCareMatchesEmployer"]').parent())
+    $('label[for="relatedToChild"]').removeClass('col-md-3 col-lg-3').addClass('col-md-2 col-lg-2');
+    $('label[for="relatedToChild"]').add($('label[for="relatedToChild"]').siblings()).appendTo($('label[for="careInHome"]').parent());
+    childProviderPage();
+    $('#childProviderTable').on("click", childProviderPage());
+    $('#providerId').change(function() {
+        if ($('#instructions').length < 1) { $('#providerSearch').parent().parent().append('<div id="instructions" class="col-lg-4 col-md-4">Tab twice after entering Provider ID to update fields</div>') };
+    });
+    $('#providerSearch').blur(function() {
+        childProviderPage();
+    });
+};
+//SECTION END CaseChildProvider hiding fields if provider type is not LNL
+
+//SECTION START Remove unnecessary fields from CaseEarnedIncome, set to MN, USA when leaving Employer Name field
+if (window.location.href.indexOf("CaseEarnedIncome") > -1) {
+    let ceiEmployment = $('#ceiPrjAmount, #ceiAmountFrequency, #ceiHrsPerWeek').parents('.form-group');
+    let ceiSelfEmployment = $('#ceiGrossIncome, #ceiGrossAllowExps, #ceiTotalIncome').parents('.form-group')
+    $('#earnedIncomeMemberTable').click(checkSelfEmploy);
+    function checkSelfEmploy() {
+        if (($('#ceiIncomeType').val() == "Wages") || (viewMode && $('#ceiGrossIncome').val() == '')) {
+            ceiSelfEmployment.addClass('collapse');
+            ceiEmployment.removeClass('collapse');
+        } else if ($('#ceiIncomeType').val() == "Self-employment") {
+            ceiSelfEmployment.removeClass('collapse');
+            ceiEmployment.addClass('collapse');
+        };
+    };
+    checkSelfEmploy()
+    let hiddenCEI1 = $('#ceiEmpStreet, #ceiEmpStreet2, #ceiEmpCity, #ceiEmpStateOrProvince, #ceiPhone, #ceiEmpCountry').parents('.form-group')
+    hiddenCEI1.hide();
+    $('#ceiIncomeType').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="ceiShowHide1">Toggle extra info</div>');
+    $('#ceiShowHide1').click(function() { $(hiddenCEI1).toggle() });
+    //
+    let hiddenCEI2 = $('#ceiCPUnitType, #ceiNbrUnits').parents('.form-group')
+    hiddenCEI2.hide();
+    $('#ceiPrjAmount').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="ceiShowHide2">Toggle extra info</div>');
+    $('#ceiShowHide2').click(function() { $(hiddenCEI2).toggle() });
+    //
+    if ($('#providerName').val().length < 1) {
+        let hiddenCEI3 = $('#providerName, #addressStreet').parents('.form-group')
+        hiddenCEI3.hide();
+        $('#providerSearch').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="ceiShowHide3">Toggle extra info</div>');
+        $('#ceiShowHide3').click(function() { $(hiddenCEI3).toggle() });
+    };
+    $('#ceiEmployer').blur(function() {
+        if ($('#edit').prop('disabled')) {
+            if ($('#ceiEmpCountry').val().length < 1) {
+                $('#ceiEmpCountry').val('USA');
+                $('#ceiEmpStateOrProvince').val('Minnesota');
+            };
+        };
+    });
+    if (!viewMode) {
+        $('#ceiGrossAllowExps').parent().after('<div style="align-content: center; height: 28px; display: inline-flex; flex-wrap: wrap; margin-right: 10px;" id="fiftyPercent"></div>');
+        $('#fiftyPercent').text('50%: ' + ($('#ceiGrossIncome').val()*.5).toFixed(2));
+        $('#ceiGrossIncome').change(function() {$('#fiftyPercent').text('50%: ' + ($('#ceiGrossIncome').val()*.5).toFixed(2)) });
+        $('#fiftyPercent').after('<div id="grossButton" class="fake-custom-button-nodisable fake-custom-button">Use 50%</div>')
+        $('#grossButton').click(function() {
+            $('#ceiGrossAllowExps').val(($('#ceiGrossIncome').val()*.5).toFixed(2));
+            const event = new Event('change');
+            document.querySelector('#ceiGrossAllowExps').dispatchEvent(event);
+        });
+    };
+};
+//SECTION END Remove unnecessary fields from CaseEarnedIncome, set to MN, USA when leaving Employer Name field
+
+//SECTION START CaseEarnedIncome CaseUnearnedIncome CaseExpense collapse unnecessary H4s
+if (window.location.href.indexOf("CaseEarnedIncome") > -1 || window.location.href.indexOf("CaseUnearnedIncome") > -1 || window.location.href.indexOf("CaseExpense") > -1) {
+    $( "h4:contains('Actual Income')" ).nextAll().addClass("collapse")
+    $( "h4:contains('Student Income')" ).nextAll().addClass("collapse")
+    $( "h4:contains('Actual Expense')" ).nextAll().addClass("collapse")
+};
+//SECTION END CaseEarnedIncome CaseUnearnedIncome CaseExpense collapse unnecessary H4s
+
+//SECTION START CaseEligibilityResultFamily Fix 'Select' elements to have class col-md-4 so they show the entire word
+if (window.location.href.indexOf("CaseEligibilityResultFamily") > -1) {
+    $('select').parent('.col-md-3').removeClass('col-md-3').addClass('col-md-4');
+    $('label.col-lg-8').removeClass('col-lg-8').addClass('col-lg-7');
+};
+//SECTION END CaseEligibilityResultFamily Fix 'Select' elements to have class col-md-4 so they show the entire word
+
+//SECTION START Custom fix for CaseEligibilityResultFamily (1 label&field)
+if (window.location.href.indexOf("CaseEligibilityResultFamily") > -1) {
+	$('label[for="allowedTemporaryIneligibilityExpireTest"]').removeClass("col-md-8").addClass("col-md-7").removeAttr('style')
+};
+//SECTION END Custom fix for CaseEligibilityResultFamily (1 label&field)
+
+//SECTION START Highlight "Fail||Ineligible" in eligibility results
+if (window.location.href.indexOf("CaseEligibilityResult") > -1) {
+    let $isNo = $('tbody > tr > td').filter(function() { return $(this).text() === 'No' });
+    let tableBody = $('table tbody').parent().DataTable()
+    $isNo.filter(function() {
+        return $(tableBody.column( tableBody.cell( $(this) ).index().column ).header()).html() == "In Family Size" || $(tableBody.column( tableBody.cell( $(this) ).index().column ).header()).html() == "Verified"
+    })
+        .add('tbody > tr > td:contains("Ineligible")')
+        .css('background-color','yellow')
+    $('div[title="Family Result"]:contains("Ineligible")').css('background-color','yellow');
+    $('div:contains("Fail"):not(:has("option")):last-child').parent().children().css('background-color','yellow');
+    $('option:selected:contains("Fail")').parentsUntil('.row').children().css('background-color','yellow');
+};
+//SECTION END Highlight "Fail" in eligibility results
+
+//SECTION START CaseEligibilityResultApproval Add 90 days to date entered to ExtElig Begin Date
+if (window.location.href.indexOf("CaseEligibilityResultApproval") > -1) {
+	$('#beginDate').blur(function() {
+		let extEligPlus90 = addDays($(this).val(), 90)
+		extEligPlus90 = new Date(extEligPlus90).toLocaleDateString();
+		$('#beginDate').parent().after('<div class="centered-text">' + extEligPlus90 + '</div>')
+	});
+};
+//SECTION END CaseEligibilityResultApproval Add 90 days to date entered to ExtElig Begin Date
+
+//SECTION START Custom fix and text for CaseEligibilityResultSelection
+if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
+    if ($('strong.rederrortext').html() === 'Background transaction in process.') {
+        $('#select').prop('disabled','disabled')
+        $('#selectButton').addClass('custom-form-button-disabled');
+    };
+    addGlobalStyle('#message { font-size: 130%; background-color: yellow; display: inline !important; }');
+    document.getElementById('message').innerHTML = "Select a program record listed above and click Select below to view the Eligibility Results."
+    if (document.getElementsByClassName('dataTables_empty').length == 0) { document.getElementsByClassName('sorting')[1].click() };//sort by program type
+    $('tbody > tr > td:contains("Unapproved")').addClass('Unapproved-Elig-Result').parent('tr').addClass('Unapproved');//Highlight unapproved
+    $('tbody > tr > td:contains("Eligible")').parent('tr').addClass('Eligible');
+    $('tbody > tr > td:contains("Ineligible")').parent('tr').addClass('Ineligible');
+    if ($('.Unapproved.Eligible').length > 0) {
+        !$('.Unapproved.Eligible').hasClass('selected') && ($('.Unapproved.Eligible').click());
+    } else {
+        !$('.Unapproved.Ineligible').hasClass('selected') && ($('.Unapproved.Ineligible').click());
+    };
+    /*let $ineligible = $('tbody > tr > td').filter(function() { return $(this).text() === 'Ineligible' });
+    let $eligible = $('tbody > tr > td').filter(function() { return $(this).text() === 'Eligible' });
+    if ($('.Unapproved-Elig-Result').siblings($eligible)) {
+        $('.Unapproved-Elig-Result').siblings($eligible).eq(0).click()
+    } else {
+        $('.Unapproved-Elig-Result').siblings($ineligible).eq(0).click()
+    };*/
+};
+//SECTION END Custom fix and text for CaseEligibilityResultSelection
+
+//SECTION START Redirect if we're on elig results and there's no version selected
+if (window.location.href.indexOf("CaseEligibilityResult") > -1 && window.location.href.indexOf("CaseEligibilityResultSelection") < 0) {
+    let interval;
+    function check() {
+        if ($('[id$="TableAndPanelData"]').css('display') == "none") {
+            clearInterval(interval);// clearInterval will stop its periodical execution.
+            window.open(document.getElementById("Eligibility Results Selection").firstElementChild.getAttribute('href'), "_self")
+        };
+    };
+    interval = setInterval(check, 200);// Create an instance of the check function interval
+    check();
+};
+//SECTION END Redirect if we're on elig results and there's no version selected
+
+//SECTION END Remove unnecessary fields from CaseExpense
+if (window.location.href.indexOf("CaseExpense") > -1) {
+	let hiddenExp = $('#projectionExpenseUnitType, #projectionExpenseNumberOfUnits').parents('.form-group')
+	hiddenExp.hide();
+	$('#projectionExpenseAmount').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="ceiShowHide2">Toggle extra info</div>');
+	$('#ceiShowHide2').click(function() { $(hiddenExp).toggle() });
+};
+//SECTION END Remove unnecessary fields from CaseExpense
+
+//SECTION START CaseFraud Column resizing
+window.location.href.indexOf('CaseFraud') > -1 && ($('.col-md-3, .col-lg-3').removeClass('col-md-3 col-lg-3').addClass('col-md-5 col-lg-4'));
+//SECTION START CaseFraud Column resizing
+
+//SECTION START CaseLockStatus Reveal Unlock button
+if (window.location.href.indexOf("CaseLockStatus") > -1) {
+	if ($('label[for="requestMessage"]').parent(':contains("CASE LOCKED IN MEC2")')) {
+        $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Click this text to show the "Unlock" button.</div>')
+        $('#acceptMyTerms').click(function() {
+            $("#caseLockStatusUnlockButtonArea").show();
+            $("#acceptMyTerms").remove();
+        });
+	};
+};
+//SECTION END CaseLockStatus Reveal Unlock button
+
+//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
+if (window.location.href.indexOf("CaseMember") > -1 && !viewMode) {//$('#page-wrap').length == 0
+    $('label[for="memberReferenceNumber"]').attr('id','openHistory').css('border-width','1px').css('border-color','gray').css('border-style','solid');
+    $('#openHistory').click(function() {
+        window.open('/ChildCare/CaseMemberHistory.htm?parm2=' + $('#caseId').val(), '_blank');
+    });
+};
+//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
+
+//SECTION START CaseMember Shortening text fields so they fit in a col-md-4
+if (window.location.href.indexOf("CaseMember") > -1) {
+    $( "label:contains('American Indian or Alaskan Native')" ).prop('innerText', 'American Indian or AK Native');
+    $( "label:contains('Pacific Islander or  Native Hawaiian')" ).prop('innerText', 'Pacific Islander or HI Native');
+};
+//SECTION END CaseMember Shortening text fields so they fit in a col-md-4
+
+//SECTION START Case Notes custom styles
+if (window.location.href.indexOf("CaseNotes") > -1) {
+    document.getElementsByClassName('panel-box-format')[1].style.display = "none";
+    document.getElementById('noteStringText').setAttribute('rows', '29');
+    //let newBr = document.createElement('br');
+    //document.getElementById('noteMemberReferenceNumber').parentNode.insertAdjacentElement("afterend", newBr);
+//};
+//SECTION END Case Notes custom styles
+
+//SECTION START CaseNotes
+//if (window.location.href.indexOf("CaseNotes") > -1) {
+    $('#storage').addClass('collapse');
+    $('#noteArchiveType, #noteSearchStringText, #noteImportant').prop('tabindex', '-1');
+    $('table tr td:contains("Disbursed child care support")').parents('tr').addClass('collapse');//Hiding Disbursed Child Care Support payment rows
+//};
+//SECTION END CaseNotes
+
+//SECTION START CaseNotes layout fix
+//if (window.location.href.indexOf('CaseNotes') > -1) {
+    $('#noteSummary')
+        .parent().removeClass('col-lg-4 col-md-4 col-sm-4').addClass('col-lg-9 col-md-10')
+        .parents('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-6 col-md-7');
+    $('label[for="noteSummary"]')
+        .removeClass('col-lg-3 col-md-3 col-sm-3').addClass('col-lg-2 col-md-2');
+    $('label[for="noteCreator"]').siblings().addBack()
+        .wrapAll('<div class="col-lg-2 col-md-3 form-group" id="noteCreatorGroup"></div>');
+    $('#noteCreator')
+        .parent().removeClass('col-lg-4 col-md-4 col-sm-4 marginTop5').addClass('col-lg-7 col-md-7');
+    $('#noteCreatorGroup').appendTo($('label[for="noteSummary"]').parents('.row'));
+    $('label:contains("Important")')
+        .removeClass('col-lg-3 col-md-3 col-sm-4')
+        .addClass('col-lg-2 col-md-2')
+        .prop("innerText", "!")
+        .attr('for','noteImportant')
+        .parents('.form-group').attr('id','removeMe')
+        .parents('.row').attr('id','addInfoRowOne')
+        .height('28px')
+    $('#noteImportant').parent()
+        .removeClass('col-xs-2 col-sm-2 col-md-1 col-lg-1')
+        .add('label[for="noteImportant"]').wrapAll('<div id="noteImportantGroup" class="col-lg-2 col-md-2 form-group" style="width: 45px; height: 28px;"></div>')
+    $('label[for="noteMemberReferenceNumber"]')
+        .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
+    $('#noteMemberReferenceNumber').parent()
+        .removeClass('col-lg-4 col-md-4 col-sm-4 textInherit').addClass('col-lg-10 col-md-10 textInherit')
+        .add('label[for="noteMemberReferenceNumber"]').wrapAll('<div id="noteMemberReferenceNumberGroup" class="col-lg-4 col-md-5 form-group"></div>')
+    $('label[for="noteCategory"]')
+        .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
+        .css('margin-left','')
+    addGlobalStyle('label[for="noteCategory"] { width: 61px !important }');
+    $('#noteCategory').parent()
+        .removeClass('col-lg-3 col-md-3 col-sm-3 textInherit').addClass('col-lg-10 col-md-10 textInherit')
+        .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-4 col-md-5 form-group"></div>')
+    $('.col-lg-6.col-md-6.col-sm-6.col-xs-6.form-group.textInherit:not(".col-xl-8,.col-xl-6")').hide()
+    $('.col-xs-2.col-sm-2.col-md-1.col-lg-1:not(:has("input"))').hide()
+    $('.col-xs-5.col-sm-5.col-md-5.col-lg-5').hide();
+    $('#noteImportantGroup, #noteMemberReferenceNumberGroup').prependTo('#addInfoRowOne')
+    $('#removeMe').remove()
+//};
+//SECTION END CaseNotes layout fix
+
+//SECTION START Permanent fix for case notes - case notes saved when state broke them are permanently broken
+//if (window.location.href.indexOf("CaseNotes") > -1) {
+	function fixCaseNoteDisplay() {
+		let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
+		document.getElementById('noteStringText').value = fixedCaseNote
+	};
+	let caseNoteTable = document.getElementById('caseNotesTable');
+	caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
+	fixCaseNoteDisplay()
+//};
+//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken
+
+//SECTION START Disable Edit button if note date !== today (maybe make a ! button to enable and click edit?)
+//if (window.location.href.indexOf("CaseNotes") > -1) {
+    let todayDate = new Date().toLocaleDateString('en-US', {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+        });
+    const observer = new MutationObserver(disableEdit);
+    observer.observe(document.querySelector('#rowIndex'), {attributes: true});
+    function disableEdit() {
+        if ($('table tr.selected td').eq(1).text() !== todayDate) {
+            $('#edit').prop('disabled', true);
+        };
+    };
+    disableEdit();
+};
+//SECTION END Disable Edit button if note date !== today
+
+//SECTION START Fixing the table height of the Case Notice and Job Search Tracking tables to show more notices
+if (window.location.href.indexOf("CaseNotices") > -1 || window.location.href.indexOf("CaseJobSearchTracking") > -1) {
+    $(".dataTables_scrollBody").css('max-height', '400px');
+    $('#textbox1').css('height', '520px');
+};
+//SECTION END Fixing the table height of the Case Notice and Job Search Tracking tables to show more notices
+
+//SECTION START Custom items for CaseOverview
+if (window.location.href.indexOf("CaseOverview") > -1) {
+    $('label[for="redeterminationDueDate"]').parents('.form-group').siblings('h4')
+        .css('float','left')
+        .css('width','85%')
+        .after('<div id="copyRedetButton" style="background-color: #dcdcdc; float: right; font: 14px Helvetica, Sans-Serif; border: 2px solid; border-radius:4px; cursor: pointer;">Follow Up Date</div>');
+    $('#copyRedetButton').click(function() {
+        let redetDate = $('label[for="redeterminationDueDate"]').parents('.form-group').children('div.col-lg-3.col-md-3').eq(0).text().replace(/\n|\t/g, '')
+        let redetPlus = (addDays(redetDate, 44));
+        let localedDate = new Date(redetPlus).toLocaleDateString();
+        navigator.clipboard.writeText(localedDate);
+        snackBar('Copied! <br>' + localedDate);
+    });
+    //document.getElementById('participantInformationData_wrapper').getElementsByClassName('sorting')[0].click();//participantInformationData_length
+};
+//SECTION END Custom items for CaseOverview
+
+//SECTION START CasePaymentHistory Add buttons to navigate to FinancialBilling in correct BWP
+if (window.location.href.indexOf("CasePaymentHistory") > -1) {
+    $('div.col-lg-3.col-md-3>input').width('100%');
+    $('#paymentHistoryTable tr').children('td:nth-of-type(3)').each(function() {
+            let linkText = $(this).text();
+            $(this).text('');
+            $(this).append('<a href="FinancialBilling.htm?parm2=' + $("#caseId").val() + '&parm3=' + linkText.replace(" - ", "").replaceAll("/","") + '", target="_blank">' + linkText + '</a>');
+    });
+};
+
+//SECTION START Highlighting unchecked household members on reapplication
+if (window.location.href.indexOf("CaseReapplicationAddCcap.htm") > -1) {
+    $('input[type=checkbox]').each(function() {
+        if (!$(this).prop('checked')) {
+            $(this).parents('tr').css('background-color','yellow');
+        };
+    });
+};
+//SECTION END Highlighting unchecked household members on reapplication
+
+//SECTION START Fill manual Billing PDF Forms, also nav to Provider Address
 if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
     function billingFormInfo() {
         let caseNumber = $('#caseId').val();//Case Number
@@ -620,100 +1011,72 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
         window.open("/ChildCare/ProviderAddress.htm?providerId=" + providerId, "_blank");
     });
 };
-if (window.location.href.indexOf("ProviderAddress") > -1) {
-    $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
-    $('#copyMailing').click(function() {
-        if ($('#addrBillFormDisplay').val() == "Site/Home") {
-        let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
-        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + " " + document.getElementById('mailingSiteHomeStreet2').value + "\n" + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
-        navigator.clipboard.writeText(copyText)
-        } else {
-        let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
-        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
-        navigator.clipboard.writeText(copyText)
-        };
-    });
-};
 //SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
 
-//SECTION START Open provider information page from Child's Provider page
-if (window.location.href.indexOf("CaseChildProvider") > -1) {
-    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerAddressButton">Provider Address</div>')
-        $('#providerAddressButton').click(function() {
-            window.open("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerId').val(), "_blank");
-        });
-    $('#providerSearch').parent().after('<div class="custombutton fake-custom-button" style="float: right"; id="providerInfoButton">Provider Contact</div>')
-        $('#providerInfoButton').click(function() {
-            window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
-        });
+//SECTION START CaseSpecialNeeds Column resizing
+if (window.location.href.indexOf("CaseSpecialNeeds") > -1) {
+    $('.col-md-3, .col-lg-3').removeClass('col-md-3 col-lg-3').addClass('col-md-5 col-lg-5');
 };
-//SECTION END Open provider information page from Child's Provider page
+//SECTION END CaseSpecialNeeds Column resizing
 
-//SECTION START Add 25 day delay to approving MFIP close and TY/BSF open
-if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1 && window.location.href.indexOf("pageUrl") < 0) {
-    $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval">MFIP Close Delay Alert</div>')
-        $('#delayApproval').click(function() {
-            let datePlus25 = addDays(new Date(), 25).toLocaleDateString('en-US', {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
+//SECTION START CaseSpecialActivity Duplicate start date into end date for Ext Elig
+if (window.location.href.indexOf('CaseSupportActivity') > -1) {
+	$('#extendedEligibilityBegin').blur(function() { $('#extendedEligibilityExpires').val($('#extendedEligibilityBegin').val()) })
+    $('strong:contains("before the first day")') && ($('#save').focus());
+};
+//SECTION END CaseSpecialActivity Duplicate start date into end date for Ext Elig
+
+//SECTION START Close case transfer to x169CCA; Auto enter transfer info if have sessionStorage value; Add button to viewMode page to do transfer;
+window.location.href.indexOf('CaseTransfer') < 0 && (localStorage.setItem('MECH2.activelyTransferring','noThanks'));//prevent accidental case transfer activity when loading that page
+if (window.location.href.indexOf('CaseTransfer') > -1) {
+    if (localStorage.getItem('MECH2.activelyTransferring') == 'yesPlease') {
+        if (!viewMode && $('#caseTransferFromType option:eq(1):contains("Worker To Worker")')) {
+            localStorage.setItem('MECH2.activelyTransferring','noThanks');
+            const event = new Event('change');//this plus element.dispatchEvent(event) will trigger on page events
+            const foo = new MutationObserver(function(mutationList, observer) {
+                for (const mutation of mutationList) {//if (mutation.type === 'attributes' || 'childList' || 'subtree') {//from options picked
+                    setIntervalLimited(function() {
+                        if (document.getElementById('caseTransferToName').value === 'CASE, SLC CLOSED') {
+                            localStorage.setItem('MECH2.doClose','closeMe');
+                            $('#save').click();
+                            return false;
+                        };
+                    }, 1000, 3);
+                    //check();
+                };
             });
-            $('#message').val("Approve new results (BSF/TY/extended eligibility) if MFIP not reopened.");
-            $('#effectiveDate').val(datePlus25);
-            $('#save').focus();
-        });
-};
-//SECTION END Add date delay to approving MFIP close and TY/BSF open
-
-//SECTION START Fill Child Support PDF Forms
-$('#selectPeriod').css("width", "25%");
-if (window.location.href.indexOf("CaseCSE") > -1) {
-    $('#caseInputSubmit').after('<div class="custombutton fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
-    $('#csForms').click(function() {
-        let caseNumber = $('#caseId').val();
-        let cpInfo = $('#csePriTable .selected td').eq(1).text();
-        let ncpInfo = $('#csePriTable .selected td').eq(2).text();
-        let childList = {};
-        $('#childrenTable tbody tr').each(function(index) {
-            if ($(this).children('td').eq(1).text().length > 0) {
-                childList["child" + index] = $(this).children('td').eq(1).text();
+            foo.observe(document.getElementById('caseTransferToName'), { attributes: true })
+            const targetNode = document.getElementById('caseTransferToWorkerId')// Select the node that will be observed for mutations
+            const config = { attributes: true };// Options for the observer (which mutations to observe)
+            const callback = (mutationList, observer) => {// Callback function to execute when mutations are observed
+                for (const mutation of mutationList) {
+                    $('#caseTransferToWorkerId').val('X169CCA');
+                    document.getElementById('caseTransferToWorkerId').dispatchEvent(event);
+                    document.getElementById('caseTransferToName').dispatchEvent(event);
+                };
             };
-        });
-        const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
-        window.open("http://nt-webster/slcportal/Portals/65/Divisions/FAD/IM/CCAP/index.html?parm1=" + JSON.stringify(formInfo), "_blank");
-    });
+            const observer = new MutationObserver(callback);// Create an observer instance linked to the callback function
+            observer.observe(targetNode, config);// Start observing the target node for configured mutations
+            $('#caseTransferFromType option:eq(1)').prop('selected','true')
+            document.getElementById('caseTransferFromType').dispatchEvent(event);
+        } else {
+            $('#new').click();
+        };
+    };
+    if (localStorage.getItem('MECH2.doClose') == 'closeWindow' && localStorage.getItem('MECH2.activelyTransferring') == 'noThanks' && viewMode) {
+        localStorage.setItem('MECH2.doClose','didClose');
+        window.open('about:blank', '_self');
+        //window.close()
+    };
+    //Semi-manual transfer with a button
+    function doClosedTransfer() {
+        localStorage.setItem('MECH2.activelyTransferring','yesPlease');
+        $('#new').click();
+    };
+    viewMode && ($('#caseTransferToName').parents('.form-group').after('<div class="custombutton fake-custom-button centered-text" style="float: left;" id="closedTransfer">Transfer to X169CCA</div>'));
+    $('#closedTransfer').click(function() { doClosedTransfer() })
 };
-//SECTION END Fill Child Support PDF Forms
-
-//SECTION START CaseLockStatus Reveal Unlock button
-if (window.location.href.indexOf("CaseLockStatus") > -1) {
-    $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Show the "Unlock" button.</div>')
-    $('#acceptMyTerms').click(function() { /*termsAccepted()} );
-    function termsAccepted() {*/
-        $("#caseLockStatusUnlockButtonArea").show();
-        $("#acceptMyTerms").remove();
-    });
-};
-//SECTION END CaseLockStatus Reveal Unlock button
-
-//SECTION START Fix for table entries losing selected class when clicked on
-$('tbody').click(function(event) {
-    $(event.target).parents('tr').addClass('selected');//.closest('tr') would also work
-});
-//SECTION END Fix for table entries losing selected class when clicked on
-
-//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
-if (window.location.href.indexOf("CaseMember") > -1 && $('#page-wrap').length == 0) {
-    $('label[for="memberReferenceNumber"]').attr('id','openHistory').css('border-width','1px').css('border-color','gray').css('border-style','solid');
-    $('#openHistory').click(function() {
-        window.open('/ChildCare/CaseMemberHistory.htm?parm2=' + $('#caseId').val(), '_blank');
-    });
-};
-//SECTION START Open CaseMemberHistory page from CaseMember with 'button'
-
-//SECTION START Retract drop-down menu on page load
-$('.sub_menu').css('visibility', 'hidden');
-//SECTION END Retract drop-down menu on page load
+//SECTION START Close case transfer to x169CCA; Auto enter transfer info if have sessionStorage value; Add button to viewMode page to do transfer;
 
 //SECTION START Naviation buttons to Eligibility Selection, Service Authorization Overview, and Case Overview from CaseWrapUp page
 if (window.location.href.indexOf("CaseWrapUp") > -1 && $('#done').attr('Disabled')) {
@@ -722,7 +1085,7 @@ if (window.location.href.indexOf("CaseWrapUp") > -1 && $('#done').attr('Disabled
     <div id="goEligibility" class="fake-custom-button-nodisable fake-custom-button">Eligibility</div>
     <div id="goSAOverview" class="fake-custom-button-nodisable fake-custom-button">SA Overview</div>
     <div id="goSAApproval" class="fake-custom-button-nodisable fake-custom-button">SA Approval</div>
-    <div id="goCaseOverview" class="fake-custom-button-nodisable fake-custom-button">Case Overview</div>
+    <div id="goEditSummary" class="fake-custom-button-nodisable fake-custom-button">Edit Summary</div>
     </div>`)
     $('#goEligibility').click(function() {
         window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
@@ -733,54 +1096,474 @@ if (window.location.href.indexOf("CaseWrapUp") > -1 && $('#done').attr('Disabled
     $('#goSAApproval').click(function() {
         window.open('/ChildCare/CaseServiceAuthorizationApproval.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
     });
-    $('#goCaseOverview').click(function() {
-        window.open('/ChildCare/CaseOverview.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
+    $('#goEditSummary').click(function() {
+        window.open('/ChildCare/CaseEditSummary.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
     });
 };
 //SECTION END Naviation buttons to Eligibility Selection, Service Authorization Overview, and Case Overview from CaseWrapUp page
 
-//SECTION START Temp end date for KEYZone Sites
-if (window.location.href.indexOf("CaseChildProvider") > -1) {
-    if ($('#page-wrap').length == 0 && $('#selectPeriod').val() == "10/17/2022 - 10/30/2022" && $('tbody tr td:contains("KEYZone")').length > 0) {
-        $('#providerType').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" id="endKeyZone" style="display: inline-flex; margin-left: 10px !important;">End KEYZone SA</div>');
-        //$('#providerType').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" id="newKeyZone" style="display: inline-flex; margin-left: 10px !important;">New KEYZone SA</div>');
-        //$('#childProviderTableData').after('<select id="newKeyZone" name="newKeyZone" class="form-control" title="New KEYZone Entry" tabindex="1"><option value="">Select KEYZone Site</option><option value="41103">Piedmont</option><option value="41105">Stowe</option><option value="41106">Homecroft</option><option value="41107">Lakewood</option><option value="41108">Myers-Wilkins</option><option value="41109">Congdon</option><option value="41110">Laura MacArthur</option><option value="41112">Lester Park</option><option value="41111">Lowell</option></select>');
-        $('#childProviderTableData').after(`
-        <select id="newKeyZone" name="newKeyZone" class="form-control" title="New KEYZone Entry" tabindex="1">
-        <option value="">Select KEYZone Site</option>
-        <option value="41109">Congdon</option>
-        <option value="41106">Homecroft</option>
-        <option value="41107">Lakewood</option>
-        <option value="41110">Laura MacArthur</option>
-        <option value="41112">Lester Park</option>
-        <option value="41111">Lowell</option>
-        <option value="41108">Myers-Wilkins</option>
-        <option value="41103">Piedmont</option>
-        <option value="41105">Stowe</option>
-        </select>`);
-    };
-    $('#endKeyZone').click(function() {
-        sessionStorage.setItem('previousSA', $('#hoursOfCareAuthorized').val());
-        sessionStorage.setItem('childRef', $('#childProviderTableData .selected td').eq(0).text());
-        $('#primaryBeginDate').val("");
-        $('#secondaryBeginDate').val("10/17/2022");
-        $('#secondaryEndDate').val("10/17/2022");
-        $('#carePeriodEndDate').val("10/17/2022");
-        $('#hoursOfCareAuthorized').val("1");
-        $('#careEndReason').val("NL");
+//SECTION START FinancialBilling Fix to display table
+if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
+    addGlobalStyle('.form-control.borderless.padL0.padR0 { padding: 0px !important; }');
+    //let target = document.getElementById('billingRegistrationFeesTable_wrapper').parentNode;
+    document.getElementById('billingRegistrationFeesTable_wrapper').parentNode.previousElementSibling.classList.remove('clearfix');
+    //let destination = target.parentNode;
+    //target.appendChild(destination);
+};
+//SECTION END FinancialBilling Fix to display table
+
+//SECTION START Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
+if (window.location.href.indexOf("FinancialManualPayment") > -1) {
+    $('.row').addClass('clearfix');
+};
+//SECTION END Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
+
+//Left todo: Create event on InactiveCaseList that sends case number array to localStorage, opens CaseTransfer, and goes to town.
+//SECTION START Close case transfer to x169CCA; Changing dates to links
+if (window.location.href.indexOf("InactiveCaseList") > -1) {
+    $('#footer_links').before('<iframe id="transferiframe" name="transferiframe" height="300px" width=' + $(".panel.panel-default").width() + '></iframe>');
+    let todayDate = new Date().getTime();
+    $('#inActiveCaseTable tbody tr').children('td:nth-of-type(4)').each(function() {
+        let closedDatePlus46 = addDays($(this).text(), 46).getTime();
+        if (closedDatePlus46 < todayDate) {
+            let linkText = $(this).text();
+            $(this).text('');
+            $(this).append('<a class="oldClosed" id=' + $(this).siblings().eq(0).text() + ' href="CaseTransfer.htm?parm2=' + $(this).siblings().eq(0).text() + '", target="_blank">' + linkText + '</a>');
+            //$(this).append('<span style="display: inline-block; margin-left: 15px;">-> CCA</span>');
+            $(this).children('span').click(function() { transferSingleClosed($(this).siblings('a')) });
+        };
     });
-    $('#newKeyZone').change(function() {
-        $('#providerType').val("License Exempt Center");
-        $('#providerLivesWithChild').val("N").prop('tabindex', '-1');
-        $('#careInHome').val("N").prop('tabindex', '-1');
-        $('#relatedToChild').val("N").prop('tabindex', '-1');
-        $('#providerSearch, #providerId, #primaryBeginDate, #primaryEndDate, #secondaryBeginDate, #secondaryEndDate, #careEndReason, #carePeriodBeginDate, #carePeriodEndDate').prop('tabindex', '-1');
-        $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group').hide();
-        $('#memberReferenceNumberNewMember').val(sessionStorage.getItem('childRef'))
-        $('#providerId').val($('#newKeyZone').val());
-        $('#primaryBeginDate').val("10/17/2022");
-        $('#carePeriodBeginDate').val("10/17/2022");
-        $('#hoursOfCareAuthorized').val(sessionStorage.getItem('previousSA'));
+    function transferSingleClosed(ele) {
+        localStorage.setItem('MECH2.activelyTransferring', 'yesPlease');
+        localStorage.setItem('MECH2.doClose','closeWindow');
+        $(ele).parents('tr').hide();
+        window.open('/ChildCare/' + (ele).attr('href'), 'transferiframe');
+    };
+    function transferAllClosed() {//todo fix this section as it does not wait to finish before attempting the next case
+        $('.oldClosed').each(function() {
+            console.log($(this).prop('id'));
+            localStorage.setItem('MECH2.activelyTransferring', 'yesPlease');
+            localStorage.setItem('MECH2.doClose','closeWindow');
+            window.open('/ChildCare/CaseTransfer.htm?parm2=' + $(this).prop('id'), 'transferiframe');
+            if (localStorage.getItem('MECH2.doClose') == 'didClose') {
+                return;
+            } else {
+                setIntervalLimited(function() {
+                    if (localStorage.getItem('MECH2.doClose') == 'didClose') {
+                        return;
+                    };
+                }, 1500, 3);
+                console.log('exited limited interval')
+            };
+        });
+    };
+    //$('#workerSearch').parents('.col-lg-12').append('<div id="transferAllClosed" class="fake-custom-button custombutton" style="float:right">Transfer All Old Closed</div>')
+    $('#transferAllClosed').click(function() { transferAllClosed() });
+};
+//SECTION END Close case transfer to x169CCA; Changing dates to links
+
+//SECTION START Fix lastUpdateWorker offsets
+if (window.location.href.indexOf('lastUpdateWorker') > -1) {
+    $('input').not($('label + input')).not($('a > input')).not('#newTabField').addClass('col-lg-offset-2 col-md-offset-2');
+};
+//SECTION END Fix lastUpdateWorker offsets
+
+//SECTION START Copy Provider mailto Address
+if (window.location.href.indexOf("ProviderAddress") > -1) {
+    $('#providerInput').append('<div class="custombutton fake-custom-button centered-text" style="float: right;" id="copyMailing">Billing Form Address to Clipboard</div>');
+    $('#copyMailing').click(function() {
+        if ($('#addrBillFormDisplay').val() == "Site/Home") {
+        let state = (document.getElementById('mailingSiteHomeState').value === "Minnesota") ? "MN":"WI";
+        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingSiteHomeStreet1').value + " " + document.getElementById('mailingSiteHomeStreet2').value + "\n" + document.getElementById('mailingSiteHomeCity').value + ", " + state + " " + document.getElementById('mailingSiteHomeZipCode').value
+        navigator.clipboard.writeText(copyText);
+        snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
+        } else {
+        let state = (document.getElementById('mailingState').value === "Minnesota") ? "MN":"WI";
+        let copyText = $('#providerData').children(0).contents().eq(4).text() + "\n" + document.getElementById('mailingStreet1').value + " " + document.getElementById('mailingStreet2').value + "\n" + document.getElementById('mailingCity').value + ", " + state + " " + document.getElementById('mailingZipCode').value
+        navigator.clipboard.writeText(copyText);
+        snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
+        };
     });
 };
+//SECTION END Copy Provider mailto Address
+
+//SECTION START Fix multiple CSS issues on ProviderInformation
+if (window.location.href.indexOf('ProviderInformation') > -1) {
+   // $('.visible-xs.visible-sm').remove();
+    $('.col-md-10').removeClass('col-md-10').addClass('col-md-4');
+    $('#providerData>div.col-lg-4').addClass('col-md-4');
+    $('.col-lg-3.col-md-3.textInherit').removeClass('col-md-3').addClass('col-md-4')
+    $('.col-lg-12.col-md-3.col-sm-12.col-xs-12.textInherit').removeClass('col-md-3').addClass('col-md-12');
+    $('.col-lg-2.col-md-3.control-label.textR.marginTop10.textInherit').removeClass('col-md-3').addClass('col-md-2');
+    $('.col-lg-1.col-md-1.col-sm-1.textL.visible-lg.visible-md').remove();
+    $('br').remove();
+    $('label.col-lg-1.col-md-2').removeClass('col-lg-1').addClass('col-lg-2');
+    addGlobalStyle('input, select { margin-bottom: 3px !important; margin-top: 3px !important; }');
+setIntervalLimited();
+    function fixProvInfoLabels() {
+        $('div.col-lg-12>label').add('div.visible-lg>label').each( function() {
+            let $nextInput = $(this).parent().nextAll('.col-lg-3.col-md-4.textInherit').eq(0);
+            console.log($nextInput.prop('clientHeight'));
+            if ($nextInput.prop('clientHeight') > 2 && $nextInput.prop('clientHeight') < 40) {
+                $(this).height($nextInput.prop('clientHeight'));
+            };
+        });
+    };
+};
+//SECTION END
+
+//SECTION START
+if (window.location.href.indexOf('ProviderLicense') > -1) {
+    $('.row').siblings('br').remove();
+    $('.col-lg-6.col-md-8.col-sm-10.col-xs-12').removeClass('col-lg-6 col-md-8 col-sm-10 col-xs-12').addClass('col-lg-6 col-md-6');
+    $('.col-lg-5.col-md-5').removeClass('col-md-5 col-lg-5').addClass('col-md-6 col-lg-6');
+    $('label[for="licenseCapacity"]').after($('#licenseCapacity').parent());//todo Needs mutation observer or promise?
+}
+//SECTION END
+
+//SECTION START Auto-filter ProviderSearch results
+if (window.location.href.indexOf("ProviderSearch") > -1) {
+    const localCounties = ['St. Louis','Carlton','Itaska','Lake'];
+    waitForElmValue('#providerSearchTable > tbody > tr > td').then(() => {
+        $('tbody tr:contains("Inactive")').addClass('inactive inactive-hidden')
+        $('tbody tr td:last-of-type').each(function() {
+            if (!localCounties.includes($(this).text())) {
+            $(this).parent('tr')
+                .addClass('out-of-area out-of-area-hidden')
+            };
+        });
+});
+    addGlobalStyle('.inactive-hidden, .out-of-area-hidden { display: none; }');
+    $('#back').after('<div id="inactiveToggle" class="fake-custom-button custombutton">Toggle Inactive</div><div id="outOfAreaToggle" class="fake-custom-button custombutton">Toggle Out of Area</div>');
+    $('#inactiveToggle').click(function() { $('.inactive').toggleClass('inactive-hidden'); });
+    $('#outOfAreaToggle').click(function() { $('.out-of-area').toggleClass('out-of-area-hidden'); });
+};
+//SECTION END Auto-filter ProviderSearch results
+
+//SECTION START ProviderRegistrationAndRenewal Fix to display table
+if (window.location.href.indexOf("ProviderRegistrationAndRenewal") > -1) {
+    document.getElementById('providerData').classList.add('clearfix');
+};
+//SECTION END ProviderRegistrationAndRenewal Fix to display table.
+
+if (window.location.href.indexOf("Provider") < 0) { $('#comments, #memberComments, #textbox2').prop('rows','15').css('height','') };
+
+let $updateDate = $('input[name="updateDate"]:last');
+let $updateSiblings = $updateDate.parent().siblings('div');
+//let $updateSiblings = $('#updateDate').parent().siblings('div');//button row
+$('#updateDate').parent().siblings('br').remove()
+//$updateSiblings.parent().prev().prop('id','buttonOrig');
+$updateSiblings.contents().filter(function() { return this.nodeType === 3 }).remove()
+$updateSiblings.children('br').remove()
+$updateSiblings.removeClass('col-md-8 col-lg-8 col-md-7 col-lg-7 col-xs-7 col-sm-7')//.addClass('col-md-12 col-lg-12')
+addGlobalStyle('.form-button-margins { margin-left: 10px !important; margin-bottom: 5px !important; }');
+$updateSiblings.children('input').addClass('form-button-margins')
+$updateSiblings.prop('class','clearfix')
+$updateSiblings.eq(0).append($updateSiblings.eq(1).children())
+//$('#updateDate')
+$updateDate.parents().eq(2).append('<div class="form-group clearfix" id="updateHome"></div>');
+$('#updateHome').append($('#updateDate').parent());
+//$('#updateDate')
+$updateDate.parent().css('float', 'right');
+
+`///////////////////////////////// PAGE SPECIFIC CHANGES SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+///////////////////////////////// FUNCTIONS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
+
+// Definition
+function setIntervalLimited(callback, interval, x) {
+    for (var i = 0; i < x; i++) {
+        setTimeout(callback, i * interval);
+    };
+};
+/*
+// Usage
+setIntervalLimited(function() {
+    console.log('hit');          // => hit...hit...etc (every second, stops after 10)
+}, 1000, 10);
+*/
+
+//SECTION START Wait for something to be available //https://stackoverflow.com/a/61511955
+function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+function waitForElmValue(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector).innerText !== "0") {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector).innerText !== "0") {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+//
+
+/* To use waitForElm:
+    waitForElm('.some-class').then((elm) => {
+        console.log('Element is ready');
+        console.log(elm.textContent);
+    });
+Or with async/await:
+    const elm = await waitForElm('.some-class'); */
+//SECTION END Wait for something to be available
+
+function addDays(date, days) {
+    let result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+};
+//
+
+function toTitleCase(str) {
+  return str.toLowerCase().split(' ').map(function (word) {
+    return (word.charAt(0).toUpperCase() + word.slice(1));
+  }).join(' ');
+};
+//
+
+function addGlobalStyle(css) { //To allow for adding CSS styles
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+};
+//
+
+$('body').append('<div id="snackBar" class="snackbar" style="display: none"></div>');
+function snackBar(innerText) {
+    //$('#snackBar').text(innerText)
+    $('#snackBar').html(innerText)
+    $('#snackBar').toggle();
+    setTimeout(function(){ $('#snackBar').toggle(); }, 3000);
+};
+//
+
+//SECTION START Reverses Period options order, makes most recent visible
+function selectPeriod() {
+	let checkForId = document.getElementById("selectPeriod");
+	if(checkForId) {
+		$('#selectPeriod option').each(function () {
+			$(this).prependTo($(this).parent());
+		});
+	};
+};
+selectPeriod();
+//SECTION END Reverses Period options order, makes most recent visible
+
+//SECTION START Next/Prev buttons next to period drop down
+function nextPrevPeriodButtons() {
+	let selectPeriodDropdown = document.getElementById('selectPeriod');
+    if (selectPeriodDropdown && $('#selectPeriod[type="hidden"]').length < 1) {
+        let back = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-chevron-left'></span>";
+        let backgo = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-fast-backward'></span>";
+        let forward = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-chevron-right'></span>";
+        let forwardgo = "<span style='font-size:80%; z-index:1;' class='glyphicon glyphicon-fast-forward'></span>";
+        let selectPeriodParent = document.getElementById('selectPeriod').parentNode;
+        const buttonsNextPrev = [ //"Button Text", "ButtonId", "Next or Prev", "Stay or Go"]
+            [backgo, "backGoSelect", "Prev", "Go"],
+            [back, "backSelect", "Prev", "Stay"],
+            [forwardgo, "forwardGoSelect", "Next", "Go"],
+            [forward, "forwardSelect", "Next", "Stay"],
+        ];
+        for(let i = 0; i < buttonsNextPrev.length; i++){
+            let btnNavigation = document.createElement('button');
+            btnNavigation.innerHTML = buttonsNextPrev[i][0];
+            btnNavigation.id = buttonsNextPrev[i][1];
+            btnNavigation.type = 'button';
+            btnNavigation.setAttribute('data-NextOrPrev', buttonsNextPrev[i][2]);
+            btnNavigation.setAttribute('data-StayOrGo', buttonsNextPrev[i][3]);
+            btnNavigation.className = 'custombutton';
+            if (buttonsNextPrev[i][2] == 'Prev') {
+                selectPeriodParent.insertBefore(btnNavigation, selectPeriodDropdown)
+            } else {
+                selectPeriodParent.insertBefore(btnNavigation, selectPeriodDropdown.nextSibling)
+            };
+            btnNavigation.addEventListener("click", function() { selectNextPrev(this.id)});
+        };
+        function selectNextPrev(clickedButton){
+            if (document.getElementById(clickedButton).getAttribute('data-NextOrPrev') == "Next") {
+                if (selectPeriodDropdown.selectedIndex == 0) {
+                    return
+                }
+                selectPeriodDropdown.selectedIndex--;//Subtract to go towards top of list
+                if (document.getElementById(clickedButton).getAttribute('data-StayOrGo') == "Go") {
+                    document.getElementById('caseInputSubmit').click();
+                }
+            } else {
+                selectPeriodDropdown.selectedIndex++;
+                if (document.getElementById(clickedButton).getAttribute('data-StayOrGo') == "Go") {
+                    document.getElementById('caseInputSubmit').click();
+                }
+            }
+        };
+    };
+};
+nextPrevPeriodButtons()
+//SECTION END Next/Prev buttons next to period drop down
+
+//SECTION START No timing out, resets sessionStartTime every 61 seconds
+function keepAlive() {
+    localStorage.setItem('mec2.sessionStartTime', new Date().getTime());
+};
+setInterval(keepAlive, 61000);//61 seconds, /1000
+//SECTION END No timing out, resets sessionStartTime every 61 seconds
+
+//SECTION START Login assistance - clicks Terms box, remembers last used login name
+function loginAssistance() {
+    if (document.getElementById("loginDetail") !== null) {
+        let userXNumber = localStorage.getItem('userIdNumber');
+        document.getElementById("userId").value = userXNumber;
+        document.getElementById("terms").click();
+        document.getElementById("password").focus();
+        addEventListener('beforeunload', (event) => {
+            if (document.getElementById("userId").value != '') {
+                let enteredUserId = document.getElementById("userId").value
+                localStorage.setItem('userIdNumber', enteredUserId)
+            };
+        });
+    };
+};
+loginAssistance();
+//SECTION END Login assistance - clicks Terms box, remembers last used login name
+
+//SECTION START Remove spaces as margins after labels
+function sanitizeLabels() {//js due to text nodes
+    let labelSpSp = document.getElementsByTagName('label');
+    for (let i = 0; i < labelSpSp.length; i++) {
+        if (labelSpSp[i].previousSibling && labelSpSp[i].previousSibling.nodeType == 3) {
+            labelSpSp[i].previousSibling.textContent = labelSpSp[i].previousSibling.textContent.replaceAll(/\s{2,}/g, '')
+        };
+        if (labelSpSp[i].nextSibling && labelSpSp[i].nextSibling.nodeType == 3) {
+            labelSpSp[i].nextSibling.textContent = labelSpSp[i].nextSibling.textContent.replaceAll(/\s{2,}/g, '')
+        };
+    };
+};
+sanitizeLabels();
+//SECTION END Remove spaces as margins after labels
+
+//SECTION START Make labels the same height as their next neighbor
+$('label').each( function() {
+    if ($(this).next().prop('clientHeight') > 2 && $(this).next().prop('clientHeight') < 40) {
+    $(this).height($(this).next().height());
+    };
+});
+//SECTION END Make labels the same height as their next neighbor
+
+//SECTION START Removing extra BRs and using clearfix to prevent overlapping elements
+function deburrThePage() {
+	$('br + br').remove();
+	$('#caseHeaderData + br').add($('#caseHeaderData').prev('br')).add($('#caseHeaderData').parent().prev('br')).add($('#caseHeaderData > br:last-child')).remove();
+	$('.visible-lg:has("br:only-child"), .visible-md:has("br:only-child"), .visible-sm:has("br:only-child")').remove();
+	$('.panel-box-format').prev('br').add($('.panel-box-format').parent().prev('br')).remove();
+	$('.form-group').prev('br').add($('.form-group + br')).add($('.form-group > br:first-child')).remove();
+	$('h4').prev('br').add($('h4 + br')).remove();
+	$('div[id$="TableData"] > br').remove();//remove children BR under tables
+	$('div[id$="TableData"]').siblings('br').remove();//remove BR around tables
+	$('div[id$="Data_wrapper"]').siblings('br').remove();//remove BR around less conventionally named tables
+    $('div[id$="TableAndPanelData"]').siblings('br').remove();//testing
+	$('.panel-box-format, .form-group, .col-lg-12').addClass('clearfix');
+};
+deburrThePage();
+//SECTION END Removing extra BRs and using clearfix to prevent overlapping elements
+
+//SECTION START Duplicate buttons above H1 row //Working, but #add is problematic. Also maybe not on Search pages?
+if (window.location.href.indexOf('InactiveCaseList') < 0 && window.location.href.indexOf('ActiveCaseList') < 0) {
+    $('.modal .form-button').addClass('modal-button');
+    $('table').click(function() {//check on table click if buttons were enabled/disabled and use class to mirror
+        $('div.mutable').each(function() {
+            let oldButtonId = $(this).prop('id').split('Button')[0];
+            if ($('#' + oldButtonId).prop('disabled')) {
+                $(this).addClass('custom-form-button-disabled');
+            } else {
+                $(this).removeClass('custom-form-button-disabled');
+            };
+        });
+    });
+    $('.form-button:not([id$="Business"]):not([id$="Person"])').not('.modal-button, #workerSearch, #contactInfo, #providerIdSubmit, #ratePeriodSelectButton, #validateCertificationButton, #resetCertButton, #validateLicenseButton, #resetLicButton, #selectFra, #caseSearch, #providerSearch, #caseInputSubmit, #alertInputSubmit, #search, #reset, #changeType, #storage, #addRegistrationFee, #deleteRegistrationFee, #addBilledTime, #deleteBilledTime, #calculate, #cappingInfo, #calcAmounts, .custombutton, .fake-custom-button').each(function() {
+        if ($(this).val()) {
+            let disabledStatus = $(this).prop('disabled') ? 'form-button custom-form-button custom-form-button-disabled centered-text mutable' : 'form-button custom-form-button centered-text mutable';
+            let idName = $(this).prop('id') + "Button";
+            $('#buttonHouse').append(`<div id="` + idName + `" class="` + disabledStatus + `" onclick="$('#` + $(this).attr('id') + `').click()">` + $(this).val() + `</div>`);
+            //$('#buttonHouse').append("<div id=\"" + idName + "\" class=\"" + disabledStatus + "\" onclick=\"$('#" + $(this).attr('id') + "').click()\">" + $(this).val() + "</div>");
+        };
+    });
+    $('#buttonHouse').children().length == 0 && ($('#buttonHouse').hide());
+};
+if (window.location.href.indexOf('CaseWrapUp') > -1) {
+    if ($('.rederrortext').text() == 'Case Wrap-Up successfully submitted.') {
+        $('#buttonHouse').hide();
+    };
+};
+//SECTION END Buttons above H1 row
+
+//SECTION START Retract drop-down menu on page load
+$('.sub_menu').css('visibility', 'hidden');
+//SECTION END Retract drop-down menu on page load
+
+//SECTION START Make all h4 clicky collapse
+$("h4").click( function() {
+	$(this).nextAll().toggleClass("collapse")
+});
+//SECTION END Make all h4 clicky collapse
+
+viewMode && ($('[id="Report a Problem"]').children().attr('target','_blank'));//Make 'Report a Problem' open in new tab
+
+//SECTION START Removing items from the tabindex
+$('#footer_links, #footer_info, #popup').children().prop('tabindex', '-1');
+$('#quit, #countiesTable, #extendedEligibilityExpires, #redeterminationDate, #caseInputSubmit, #letterChoice, #reset, #tempPeriodStart, #tempPeriodEnd').prop('tabindex', '-1');//quit, countiesTable=application; redet date, eEE=activity pages; cIS=submit button; lC=specialletter; reset=caseNotes; tempLeave = activities;
+$('#leaveDetailTemporaryLeavePeriodFrom, #leaveDetailTemporaryLeavePeriodTo, #leaveDetailExtendedEligibilityBegin, #tempLeavePeriodBegin, #tempLeavePeriodEnd, #extendedEligibilityBegin').prop('tabindex', '-1');//EmploymentActivity, SupportActivity
+window.location.href.indexOf("CaseEarnedIncome") > -1 && ($('#providerId, #providerSearch').prop('tabindex', '-1'));
+window.location.href.indexOf("ProviderSearch") > -1 && ($('#ssn, #itin, #fein, #licenseNumber, #middleInitName').prop('tabindex', '-1'));
+$('#leaveDetailRedeterminationDue, #leaveDetailExpires').removeAttr('tabindex');
+$('#caseId, #selectPeriod').prop('tabindex', '-1');
+
+//SUB-SECTION: SETTING FOCUS TO FIRST FIELDS
+if (window.location.href.indexOf("CaseParent") > -1 && !viewMode) {//This page is so borked I can't make tabindexing work
+    $('#parentReferenceNumberNewMember').length == 0 ? $('#childReferenceNumberNewMember').focus() : $('#parentReferenceNumberNewMember').focus();
+};
+//window.location.href.indexOf("CaseSpecialLetter") > -1 && !viewMode && ($('#status').focus());
+//    window.location.href.indexOf("CaseSpecialLetter") > -1 ? 'true' : 'false';//I can't get #status to gain focus, might need to check if available first
+window.location.href.indexOf("CaseMemo") > -1 && !viewMode && ($('#memberComments').focus());
+//SECTION END Removing items from the tabindex
+
+//SECTION START Post load changes to the page
+$('label').removeClass('control-label textR textInherit').addClass('centered-right-label');$('h1').parents('div.row').addClass('h1-parent-row');
+$(".marginTop5").removeClass("marginTop5" );
+$(".marginTop10").removeClass("marginTop10" );
+$(".padding-top-5px").removeClass("padding-top-5px" );
+$('.col-lg-offset-3').addClass('col-md-offset-3');
+$('.col-lg-3.col-md-2.col-sm-2.control-label.textR.textInherit').removeClass('col-md-2').addClass('col-md-3');
+$('input[id$="ZipCodePlus4"]').hide();
+$('div[id$="ZipDash"]').add($('div[id$="ZipDash"]').next()).hide();
+$('.col-xs-3.col-sm-3.col-md-3.col-lg-1').removeClass('col-md-3').addClass('col-md-1');
+$('#selectPeriod').css("width", "25%");//I don't remember why.
+//SECTION END Post load changes to the page
+
+///////////////////////////////// FUNCTIONS SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 })();

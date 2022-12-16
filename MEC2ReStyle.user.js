@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.60
+// @version      0.61
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
+// @match        mec2.childcare.dhs.state.mn.us/*
 // @grant        GM_addStyle
 // @run-at       document-start
 // @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2ReStyle.user.js

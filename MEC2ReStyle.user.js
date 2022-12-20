@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.63
+// @version      0.64
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -20,7 +20,11 @@ body {
 background-color: #eee !important;
 }
 
-div.container-fluid  {
+.fc .fc-toolbar.fc-header-toolbar {//FinancialAbsentDayHolidayTracking
+margin-bottom: 0.5em !important;
+}
+
+#alertsPanelData div.container-fluid  {
 padding-left: 5px !important;
 padding-right: 5px !important;
 margin-left: -25px !important;
@@ -270,7 +274,7 @@ padding-left: 10px !important;
 padding-right: 10px !important;
 }
 
-thead:not(:only-child) {
+table.dataTable>thead:not(:only-child) {
 visibility: collapse;
 }
 

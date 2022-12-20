@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.60
+// @version      0.63
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -29,7 +29,7 @@ if (primaryPanelID.getAttribute('Id') == "greenline") {
 	addGlobalStyle('.panel.panel-default { margin-top: 0px !important; }');
 };
 let viewMode = $('#page-wrap').length;
-$('head').append('<link rel="icon" type="image/png" href="https://www.dhs.state.mn.us/main/groups/secure/documents/twocolumns/~export/DHS16_139409~293~MANUALS_HCT/59499.png">');
+//$('head').append('<link rel="icon" type="image/png" href="https://www.dhs.state.mn.us/main/groups/secure/documents/twocolumns/~export/DHS16_139409~293~MANUALS_HCT/59499.png">');
 
 //SECTION START Fix for table entries losing selected class when clicked on
 $('tbody').click(function(event) {
@@ -334,6 +334,9 @@ newTabFieldButtons();
 
 ///////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
 
+//Seasonal items, just for fun
+$('h1').prepend('🎄 ');
+
 //SECTION START Active caseload numbers
 if (window.location.href.indexOf("ActiveCaseList") > -1) {
     $('h5').append(" " + $('td:contains("Active")').length + " active. " + ($('td:contains("Suspended")').length + $('td:contains("Temporarily Ineligible")').length) + " suspended/TI.")
@@ -355,7 +358,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
     //SECTION END Superfluous delete button
 
     //SECTION START Delete all alerts of current name onclick
-    function onAlertsLoaded() {
+    /*function onAlertsLoaded() {
         let alertsToDelete = sessionStorage.getItem('alertsToDelete');
         if (alertsToDelete !== undefined && alertsToDelete !== null) {
             let alertsToDeleteCase = $('#caseOrProviderAlertsTable tr').filter(':contains(' + alertsToDelete + ')');
@@ -379,39 +382,64 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
                 return;
             };
         };
-    };
-    //$('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All">Delete All</div>');
+    };*/
+    /*$('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All">Delete All</div>');
     $('#deleteAll').val('Delete All').on("click", function() {
-        sessionStorage.setItem('alertsToDelete', $('#caseOrProviderAlertsTable .selected td').eq(2).text());
-        $('#delete').click()
-    });
+        //sessionStorage.setItem('alertsToDelete', $('#caseOrProviderAlertsTable .selected td').eq(2).text());
+        let caseNumberToDelete = $("#groupId").val();
+        const observer = new MutationObserver();
+        observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
+        function doDeleteAll() {
+            return new Promise((resolve, reject) => {
+                if ($("#groupId").val() === caseNumberToDelete && $('#delete').val() === 'Delete Alert') {
+                    //if ($('#delete').prop('disabled')) {
+                    //    reject('rejected')
+                    //} else {
+                        resolve('resolved')
+                    //}
+                } else {
+                    reject('rejected')
+                }
+            })
+        };
+        doDeleteAll()
+            .then((message) => $('#delete').click())
+            .catch((error) => observer.disconnect())
+            //.catch((error) => observer.disconnect())
+    });*/
     //};
     //SECTION END Delete all alerts of current name onclick
 
     //SECTION START Do action based on Alert Type
-    let anchorPoint = document.getElementById('message');
+    $('.container-fluid').parent().append('<div style="display: inline-flex" id="navButtonHome"></div>')
+    let anchorPoint = document.getElementById('navButtonHome');
+    //let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('div');
     btnNavigation.type = 'div';
     btnNavigation.innerHTML = "Select an alert";
     btnNavigation.id = "doTheThing";
     btnNavigation.className = 'custombutton fake-custom-button';
-    anchorPoint.insertAdjacentElement('afterend', btnNavigation);
+    //anchorPoint.insertAdjacentElement('afterend', btnNavigation);
+    anchorPoint.appendChild(btnNavigation);
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
     let clickedAlert = $('#alertTable');
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
-    document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })//table name changed from caseOrProviderTable
+    //document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })//table name changed from caseOrProviderTable
     $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
         changeButtonText();
     });
     waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
-        onAlertsLoaded();
+        //onAlertsLoaded();
         changeButtonText();
-        goScrollIntoView();
+        //goScrollIntoView();
     });
     //SECTION END Do action based on Alert Type
 
     function goScrollIntoView() {
-        document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        if ($('.dataTables_empty').length > 0) {
+            console.log('No data in tables')
+            document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        };
     };
 
     function changeButtonText() {
@@ -454,20 +482,24 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
             alert("Something went wrong");
         });
     };
-    $('#message').after('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
+    $('#navButtonHome').append('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
     $('#copyAlertButton').click(function() { copyExplanation()});
     //SECTION END Copy Alert text, navigate to Case Notes
 
     //SECTION START Moving Worker ID and Worker Name to the section they are displayed in
     $('#inputWorkerId').parent().attr('id','workerIdRow')
     $('#workerName').parent().attr('id','workerNameRow')
-    $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderTable_wrapper').parent())
+    $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderAlertsTable_wrapper').parent())
     //SECTION END Moving Worker ID and Worker Name to the section they are displayed in
 
     //SECTION START Resize the Alert page's Explanation viewable area
     $('.h1-parent-row').siblings('br[clear!="all"]').remove();
     $('.col-lg-12').addClass('clearfix');
     addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
+    $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
+    $('#message').parents('.row').prev('br').remove();
+    $('label[for="groupId"]').text('Case #/PID:');
+    $('label[for="groupName"]').text('Case/Provider:');
     $("#alertTable").on('click', function() {
         $("#message").css('height', '100px');
         $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
@@ -876,7 +908,7 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
     addGlobalStyle('label[for="noteCategory"] { width: 61px !important }');
     $('#noteCategory').parent()
         .removeClass('col-lg-3 col-md-3 col-sm-3 textInherit').addClass('col-lg-10 col-md-10 textInherit')
-        .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-4 col-md-5 form-group"></div>')
+        .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-5 col-md-5 form-group"></div>')
     $('.col-lg-6.col-md-6.col-sm-6.col-xs-6.form-group.textInherit:not(".col-xl-8,.col-xl-6")').hide()
     $('.col-xs-2.col-sm-2.col-md-1.col-lg-1:not(:has("input"))').hide()
     $('.col-xs-5.col-sm-5.col-md-5.col-lg-5').hide();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.61
+// @version      0.63
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -18,6 +18,16 @@ window.location.href.indexOf("Welcome.htm") > -1 && (window.open("/ChildCare/Ale
 GM_addStyle ( `
 body {
 background-color: #eee !important;
+}
+
+div.container-fluid  {
+padding-left: 5px !important;
+padding-right: 5px !important;
+margin-left: -25px !important;
+}
+
+.hidden-tr {
+display: none;
 }
 
 .button-row {

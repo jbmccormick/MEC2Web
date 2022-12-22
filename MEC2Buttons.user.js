@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.63
+// @version      0.64
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,6 +12,7 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
+    $('br').remove();
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
 let primaryPanelID = document.getElementById("page-wrap") ? document.getElementById("page-wrap") : document.getElementById("greenline");
 $(primaryPanelID).after('<div><div class="button-row" id="buttonPaneOne"></div><div class="button-row" id="buttonPaneTwo"></div><div class="button-row" id="buttonPaneThree"></div></div><div id="buttonHouse" class="button-house"></div>');
@@ -36,6 +37,12 @@ $('tbody').click(function(event) {
     $(event.target).parents('tr').addClass('selected');
 });
 //SECTION END Fix for table entries losing selected class when clicked on
+
+//SECTION START Make all h4 clicky collapse
+$("h4").click( function() {
+	$(this).nextAll().toggleClass("collapse")
+});
+//SECTION END Make all h4 clicky collapse
 
 `///////////////////////////////// NAVIGATION BUTTONS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
 
@@ -352,6 +359,7 @@ if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.
 ////// ALERTS.htm start //////
 if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
     //SECTION START Superfluous delete button
+    $('label[for="message"]').parent('.row').remove();
     $('#alertsPanelData').css('overflow','visible');
     $('#alertTotal').after('<div class="form-button custom-form-button centered-text" id="deleteTop">Delete Alert</div>')
     $('#deleteTop').click(function() { $('#delete').click()});
@@ -411,20 +419,19 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
     //SECTION END Delete all alerts of current name onclick
 
     //SECTION START Do action based on Alert Type
-    $('.container-fluid').parent().append('<div style="display: inline-flex" id="navButtonHome"></div>')
+    $('h4:contains("Alert Detail")').width('13%').attr('id','h4AlertDetail').css('display','inline-flex');
+    //$('#groupName').parents('.col-lg-6.col-md-6').prepend('<div id="navButtonHome"></div>');
+    $('#h4AlertDetail').after('<div id="navButtonHome" style="display: inline-flex;"></div>');
     let anchorPoint = document.getElementById('navButtonHome');
-    //let anchorPoint = document.getElementById('message');
     let btnNavigation = document.createElement('div');
     btnNavigation.type = 'div';
     btnNavigation.innerHTML = "Select an alert";
     btnNavigation.id = "doTheThing";
     btnNavigation.className = 'custombutton fake-custom-button';
-    //anchorPoint.insertAdjacentElement('afterend', btnNavigation);
     anchorPoint.appendChild(btnNavigation);
     btnNavigation.addEventListener("click", function() { goDoTheThing()});
     let clickedAlert = $('#alertTable');
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
-    //document.querySelector('#caseOrProviderAlertsTable .selected').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })//table name changed from caseOrProviderTable
     $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
         changeButtonText();
     });
@@ -482,7 +489,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
             alert("Something went wrong");
         });
     };
-    $('#navButtonHome').append('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
+    $('#navButtonHome').prepend('<div class="custombutton fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
     $('#copyAlertButton').click(function() { copyExplanation()});
     //SECTION END Copy Alert text, navigate to Case Notes
 
@@ -494,7 +501,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
 
     //SECTION START Resize the Alert page's Explanation viewable area
     $('.h1-parent-row').siblings('br[clear!="all"]').remove();
-    $('.col-lg-12').addClass('clearfix');
+    //$('.col-lg-12').addClass('clearfix');//Should already be clearfix'd later in the script
     addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
     $('#message').parents('.row').prev('br').remove();
@@ -583,6 +590,7 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
         $('#providerInfoButton').click(function() {
             window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
         });
+    $('#reporterTypeCheckboxes input[name="reporterTypeSelections"]:not(:eq(0))').before('<br>');
 };
 //SECTION END Open provider information page from Child's Provider page
 
@@ -861,8 +869,7 @@ if (window.location.href.indexOf("CaseMember") > -1) {
 if (window.location.href.indexOf("CaseNotes") > -1) {
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').setAttribute('rows', '29');
-    //let newBr = document.createElement('br');
-    //document.getElementById('noteMemberReferenceNumber').parentNode.insertAdjacentElement("afterend", newBr);
+    $('br').remove();
 //};
 //SECTION END Case Notes custom styles
 
@@ -1221,7 +1228,6 @@ if (window.location.href.indexOf("ProviderAddress") > -1) {
 
 //SECTION START Fix multiple CSS issues on ProviderInformation
 if (window.location.href.indexOf('ProviderInformation') > -1) {
-   // $('.visible-xs.visible-sm').remove();
     $('.col-md-10').removeClass('col-md-10').addClass('col-md-4');
     $('#providerData>div.col-lg-4').addClass('col-md-4');
     $('.col-lg-3.col-md-3.textInherit').removeClass('col-md-3').addClass('col-md-4')
@@ -1282,20 +1288,15 @@ if (window.location.href.indexOf("Provider") < 0) { $('#comments, #memberComment
 
 let $updateDate = $('input[name="updateDate"]:last');
 let $updateSiblings = $updateDate.parent().siblings('div');
-//let $updateSiblings = $('#updateDate').parent().siblings('div');//button row
 $('#updateDate').parent().siblings('br').remove()
-//$updateSiblings.parent().prev().prop('id','buttonOrig');
 $updateSiblings.contents().filter(function() { return this.nodeType === 3 }).remove()
 $updateSiblings.children('br').remove()
-$updateSiblings.removeClass('col-md-8 col-lg-8 col-md-7 col-lg-7 col-xs-7 col-sm-7')//.addClass('col-md-12 col-lg-12')
-addGlobalStyle('.form-button-margins { margin-left: 10px !important; margin-bottom: 5px !important; }');
-$updateSiblings.children('input').addClass('form-button-margins')
+$updateSiblings.removeClass('col-md-8 col-lg-8 col-md-7 col-lg-7 col-xs-7 col-sm-7')
+$updateSiblings.find('input.form-button').addClass('form-button-margins')
 $updateSiblings.prop('class','clearfix')
 $updateSiblings.eq(0).append($updateSiblings.eq(1).children())
-//$('#updateDate')
 $updateDate.parents().eq(2).append('<div class="form-group clearfix" id="updateHome"></div>');
 $('#updateHome').append($('#updateDate').parent());
-//$('#updateDate')
 $updateDate.parent().css('float', 'right');
 
 `///////////////////////////////// PAGE SPECIFIC CHANGES SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1518,17 +1519,17 @@ function deburrThePage() {
 	$('div[id$="TableData"]').siblings('br').remove();//remove BR around tables
 	$('div[id$="Data_wrapper"]').siblings('br').remove();//remove BR around less conventionally named tables
     $('div[id$="TableAndPanelData"]').siblings('br').remove();//testing
-	$('.panel-box-format, .form-group, .col-lg-12').addClass('clearfix');
+	//$('.panel-box-format, .form-group, .col-lg-12').addClass('clearfix');
 };
 deburrThePage();
 //SECTION END Removing extra BRs and using clearfix to prevent overlapping elements
 
-//SECTION START Duplicate buttons above H1 row //Working, but #add is problematic. Also maybe not on Search pages?
+//SECTION START Duplicate buttons above H1 row
 if (window.location.href.indexOf('InactiveCaseList') < 0 && window.location.href.indexOf('ActiveCaseList') < 0) {
     $('.modal .form-button').addClass('modal-button');
     $('table').click(function() {//check on table click if buttons were enabled/disabled and use class to mirror
         $('div.mutable').each(function() {
-            let oldButtonId = $(this).prop('id').split('Button')[0];
+            let oldButtonId = $(this).prop('id').split('DuplicateButton')[0];
             if ($('#' + oldButtonId).prop('disabled')) {
                 $(this).addClass('custom-form-button-disabled');
             } else {
@@ -1539,29 +1540,23 @@ if (window.location.href.indexOf('InactiveCaseList') < 0 && window.location.href
     $('.form-button:not([id$="Business"]):not([id$="Person"])').not('.modal-button, #workerSearch, #contactInfo, #providerIdSubmit, #ratePeriodSelectButton, #validateCertificationButton, #resetCertButton, #validateLicenseButton, #resetLicButton, #selectFra, #caseSearch, #providerSearch, #caseInputSubmit, #alertInputSubmit, #search, #reset, #changeType, #storage, #addRegistrationFee, #deleteRegistrationFee, #addBilledTime, #deleteBilledTime, #calculate, #cappingInfo, #calcAmounts, .custombutton, .fake-custom-button').each(function() {
         if ($(this).val()) {
             let disabledStatus = $(this).prop('disabled') ? 'form-button custom-form-button custom-form-button-disabled centered-text mutable' : 'form-button custom-form-button centered-text mutable';
-            let idName = $(this).prop('id') + "Button";
+            let idName = $(this).prop('id') + "DuplicateButton";
             $('#buttonHouse').append(`<div id="` + idName + `" class="` + disabledStatus + `" onclick="$('#` + $(this).attr('id') + `').click()">` + $(this).val() + `</div>`);
-            //$('#buttonHouse').append("<div id=\"" + idName + "\" class=\"" + disabledStatus + "\" onclick=\"$('#" + $(this).attr('id') + "').click()\">" + $(this).val() + "</div>");
+            ////$('#buttonHouse').append("<div id=\"" + idName + "\" class=\"" + disabledStatus + "\" onclick=\"$('#" + $(this).attr('id') + "').click()\">" + $(this).val() + "</div>");
         };
     });
     $('#buttonHouse').children().length == 0 && ($('#buttonHouse').hide());
 };
+//SECTION END Buttons above H1 row
+
 if (window.location.href.indexOf('CaseWrapUp') > -1) {
     if ($('.rederrortext').text() == 'Case Wrap-Up successfully submitted.') {
         $('#buttonHouse').hide();
     };
 };
-//SECTION END Buttons above H1 row
-
 //SECTION START Retract drop-down menu on page load
 $('.sub_menu').css('visibility', 'hidden');
 //SECTION END Retract drop-down menu on page load
-
-//SECTION START Make all h4 clicky collapse
-$("h4").click( function() {
-	$(this).nextAll().toggleClass("collapse")
-});
-//SECTION END Make all h4 clicky collapse
 
 viewMode && ($('[id="Report a Problem"]').children().attr('target','_blank'));//Make 'Report a Problem' open in new tab
 

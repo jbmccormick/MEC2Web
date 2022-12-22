@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.64
+// @version      0.65
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -18,6 +18,25 @@ window.location.href.indexOf("Welcome.htm") > -1 && (window.open("/ChildCare/Ale
 GM_addStyle ( `
 body {
 background-color: #eee !important;
+}
+
+.form-button-margins {
+margin-left: 10px !important;
+margin-bottom: 5px !important;
+}
+
+#user_sign-in_content2 .content_35pad::after, .panel-box-format::after, .form-group::after, .col-lg-12::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+#alertsTableAndPanelData #message {
+margin-top: 5px;
+}
+
+div.dataTables_scrollBody {
+margin-top: -4px;
 }
 
 .fc .fc-toolbar.fc-header-toolbar {//FinancialAbsentDayHolidayTracking
@@ -163,7 +182,7 @@ margin-bottom: 1px;
 
 #snackBar {
 min-width: 450px;
-margin-left: -225px;//Divide value of min-width by 2
+margin-left: -225px;/*Divide value of min-width by 2*/
 background-color: #333;
 color: #fff;
 font-size: x-large;
@@ -245,8 +264,14 @@ color: rgba(0 0 0 / 50%) !important;
 
 .error_alertbox_new {
 margin: 5px !important;
-padding: 5px !important;
+padding: 2px 2px 0px 8px !important;
 }
+
+/*
+strong.rederrortext {
+display: none;
+}
+*/
 
 .panel-box-format {
 margin-bottom: 2px !important;

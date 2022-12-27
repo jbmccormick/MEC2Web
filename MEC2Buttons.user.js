@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.64
+// @version      0.65
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -342,7 +342,34 @@ newTabFieldButtons();
 ///////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
 
 //Seasonal items, just for fun
-$('h1').prepend('🎄 ');
+$('h1').prepend('🎉 ');
+
+//SECTION START Selecting the first element on pages
+function eleFocus(ele) {
+    $(ele).focus();
+};
+//window.location.href.indexOf('') && viewMode ? eleFocus() : eleFocus();
+//window.location.href.indexOf('') && !viewMode ? eleFocus() : eleFocus();
+
+if (window.location.href.indexOf("CaseApplicationInitiation") > -1) {
+    if (viewMode) {
+        eleFocus('#new');
+    } else {
+        $('#pmiNumber').attr('disabled') ? eleFocus('#next') : eleFocus('#pmiNumber');
+    };
+};
+//window.location.href.indexOf("ClientSearch.htm?from") && !viewMode ? eleFocus() : eleFocus();
+//(CaseMember.htm?from=CaseApplicationInitiation) && eleFocus('#next')
+//CaseMemberII.htm?from && $('#next').attr('disabled') && viewMode ? eleFocus('#new') : eleFocus('#next')
+//(CaseMemberII && !viewMode)) && eleFocus('#memberReferenceNumberNewMember')
+if (window.location.href.indexOf('CaseAddress.htm?from') > -1) {
+    if (viewMode) {
+        eleFocus('#new')
+    } else {
+        $('#effectiveDate').attr('disabled') ? eleFocus('#subsidizedHousing') : eleFocus('#effectiveDate')
+    }
+};
+//SECTION END Selecting the first element on pages
 
 //SECTION START Active caseload numbers
 if (window.location.href.indexOf("ActiveCaseList") > -1) {
@@ -391,30 +418,54 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
             };
         };
     };*/
-    /*$('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All">Delete All</div>');
+    $('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
     $('#deleteAll').val('Delete All').on("click", function() {
         //sessionStorage.setItem('alertsToDelete', $('#caseOrProviderAlertsTable .selected td').eq(2).text());
-        let caseNumberToDelete = $("#groupId").val();
-        const observer = new MutationObserver();
-        observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
+        let caseNumberToDelete = $('#caseNumber').val();//$("#groupId").val();
+        let caseName = $('#groupName').val();
+                    console.log('variables set; caseNumberToDelete is ' + caseNumberToDelete + ',caseName is '+ caseName)
+        //const observer = new MutationObserver(doDeleteAll);
+        //observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
         function doDeleteAll() {
+                    console.log('started doDeleteAll')
             return new Promise((resolve, reject) => {
-                if ($("#groupId").val() === caseNumberToDelete && $('#delete').val() === 'Delete Alert') {
-                    //if ($('#delete').prop('disabled')) {
-                    //    reject('rejected')
-                    //} else {
-                        resolve('resolved')
-                    //}
-                } else {
-                    reject('rejected')
+                //if ($('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(3)').html() <= 0) {
+                if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() < 1) {
+                    reject('All eligible alerts deleted for case ' + caseNumberToDelete)
+                    console.log('failed having more than 0 alerts')
+                }
+                if ($('#delete').val() === 'Delete Alert' && $('#delete').prop('disabled')) {
+                    reject('Alert can\'t be deleted for case ' + caseNumberToDelete)
+                    console.log('failed alert cannot be deleted')
+                }
+                if (!$('#delete').val() === 'Delete Alert') {
+                    console.log('failed delete button is Please wait')
+                    setTimeout(() => doDeleteAll(), 1000)
+                }
+                if (caseNumberToDelete != $('#caseNumber').val()) {
+                    $('td:contains("' + caseName + '")').parent('tr').click()
+                    console.log('failed not being on correct row')
+                    return doDeleteAll();
+                }
+                if ($("#groupId").val() === caseNumberToDelete/* && $('#delete').val() === 'Delete Alert'*/) {
+                    resolve('Alerts remaining: ' + $('#caseOrProviderAlertTotal').val())
+                    console.log('success deleting the alert')
                 }
             })
+                .then(() => {
+                    console.log('then statement')
+                $('#delete').click()
+            })
+                .catch(() => {
+                    console.log('catch statement')
+            })//observer.disconnect())
+                .finally((message) => $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">' + message + '</div>'))
+                    console.log('finally statement')
         };
-        doDeleteAll()
-            .then((message) => $('#delete').click())
-            .catch((error) => observer.disconnect())
-            //.catch((error) => observer.disconnect())
-    });*/
+        //$('#delete').click();
+        console.log('just about to start doDeleteAll')
+        doDeleteAll();
+    });
     //};
     //SECTION END Delete all alerts of current name onclick
 
@@ -535,6 +586,7 @@ if (window.location.href.indexOf("AlertWorkerCreatedAlert") > -1 && window.locat
 if (window.location.href.indexOf("CaseAction") > -1) {
     $('#edit').parents('.form-group').after($('#edit').parent().children());
     addGlobalStyle('input.form-button { margin-left: 10px !important; }');
+    $('input[type="checkbox"]:not(:eq(0))').before('<br>');
 };
 //SECTION END Fix button placement on CaseAction
 

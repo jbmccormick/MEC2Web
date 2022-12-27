@@ -418,7 +418,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
             };
         };
     };*/
-    $('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
+    //$('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
     $('#deleteAll').val('Delete All').on("click", function() {
         //sessionStorage.setItem('alertsToDelete', $('#caseOrProviderAlertsTable .selected td').eq(2).text());
         let caseNumberToDelete = $('#caseNumber').val();//$("#groupId").val();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.66
+// @version      0.67
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -12,6 +12,7 @@
 (function() {
     'use strict';
 /* globals jQuery, $, waitForKeyElements */
+    $('#confirm').change(function() { console.log('Changed') });
     $('br').remove();
 document.getElementsByClassName("line_mn_green")[0].setAttribute("id", "greenline");
 let primaryPanelID = document.getElementById("page-wrap") ? document.getElementById("page-wrap") : document.getElementById("greenline");
@@ -168,7 +169,7 @@ const rowThreeButtonArray = {
 		providerAlias:["Alias", "ProviderAlias", "_self", "Provider Alias", "ProviderAliasSelf", "providerButtons"],
 		providerRegistrationAndRenewal:["Registration", "ProviderRegistrationAndRenewal", "_self", "Registration Renewal", "ProviderRegistrationSelf", "providerButtons"],
         providerTaxInfo:["Tax", "ProviderTaxInfo", "_self", "Tax Info", "ProviderTaxInfoSelf", "providerButtons"],
-        providerPaymentHistory:["Pay History", "ProviderPaymentHistory", "_self", "Provider Payment History", "ProviderPaymentHistory", "providerButtons"],
+        providerPaymentHistory:["Payment History", "ProviderPaymentHistory", "_self", "Provider Payment History", "ProviderPaymentHistory", "providerButtons"],
 	},
 	transferButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		caseTransfer:["Case Transfer", "CaseTransfer", "_self", "Case Transfer", "CaseTransferSelf", "transferButtons"],
@@ -357,7 +358,7 @@ function eleFocus(ele) {
             $(ele).addClass('focusedElement')
             $('.focusedElement').focus()
             console.log($( document.activeElement ))
-        }, 500);
+        }, 1000);
     });
 };
 // ? eleFocus('#') : eleFocus('#');
@@ -379,17 +380,23 @@ if (window.location.href.indexOf('CaseAddress.htm?from') > -1) {
         eleFocus('#new')
     } else {
         $('#effectiveDate').attr('disabled') ? eleFocus('#subsidizedHousing') : eleFocus('#effectiveDate')
-    }
+    };
 };
+//
 window.location.href.indexOf("CaseMemo") > -1 && !viewMode && ($('#memberComments').focus());
+//
 if (window.location.href.indexOf('CaseNotes') > -1 && !viewMode) {
     $('#noteMemberReferenceNumber').focus(function() {
         setTimeout(document.querySelector('#save').scrollIntoView({ behavior: 'smooth', block: 'end' }), 0)
     })
     eleFocus('#noteMemberReferenceNumber');
 };
+(window.location.href.indexOf("CaseNotes") > -1 && viewMode) && eleFocus('#newDuplicateButton');
+//
 (window.location.href.indexOf("CaseSpecialLetter") > -1 && !viewMode) && eleFocus('#status');
+//
 (window.location.href.indexOf("CaseSupportActivity") > -1 && !viewMode) && eleFocus('#memberReferenceNumberNewMember');
+//
 if (window.location.href.indexOf("CaseParent") > -1 && !viewMode) {
     $('#parentReferenceNumberNewMember').length == 0 ? $('#childReferenceNumberNewMember').focus() : $('#parentReferenceNumberNewMember').focus();
 };
@@ -446,74 +453,47 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
     //SECTION END Superfluous delete button
 
     //SECTION START Delete all alerts of current name onclick
-    /*function onAlertsLoaded() {
-        let alertsToDelete = sessionStorage.getItem('alertsToDelete');
-        if (alertsToDelete !== undefined && alertsToDelete !== null) {
-            let alertsToDeleteCase = $('#caseOrProviderAlertsTable tr').filter(':contains(' + alertsToDelete + ')');
-            //if ($('#caseOrProviderAlertsTable .selected td').eq(2).text() == alertsToDelete) {
-            if (alertsToDeleteCase.length > 0) {
-                if (!$(alertsToDeleteCase).hasClass('selected')) {
-                    alertsToDeleteCase.click();
-                    //$('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. It\'s too slow.</div>');
-                    //return
-                }
-                if ($('#delete').prop('disabled')) {
-                    $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. Alert can\'t be deleted</div>');
-                    sessionStorage.removeItem('alertsToDelete');
-                    return;
-                } else {
-                    $('#delete').click()
-                };
-            } else {
-                $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex">Delete All ended. All alerts deleted from case ' + alertsToDelete + '.</div>');
-                sessionStorage.removeItem('alertsToDelete');
-                return;
-            };
-        };
-    };*/
     $('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
-    $('h4:contains("Case/Provider List")').append('<div style="float: right; display:inline-flex id="alertMessage"></div>');
+    $('h4:contains("Case/Provider List")').after('<h4 style="float: right; display:inline-flex color: #003865; font-size: 1.2em; font-weight: bold;" id="alertMessage"></h4>');
     $('#deleteAll').val('Delete All').on("click", function() {
         let caseNumberToDelete = $('#caseNumber').val();//$("#groupId").val();
         let caseName = $('#groupName').val();
         console.log('Delete All variables set; caseNumberToDelete is ' + caseNumberToDelete + ',caseName is '+ caseName)
-        //doDeleteAll(caseNumberToDelete, caseName);
+        doDeleteAll(caseNumberToDelete, caseName);
     });
     function doDeleteAll(caseNumberToDelete, caseName) {
         const observer = new MutationObserver(doDeleteAll);
         observer.disconnect();
         console.log('started doDeleteAll')
-        if (caseNumberToDelete != $('#caseNumber').val()) {
-            if (!$('#caseOrProviderAlertsTable td:contains("' + caseName + '")')) {
-                $('#alertMessage').text('Case number not present.')
-                return;
-            }
-            $('td:contains("' + caseName + '")').parent('tr').click();
-            console.log('failed not being on correct row')
-            return doDeleteAll();
-        }
-        if (!$('#delete').val() === 'Delete Alert') {
+        if (caseNumberToDelete == $('#caseNumber').val() && $('#delete').val() !== 'Please wait') {
+            console.log(caseNumberToDelete + ' vs ' + $('#caseNumber').val())
+            $('#delete').click();
+            console.log('Clicking Delete, going to the top');
+            setTimeout(function() {return doDeleteAll(caseNumberToDelete, caseName)}, 1000);
+        } else if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() < 1) {//Any alerts to delete?
+            console.log(caseNumberToDelete + ' vs ' + $('#caseNumber').val())
+            $('#alertMessage').text('Delete All ended. All alerts deleted from case ' + caseNumberToDelete + '.');
+        } else if ($('#delete').val() !== 'Delete Alert') {
+            console.log(caseNumberToDelete + ' vs ' + $('#caseNumber').val())
             $('#alertMessage').text('Waiting for Delete button to be available.');
             observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
-            return;
-        }
-        if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() < 1) {
-            $('#alertMessage').text('Delete All ended. All alerts deleted from case ' + caseNumberToDelete + '.');
-            return;
-        }
-        if ($('#delete').val() === 'Delete Alert' && $('#delete').prop('disabled')) {
-            $('#alertMessage').text('Delete All ended. Alert can\'t be deleted.');//Maybe hide the undeleteable rows and try return doDeleteAll()?
-            return;
-        }
-        if ($("#groupId").val() === caseNumberToDelete/* && $('#delete').val() === 'Delete Alert'*/) {
+        } else if (caseNumberToDelete !== $('#caseNumber').val()) {
+            console.log(caseNumberToDelete + ' vs ' + $('#caseNumber').val())
+            if (!$('#caseOrProviderAlertsTable td:contains("' + caseName + '")')) {
+                $('#alertMessage').text('Case number not present.')
+            };
+            $('td:contains("' + caseName + '")').parent('tr').click();
+            console.log('failed for not being on correct row')
+            setTimeout(function() {return doDeleteAll(caseNumberToDelete, caseName)}, 1000);
+        } else if ($("#groupId").val() === caseNumberToDelete/* && $('#delete').val() === 'Delete Alert'*/) {
+            console.log(caseNumberToDelete + ' vs ' + $('#caseNumber').val())
             $('#alertMessage').text('Alerts remaining: ' + $('#caseOrProviderAlertTotal').val())
             observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
-        }
-        //after all alerts are deleted for a case, re-select that case and scroll to it
-        //and maybe hide other rows that have 0?
+        };
+        // if ($('#delete').val() === 'Delete Alert' && $('#delete').prop('disabled')) {
+        //     $('#alertMessage').text('Delete All ended. Alert can\'t be deleted.');//Maybe hide the undeleteable rows and try return doDeleteAll()?
+        // }//Commented as undeletable alerts will just hide if 'deleted'
     };
-        //$('#delete').click();
-    //};
     //SECTION END Delete all alerts of current name onclick
 
     //SECTION START Do action based on Alert Type
@@ -1036,22 +1016,42 @@ if (window.location.href.indexOf("CaseMember") > -1) {
 
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes") > -1) {
-    document.getElementsByClassName('panel-box-format')[1].style.display = "none";
-    document.getElementById('noteStringText').setAttribute('rows', '29');
-    $('br').remove();
-//};
-//SECTION END Case Notes custom styles
-
-//SECTION START CaseNotes
-//if (window.location.href.indexOf("CaseNotes") > -1) {
     $('#storage').addClass('collapse');
     $('#noteArchiveType, #noteSearchStringText, #noteImportant').prop('tabindex', '-1');
     $('table tr td:contains("Disbursed child care support")').parents('tr').addClass('collapse');//Hiding Disbursed Child Care Support payment rows
-//};
+//SECTION START Permanent fix for case notes - case notes saved when state broke them are permanently broken
+	function fixCaseNoteDisplay() {
+		let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
+		document.getElementById('noteStringText').value = fixedCaseNote
+	};
+	let caseNoteTable = document.getElementById('caseNotesTable');
+	caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
+	fixCaseNoteDisplay()
+//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken
+
+//SECTION START Disable Edit button if note date !== today (maybe make a ! button to enable and click edit?)
+    let todayDate = new Date().toLocaleDateString('en-US', {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+        });
+    const observer = new MutationObserver(disableEdit);
+    observer.observe(document.querySelector('#rowIndex'), {attributes: true});
+    function disableEdit() {
+        if ($('table tr.selected td').eq(1).text() !== todayDate) {
+            $('#edit').prop('disabled', true);
+        };
+    };
+    disableEdit();
+};
+//SECTION END CaseNotes Disable Edit button if note date !== today
 //SECTION END CaseNotes
 
-//SECTION START CaseNotes layout fix
-//if (window.location.href.indexOf('CaseNotes') > -1) {
+//SECTION START CaseNotes and ProviderNotes layout fix
+if (window.location.href.indexOf('CaseNotes') > -1 || window.location.href.indexOf("ProviderNotes") > -1) {
+    document.getElementsByClassName('panel-box-format')[1].style.display = "none";
+    document.getElementById('noteStringText').setAttribute('rows', '29');
+    $('br').remove();
     $('#noteSummary')
         .parent().removeClass('col-lg-4 col-md-4 col-sm-4').addClass('col-lg-9 col-md-10')
         .parents('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-6 col-md-7');
@@ -1091,38 +1091,8 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
     $('.col-xs-5.col-sm-5.col-md-5.col-lg-5').hide();
     $('#noteImportantGroup, #noteMemberReferenceNumberGroup').prependTo('#addInfoRowOne')
     $('#removeMe').remove()
-//};
-//SECTION END CaseNotes layout fix
-
-//SECTION START Permanent fix for case notes - case notes saved when state broke them are permanently broken
-//if (window.location.href.indexOf("CaseNotes") > -1) {
-	function fixCaseNoteDisplay() {
-		let fixedCaseNote = document.getElementById('noteStringText').value.replaceAll('/n', '\n');
-		document.getElementById('noteStringText').value = fixedCaseNote
-	};
-	let caseNoteTable = document.getElementById('caseNotesTable');
-	caseNoteTable.addEventListener("click", function() { fixCaseNoteDisplay()});
-	fixCaseNoteDisplay()
-//};
-//SECTION END Permanent fix for case notes - case notes saved when state broke them are permanently broken
-
-//SECTION START Disable Edit button if note date !== today (maybe make a ! button to enable and click edit?)
-//if (window.location.href.indexOf("CaseNotes") > -1) {
-    let todayDate = new Date().toLocaleDateString('en-US', {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-        });
-    const observer = new MutationObserver(disableEdit);
-    observer.observe(document.querySelector('#rowIndex'), {attributes: true});
-    function disableEdit() {
-        if ($('table tr.selected td').eq(1).text() !== todayDate) {
-            $('#edit').prop('disabled', true);
-        };
-    };
-    disableEdit();
 };
-//SECTION END Disable Edit button if note date !== today
+//SECTION END CaseNotes and ProviderNotes layout fix
 
 //SECTION START Fixing the table height of the Case Notice and Job Search Tracking tables to show more notices
 if (window.location.href.indexOf("CaseNotices") > -1 || window.location.href.indexOf("CaseJobSearchTracking") > -1) {
@@ -1283,6 +1253,7 @@ if (window.location.href.indexOf('CaseTransfer') > -1) {
                         if (document.getElementById('caseTransferToName').value === 'CASE, SLC CLOSED') {
                             localStorage.setItem('MECH2.doClose','closeMe');
                             $('#save').click();
+                            console.log('clicked save');
                             return false;
                         };
                     }, 1000, 3);
@@ -1648,7 +1619,7 @@ function fixUpdateDateAndUpdateUser() {
         .addClass('updateParent').end()
         .children('input').width('11ch').end()
         .children('a').width('9ch');
-    let $updateSiblings = $updateParent.siblings('div');//button div
+    let $updateSiblings = window.location.href.indexOf("CaseNotes") > -1 ? $('#storage').parent() : $updateParent.siblings('div');//button div
     $updateParent.siblings('br').remove();
     $updateSiblings.children('br').remove();
     $updateSiblings.addClass('updateSiblings');
@@ -1658,7 +1629,6 @@ function fixUpdateDateAndUpdateUser() {
     $updateSiblings.eq(0).append($updateSiblings.eq(1).children()).addClass('nativeButtonHome');//move second row of buttons (if exist) to first row
     $updateDate.parents().eq(2).append('<div class="form-group clearfix" id="updateHome"></div>');//new div to end of *PanelsData div
     $('#updateHome').append($updateParent);
-    //$('.form-button:last').parents('div').contents().filter(function() { return this.nodeType === 3 }).each(function() { this.textContent = this.textContent.trim() });//trim spaces
     $('.nativeButtonHome').contents().filter(function() { return this.nodeType === 3 }).each(function() { this.textContent = this.textContent.trim() });//trim spaces
 };
 fixUpdateDateAndUpdateUser();
@@ -1811,8 +1781,8 @@ if (window.location.href.indexOf('InactiveCaseList') < 0 && window.location.href
         if ($(this).val()) {
             let disabledStatus = $(this).prop('disabled') ? 'form-button custom-form-button custom-form-button-disabled centered-text mutable' : 'form-button custom-form-button centered-text mutable';
             let idName = $(this).prop('id') + "DuplicateButton";
-            $('#buttonHouse').append(`<div id="` + idName + `" class="` + disabledStatus + `" onclick="$('#` + $(this).attr('id') + `').click()">` + $(this).val() + `</div>`);
-            ////$('#buttonHouse').append("<div id=\"" + idName + "\" class=\"" + disabledStatus + "\" onclick=\"$('#" + $(this).attr('id') + "').click()\">" + $(this).val() + "</div>");
+            $('#buttonHouse').append(`<div id="` + idName + `" tabindex="0" class="` + disabledStatus + `" onkeydown="(event.code == 'Space') && $('#` + $(this).attr('id') + `').click()" onclick="$('#` + $(this).attr('id') + `').click()">` + $(this).val() + `</div>`);
+            //$('#buttonHouse').append("<div id=\"" + idName + "\" class=\"" + disabledStatus + "\" onclick=\"$('#" + $(this).attr('id') + "').click()\">" + $(this).val() + "</div>");
         };
     });
     $('#buttonHouse').children().length == 0 && ($('#buttonHouse').hide());

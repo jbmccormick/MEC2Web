@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.66
+// @version      0.67
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -16,6 +16,20 @@
 window.location.href.indexOf("Welcome.htm") > -1 && (window.open("/ChildCare/Alerts.htm", "_self"));//auto-redirect from Welcome to Alerts
 
 GM_addStyle ( `
+.panel {
+margin-bottom: 10px !important;
+}
+
+#footer_links {
+margin-top: 10px !important;
+margin-bottom: 0px !important;
+padding: 0px !important;
+}
+
+#footer_info {
+padding-bottom: 5px !important;
+}
+
 #caseId {
 width: 10ch !important;
 }

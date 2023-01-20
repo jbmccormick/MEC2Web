@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.67
+// @version      0.68
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -217,6 +217,10 @@ border: 1px #bfbfbf solid !important;
 
 .borderless:disabled, .borderless:read-only {
 background-color: #eee !important;
+}
+
+textarea.form-control {
+padding: 0px 5px !important;
 }
 
 input.form-control, select.form-control {
@@ -530,19 +534,19 @@ height: 15px !important;
 
 #memberComments, #comments, #textbox2 {
 width: 61ch !important;
-padding: 0px !important;
+padding: .5ch !important;
 overflow: hidden !important;
 }
 
 #noteStringText {
 width: 101ch !important;
-padding: 0px !important;
+padding: .5ch !important;
 overflow: hidden !important;
 }
 
 .col-lg-7.col-md-7 > #message {
 width: 51ch !important;
-padding: 0px !important;
+padding: .5ch !important;
 overflow: hidden !important;
 }
 

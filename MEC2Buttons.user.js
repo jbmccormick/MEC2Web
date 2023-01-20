@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.67
+// @version      0.68
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -352,54 +352,74 @@ let $toLabel = $('label').filter(function() { return $(this).text() === 'to' || 
 
 //SECTION START Focusing the first desired element on pages
 function eleFocus(ele) {
-    $(ele).ready(function() {
+    $(document).ready(function() {
+        console.log($( document.activeElement ))
         setTimeout(function() {
-            console.log($( document.activeElement ))
             $(ele).addClass('focusedElement')
             $('.focusedElement').focus()
             console.log($( document.activeElement ))
-        }, 1000);
+        }, 500);
     });
 };
-// ? eleFocus('#') : eleFocus('#');
-//(window.location.href.indexOf('') > -1 && !viewMode) && eleFocus('#')
-
 if (window.location.href.indexOf("CaseApplicationInitiation") > -1) {
-    if (viewMode) {
-        eleFocus('#new');
-    } else {
-        $('#pmiNumber').attr('disabled') ? eleFocus('#next') : eleFocus('#pmiNumber');
-    };
+    if (viewMode) { eleFocus('#new') } else { $('#pmiNumber').attr('disabled') ? eleFocus('#next') : eleFocus('#pmiNumber') };
 };
 //window.location.href.indexOf("ClientSearch.htm?from") > -1 && !viewMode ? eleFocus() : eleFocus();
 //(window.location.href.indexOf("CaseMember.htm?from=CaseApplicationInitiation") > -1) && eleFocus('#next')
 //(window.location.href.indexOf("CaseMemberII.htm?from") > -1 && $('#next').attr('disabled') && viewMode) ? eleFocus('#new') : eleFocus('#next')
-//(CaseMemberII && !viewMode)) && eleFocus('#memberReferenceNumberNewMember')
-if (window.location.href.indexOf('CaseAddress.htm?from') > -1) {
+//
+if (window.location.href.indexOf('CaseEmploymentActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+//
+if (window.location.href.indexOf('CaseEarnedIncome') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+//SUB-SECTION START Member tab pages
+if (window.location.href.indexOf('CaseMember') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseMemberII') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf("CaseParent") > -1) {
+    if (!viewMode) { $('#parentReferenceNumberNewMember').length == 0 ? $('#childReferenceNumberNewMember').focus() : $('#parentReferenceNumberNewMember').focus() }
+    else { eleFocus('#newDuplicateButton') }
+}
+if (window.location.href.indexOf("CaseCSE") > -1) {
+    if (viewMode) { eleFocus('#newDuplicateButton') }
+    else if ($('#csePriNewReferenceNumber').length == 0) { eleFocus('#cseChildrenGridChildNewReferenceNumber') }
+        else { eleFocus('#csePriNewReferenceNumber') }
+};
+if (window.location.href.indexOf('CaseChildProvider') > -1) {
+    if (viewMode) { eleFocus('#newDuplicateButton') }
+    else if ($('#memberReferenceNumberNewMember').val() === '') { eleFocus('#memberReferenceNumberNewMember') }
+    else { eleFocus('#primaryEndDate') }
+}
+//SUB-SECTION END Member Tab pages
+
+//SUB-SECTION START Case Tab pages
+if (window.location.href.indexOf('CaseAddress.htm') > -1) {
+    if (viewMode) { eleFocus('#editDuplicateButton') }
+    else if ($('#effectiveDate').attr('disabled')) { eleFocus('#subsidizedHousing') }
+        else { $('#effectiveDate').select() }
+}
+if (window.location.href.indexOf("CaseAction") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#failHomeless') }
+if (window.location.href.indexOf('FundingAvailability') > -1) {
     if (viewMode) {
-        eleFocus('#new')
-    } else {
-        $('#effectiveDate').attr('disabled') ? eleFocus('#subsidizedHousing') : eleFocus('#effectiveDate')
-    };
+        $('#new').attr('disabled') === 'disabled' ? eleFocus('#edit') : eleFocus('#new') }
+    else { eleFocus('#basicSlidingFeeFundsAvailableCode') }
+};
+//SUB-SECTION END Case Tab pages
+if (window.location.href.indexOf("CaseMemo") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberComments') }
+//
+if (window.location.href.indexOf('CaseNotes') > -1) {
+    if (viewMode) { eleFocus('#newDuplicateButton') }
+        else { $('#noteMemberReferenceNumber').focus(function() { setTimeout(document.querySelector('#save').scrollIntoView({ behavior: 'smooth', block: 'end' }), 0) })
+        eleFocus('#noteMemberReferenceNumber') }
 };
 //
-window.location.href.indexOf("CaseMemo") > -1 && !viewMode && ($('#memberComments').focus());
+if (window.location.href.indexOf('CaseSchool') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') };
 //
-if (window.location.href.indexOf('CaseNotes') > -1 && !viewMode) {
-    $('#noteMemberReferenceNumber').focus(function() {
-        setTimeout(document.querySelector('#save').scrollIntoView({ behavior: 'smooth', block: 'end' }), 0)
-    })
-    eleFocus('#noteMemberReferenceNumber');
-};
-(window.location.href.indexOf("CaseNotes") > -1 && viewMode) && eleFocus('#newDuplicateButton');
+if (window.location.href.indexOf("CaseSpecialLetter") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#status') }
 //
-(window.location.href.indexOf("CaseSpecialLetter") > -1 && !viewMode) && eleFocus('#status');
+if (window.location.href.indexOf("CaseSupportActivity") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 //
-(window.location.href.indexOf("CaseSupportActivity") > -1 && !viewMode) && eleFocus('#memberReferenceNumberNewMember');
 //
-if (window.location.href.indexOf("CaseParent") > -1 && !viewMode) {
-    $('#parentReferenceNumberNewMember').length == 0 ? $('#childReferenceNumberNewMember').focus() : $('#parentReferenceNumberNewMember').focus();
-};
+(window.location.href.indexOf('CaseWrapUp') > -1) && eleFocus('#done')
+//
 //SECTION END Focusing the first desired element on pages
 
 //SECTION START Page Specific Changes
@@ -762,11 +782,9 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
         const formInfo = {pdfType:"csForms", xNumber:localStorage.getItem("MECH2.userIdNumber"), caseNumber:caseNumber, cpInfo:cpInfo, ncpInfo:ncpInfo, ...childList};
         window.open("http://nt-webster/slcportal/Portals/65/Divisions/FAD/IM/CCAP/index.html?parm1=" + JSON.stringify(formInfo), "_blank");
     });
-};
 //SECTION END Fill Child Support PDF Forms
 
 //SECTION START Remove unnecessary fields from Child Support Enforcement
-if (window.location.href.indexOf("CaseCSE") > -1) {
     let $hiddenCSE = $('#cseAbsentParentInfoMiddleInitial, #cseAbsentParentInfoSsn, #cseAbsentParentInfoBirthdate, #cseAbsentParentInfoAbsentParentSmi, #cseAbsentParentInfoAbsentParentId').parents('.form-group')
     $($hiddenCSE).hide();
     $('#cseAbsentParentInfoLastName').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text" style="float: right;" id="abpsShowHide">Toggle extra info</div>');
@@ -791,16 +809,6 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
     $('#cseGoodCauseClaimStatusToggle').click(function() { $goodCause.toggle() });
 };
 //SECTION END Remove unnecessary fields from Child Support Enforcement
-
-//CSE focus start
-if (window.location.href.indexOf("CaseCSE") > -1 && !viewMode) {
-    if ($('#csePriNewReferenceNumber').length == 0) {
-        $('#cseChildrenGridChildNewReferenceNumber').focus();
-    } else {
-        $('#csePriNewReferenceNumber').focus();
-    };
-};
-//CSE focus end
 
 //SECTION START Remove unnecessary fields from CaseEarnedIncome, set to MN, USA when leaving Employer Name field
 if (window.location.href.indexOf("CaseEarnedIncome") > -1) {
@@ -1302,18 +1310,10 @@ if (window.location.href.indexOf("CaseWrapUp") > -1 && $('#done').attr('Disabled
     <div id="goSAApproval" class="fake-custom-button-nodisable fake-custom-button">SA Approval</div>
     <div id="goEditSummary" class="fake-custom-button-nodisable fake-custom-button">Edit Summary</div>
     </div>`)
-    $('#goEligibility').click(function() {
-        window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
-    });
-    $('#goSAOverview').click(function() {
-        window.open('/ChildCare/CaseServiceAuthorizationOverview.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
-    });
-    $('#goSAApproval').click(function() {
-        window.open('/ChildCare/CaseServiceAuthorizationApproval.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
-    });
-    $('#goEditSummary').click(function() {
-        window.open('/ChildCare/CaseEditSummary.htm?parm2=' + $('#caseId').val() + parm3var, '_self');
-    });
+    $('#goEligibility').click(function() { window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + $('#caseId').val() + parm3var, '_self') });
+    $('#goSAOverview').click(function() { window.open('/ChildCare/CaseServiceAuthorizationOverview.htm?parm2=' + $('#caseId').val() + parm3var, '_self') });
+    $('#goSAApproval').click(function() { window.open('/ChildCare/CaseServiceAuthorizationApproval.htm?parm2=' + $('#caseId').val() + parm3var, '_self') });
+    $('#goEditSummary').click(function() { window.open('/ChildCare/CaseEditSummary.htm?parm2=' + $('#caseId').val() + parm3var, '_self') });
 };
 //SECTION END Naviation buttons to Eligibility Selection, Service Authorization Overview, and Case Overview from CaseWrapUp page
 
@@ -1765,7 +1765,7 @@ deburrThePage();
 //SECTION END Removing extra BRs and using clearfix to prevent overlapping elements
 
 //SECTION START Duplicate buttons above H1 row
-if (window.location.href.indexOf('InactiveCaseList') < 0 && window.location.href.indexOf('ActiveCaseList') < 0) {
+if (window.location.href.indexOf('ctiveCaseList') < 0) {
     $('.modal .form-button').addClass('modal-button');
     $('table').click(function() {//check on table click if buttons were enabled/disabled and use class to mirror
         $('div.mutable').each(function() {

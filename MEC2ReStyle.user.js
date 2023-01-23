@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.68
+// @version      0.69
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -533,19 +533,20 @@ height: 15px !important;
 }
 
 #memberComments, #comments, #textbox2 {
-width: 61ch !important;
+width: 61.3ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
 }
 
 #noteStringText {
-width: 101ch !important;
+height: 78.1ch;
+width: 101.3ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
 }
 
 .col-lg-7.col-md-7 > #message {
-width: 51ch !important;
+width: 51.3ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
 }

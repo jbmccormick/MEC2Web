@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.68
+// @version      0.69
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -361,16 +361,16 @@ function eleFocus(ele) {
         }, 500);
     });
 };
-if (window.location.href.indexOf("CaseApplicationInitiation") > -1) {
-    if (viewMode) { eleFocus('#new') } else { $('#pmiNumber').attr('disabled') ? eleFocus('#next') : eleFocus('#pmiNumber') };
-};
-//window.location.href.indexOf("ClientSearch.htm?from") > -1 && !viewMode ? eleFocus() : eleFocus();
-//(window.location.href.indexOf("CaseMember.htm?from=CaseApplicationInitiation") > -1) && eleFocus('#next')
-//(window.location.href.indexOf("CaseMemberII.htm?from") > -1 && $('#next').attr('disabled') && viewMode) ? eleFocus('#new') : eleFocus('#next')
-//
-if (window.location.href.indexOf('CaseEmploymentActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
-//
+//SUB-SECTION START Activity and Income tab pages
 if (window.location.href.indexOf('CaseEarnedIncome') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseUnearnedIncome') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseLumpSum') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseExpense') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseEducationActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseEmploymentActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseSupportActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseJobSearchTracking') > -1) { viewMode ? eleFocus('#editDuplicateButton') : '' }
+
 //SUB-SECTION START Member tab pages
 if (window.location.href.indexOf('CaseMember') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 if (window.location.href.indexOf('CaseMemberII') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
@@ -386,8 +386,10 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
 if (window.location.href.indexOf('CaseChildProvider') > -1) {
     if (viewMode) { eleFocus('#newDuplicateButton') }
     else if ($('#memberReferenceNumberNewMember').val() === '') { eleFocus('#memberReferenceNumberNewMember') }
-    else { eleFocus('#primaryEndDate') }
+    else if ($('#primaryBeginDate').val() === '') { eleFocus('#primaryBeginDate') }
+    else { eleFocus('#hoursOfCareAuthorized') }
 }
+if (window.location.href.indexOf('CaseSchool') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') };
 //SUB-SECTION END Member Tab pages
 
 //SUB-SECTION START Case Tab pages
@@ -397,28 +399,63 @@ if (window.location.href.indexOf('CaseAddress.htm') > -1) {
         else { $('#effectiveDate').select() }
 }
 if (window.location.href.indexOf("CaseAction") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#failHomeless') }
+if (window.location.href.indexOf("CaseRedetermination") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#redeterminationStatus') }
 if (window.location.href.indexOf('FundingAvailability') > -1) {
-    if (viewMode) {
-        $('#new').attr('disabled') === 'disabled' ? eleFocus('#edit') : eleFocus('#new') }
+    if (viewMode) { $('#newDuplicateButton').attr('disabled') === 'disabled' ? eleFocus('#editDuplicateButton') : eleFocus('#newDuplicateButton') }
     else { eleFocus('#basicSlidingFeeFundsAvailableCode') }
 };
 //SUB-SECTION END Case Tab pages
+
+//SUB-SECTION START Notices Tab pages
 if (window.location.href.indexOf("CaseMemo") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberComments') }
-//
+if (window.location.href.indexOf("CaseSpecialLetter") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#status') }
+
+//SUB-SECTION START Eligibility pages
+if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) { viewMode ? eleFocus('#selectDuplicateButton') : '' }
+if (window.location.href.indexOf("CaseEligibilityResultOverview") > -1) { viewMode ? eleFocus('#nextDuplicateButton') : eleFocus('#type') }
+if (window.location.href.indexOf("CaseEligibilityResultFamily") > -1) { viewMode ? eleFocus('#nextDuplicateButton') : eleFocus('#overrideReason') }
+if (window.location.href.indexOf("CaseEligibilityResultPerson") > -1) { viewMode ? eleFocus('#nextDuplicateButton') : eleFocus('#overrideReason') }
+if (window.location.href.indexOf("CaseEligibilityResultActivity") > -1) { viewMode ? eleFocus('#nextDuplicateButton') : eleFocus('#overrideReason') }
+if (window.location.href.indexOf("CaseEligibilityResultFinancial") > -1) { viewMode ? eleFocus('#nextDuplicateButton') : eleFocus('#overrideReason') }
+if (window.location.href.indexOf("CaseEligibilityResultApproval") > -1) { viewMode ? eleFocus('#approveDuplicateButton') : eleFocus('#type') }
+if (window.location.href.indexOf("CaseEligibilityResultApprovalPackage") > -1) {
+    viewMode ? eleFocus('#approveDuplicateButton') : eleFocus('#confirmDuplicateButton')
+    const observer = new MutationObserver(function() {
+        eleFocus('#confirmButtons>#confirm')
+    });
+    observer.observe(document.querySelector('#confirmPopup'), {attributeFilter: ['style']});
+}
+//SUB-SECTION START Service Authorization pages
+(window.location.href.indexOf("CaseCreateServiceAuthorizationResults") > -1 && viewMode) && eleFocus('#createDuplicateButton')
+// (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1 && viewMode) && eleFocus('#CaseCopayDistributionSelf')
+// (window.location.href.indexOf("CaseCopayDistribution") > -1 && viewMode) && eleFocus('#CaseServiceAuthorizationApprovalSelf')
+(window.location.href.indexOf("CaseServiceAuthorizationApproval") > -1 && viewMode) && eleFocus('#approveDuplicateButton')
+if (window.location.href.indexOf("CaseServiceAuthorizationApprovalPackage") > -1) {
+    eleFocus('#confirm')
+    const observer = new MutationObserver(function() { eleFocus('#confirmButtons>#confirm') });
+    observer.observe(document.querySelector('#confirmPopup'), {attributeFilter: ['style']});
+}
+
+//SUB-SECTION START Transfer pages
+if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+(window.location.href.indexOf("ServicingAgencyIncomingTransfers") > -1 && !viewMode) && eleFocus('#workerIdTo')
+
+//SUB-SECTION START Billing Pages
+if (window.location.href.indexOf("FinancialBilling") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#receivedDate') }
+if (window.location.href.indexOf("FinancialBillingApproval") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#copayCollected') }
+if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+
+//SUB-SECTION START Non-collection pages
 if (window.location.href.indexOf('CaseNotes') > -1) {
     if (viewMode) { eleFocus('#newDuplicateButton') }
         else { $('#noteMemberReferenceNumber').focus(function() { setTimeout(document.querySelector('#save').scrollIntoView({ behavior: 'smooth', block: 'end' }), 0) })
         eleFocus('#noteMemberReferenceNumber') }
 };
-//
-if (window.location.href.indexOf('CaseSchool') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') };
-//
-if (window.location.href.indexOf("CaseSpecialLetter") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#status') }
-//
-if (window.location.href.indexOf("CaseSupportActivity") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
-//
-//
-(window.location.href.indexOf('CaseWrapUp') > -1) && eleFocus('#done')
+(window.location.href.indexOf('CaseWrapUp') > -1) && eleFocus('#doneDuplicateButton')
+if (window.location.href.indexOf("CaseApplicationInitiation") > -1) { if (viewMode) { eleFocus('#new') } else { $('#pmiNumber').attr('disabled') ? eleFocus('#next') : eleFocus('#pmiNumber') } };
 //
 //SECTION END Focusing the first desired element on pages
 
@@ -457,10 +494,10 @@ if (window.location.href.indexOf("ActiveCaseList") > -1) {
 };
 //SECTION END Active caseload numbers
 
-//SECTION START Sort caseload lists by client name, ascending
-if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
-    document.getElementsByClassName('sorting')[1].click()
-};
+//SECTION START Sort caseload lists by client name, ascending //FIXED BY STATE?!
+// if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
+//     document.getElementsByClassName('sorting')[1].click()
+// };
 //SECTION END Sort caseload lists by client name, ascending
 
 ////// ALERTS.htm start //////
@@ -713,19 +750,18 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
             window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
         });
     $('#reporterTypeCheckboxes input[name="reporterTypeSelections"]:not(:eq(0))').before('<br>');
-//};
 //SECTION END Open provider information page from Child's Provider page
 
 //SECTION START CaseChildProvider hiding fields if provider type is not LNL
-//if (window.location.href.indexOf("CaseChildProvider") > -1) {
 function childProviderPage() {
-    $('#instructions').remove();
-    let $lnlGroup = $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group');
+    let $lnlGroup = $('#careInHome, #providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group');
     if ($('#providerType').val() !== "Legal Non-licensed" && $('#providerType').val() !== '') {//not LNL
+            $lnlGroup.addClass('collapse');
+            // $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #careInHome').each(function() {
+            //         $(this).parents('.col-lg-12').addClass('collapse');
+            // })
         if (!viewMode) {//not LNL, edit mode
-            $('#providerLivesWithChild').val("N");
-            $('#careInHome').val("N");
-            $('#relatedToChild').val("N");
+            $('#providerLivesWithChild, #careInHome, #relatedToChild').val("N")
         } else {//not LNL, view mode
             $lnlGroup.addClass('collapse');
         };
@@ -756,12 +792,19 @@ function childProviderPage() {
     $('label[for="relatedToChild"]').add($('label[for="relatedToChild"]').siblings()).appendTo($('label[for="careInHome"]').parent());
     childProviderPage();
     $('#childProviderTable').on("click", childProviderPage());
-    $('#providerId').change(function() {
-        if ($('#instructions').length < 1) { $('#providerSearch').parent().parent().append('<div id="instructions" class="col-lg-4 col-md-4">Tab twice after entering Provider ID to update fields</div>') };
+    $('#providerId').blur(function() {
+        if ($('#providerId').val() !== '') {
+            setTimeout(function() { childProviderPage() }, 200)
+            eleFocus('#primaryBeginDate')
+        }
     });
-    $('#providerSearch').blur(function() {
-        childProviderPage();
-    });
+    $('#primaryBeginDate, #secondaryBeginDate').blur(function() {
+        if ($('#carePeriodBeginDate').val() === '' && $('#primaryBeginDate').val() !== '' || $('#secondaryBeginDate').val() !== '') {
+            $('#carePeriodBeginDate').val($('#primaryBeginDate').val())
+            eleFocus('#hoursOfCareAuthorized')
+            setTimeout(function() { $('#ui-datepicker-div').hide() }, 1000)
+        }
+    })
 };
 //SECTION END CaseChildProvider hiding fields if provider type is not LNL
 
@@ -1251,6 +1294,7 @@ if (window.location.href.indexOf('CaseSupportActivity') > -1) {
 //SECTION START Close case transfer to x169CCA; Auto enter transfer info if have sessionStorage value; Add button to viewMode page to do transfer;
 window.location.href.indexOf('CaseTransfer') < 0 && (localStorage.setItem('MECH2.activelyTransferring','noThanks'));//prevent accidental case transfer activity when loading that page
 if (window.location.href.indexOf('CaseTransfer') > -1) {
+    $('#caseTransferFromAllowedUREndsDate, #caseTransferFromAssignmentServicingEndsDate, #caseTransferFromVoid, #caseTransferFromTransferImmediately, #caseTransferToTransferEffectiveDate, #caseTransferToEarlyAcceptance, #caseTransferToName').prop('tabindex', -1)
     if (localStorage.getItem('MECH2.activelyTransferring') == 'yesPlease') {
         if (!viewMode && $('#caseTransferFromType option:eq(1):contains("Worker To Worker")')) {
             localStorage.setItem('MECH2.activelyTransferring','noThanks');
@@ -1377,9 +1421,9 @@ if (window.location.href.indexOf("InactiveCaseList") > -1) {
 };
 //SECTION END Close case transfer to x169CCA; Changing dates to links
 
-//SECTION START Fix lastUpdateWorker offsets
-if (window.location.href.indexOf('lastUpdateWorker') > -1) {
-    $('input').not($('label + input')).not($('a > input')).not('#newTabField').addClass('col-lg-offset-2 col-md-offset-2');
+//SECTION START Fix lastUpdateWorker/CaseWorker offsets
+if (window.location.href.indexOf('lastUpdateWorker') > -1 || window.location.href.indexOf('CaseWorker') > -1) {
+    $('.panel-box-format input~input').addClass('col-lg-offset-2 col-md-offset-3');
 };
 //SECTION END Fix lastUpdateWorker offsets
 

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.69
+// @version      0.71
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -224,6 +224,7 @@ for(let i = 0; i < mainRowButtons.length; i++){
 	btnNavigation.id = mainRowButtons[i][1];
 	btnNavigation.type = 'button';
     btnNavigation.className = 'custombutton';
+    btnNavigation.setAttribute("tabindex","0")
 	buttonDivTwo.appendChild(btnNavigation);
 	btnNavigation.addEventListener("click", function() { btnRowThree(this.id)}); //sends the mainRowButtons array value 1 to btnRowThree
 };
@@ -247,6 +248,7 @@ function btnRowThree(rowTwoButtonClicked){
 		btnNavigation.setAttribute("data-pageLinkUsingId", [buttonArray[3]]);
         btnNavigation.id = buttonArray[4];
         btnNavigation.type = 'button';
+        btnNavigation.setAttribute("tabindex","0")
         if (buttonArray[0] == "+") {
             btnNavigation.className = 'custombutton custombuttonplus';
         } else {
@@ -365,7 +367,7 @@ function eleFocus(ele) {
 if (window.location.href.indexOf('CaseEarnedIncome') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 if (window.location.href.indexOf('CaseUnearnedIncome') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 if (window.location.href.indexOf('CaseLumpSum') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
-if (window.location.href.indexOf('CaseExpense') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
+if (window.location.href.indexOf('CaseExpense') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#refPersonName') }
 if (window.location.href.indexOf('CaseEducationActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 if (window.location.href.indexOf('CaseEmploymentActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
 if (window.location.href.indexOf('CaseSupportActivity') > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#memberReferenceNumberNewMember') }
@@ -399,11 +401,19 @@ if (window.location.href.indexOf('CaseAddress.htm') > -1) {
         else { $('#effectiveDate').select() }
 }
 if (window.location.href.indexOf("CaseAction") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#failHomeless') }
-if (window.location.href.indexOf("CaseRedetermination") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#redeterminationStatus') }
+if (window.location.href.indexOf("CaseRedetermination") > -1) {
+    if (viewMode) {
+        if ($('#redeterminationStatus').val() === 'Updates Required') { eleFocus('#wrapUpDuplicateButton') }
+        else { eleFocus('#editDuplicateButton') } }
+    else if ($('strong:contains("Warning")').length > 0) { eleFocus('#saveDuplicateButton') }
+    else { eleFocus('#redeterminationStatus') } }
 if (window.location.href.indexOf('FundingAvailability') > -1) {
     if (viewMode) { $('#newDuplicateButton').attr('disabled') === 'disabled' ? eleFocus('#editDuplicateButton') : eleFocus('#newDuplicateButton') }
     else { eleFocus('#basicSlidingFeeFundsAvailableCode') }
 };
+if (window.location.href.indexOf("CaseReinstate") > -1) {
+    if (viewMode) { eleFocus('#editDuplicateButton') }
+    else $('#reason').val().length > 0 ? eleFocus('#saveDuplicateButton') : eleFocus('#reason') }
 //SUB-SECTION END Case Tab pages
 
 //SUB-SECTION START Notices Tab pages
@@ -427,8 +437,8 @@ if (window.location.href.indexOf("CaseEligibilityResultApprovalPackage") > -1) {
 }
 //SUB-SECTION START Service Authorization pages
 (window.location.href.indexOf("CaseCreateServiceAuthorizationResults") > -1 && viewMode) && eleFocus('#createDuplicateButton')
-// (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1 && viewMode) && eleFocus('#CaseCopayDistributionSelf')
-// (window.location.href.indexOf("CaseCopayDistribution") > -1 && viewMode) && eleFocus('#CaseServiceAuthorizationApprovalSelf')
+(window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1 && viewMode) && eleFocus('#CaseCopayDistributionSelf')
+(window.location.href.indexOf("CaseCopayDistribution") > -1 && viewMode) && eleFocus('#CaseServiceAuthorizationApprovalSelf')
 (window.location.href.indexOf("CaseServiceAuthorizationApproval") > -1 && viewMode) && eleFocus('#approveDuplicateButton')
 if (window.location.href.indexOf("CaseServiceAuthorizationApprovalPackage") > -1) {
     eleFocus('#confirm')
@@ -493,12 +503,6 @@ if (window.location.href.indexOf("ActiveCaseList") > -1) {
     });
 };
 //SECTION END Active caseload numbers
-
-//SECTION START Sort caseload lists by client name, ascending //FIXED BY STATE?!
-// if (window.location.href.indexOf("ActiveCaseList") > -1 || window.location.href.indexOf("InactiveCaseList") > -1 || window.location.href.indexOf("PendingCaseList") > -1) {
-//     document.getElementsByClassName('sorting')[1].click()
-// };
-//SECTION END Sort caseload lists by client name, ascending
 
 ////// ALERTS.htm start //////
 if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
@@ -950,22 +954,26 @@ if (window.location.href.indexOf("CaseEligibilityResult") > -1) {
 
 //SECTION START CaseEligibilityResultApproval Add 90 days to date entered to ExtElig Begin Date
 if (window.location.href.indexOf("CaseEligibilityResultApproval") > -1) {
-	$('#beginDate').change(function() {
-        $('#extEligPlus90button').remove();
-		let extEligPlus90 = addDays($('#beginDate').val(), 90);
-		extEligPlus90 = new Date(extEligPlus90).toLocaleDateString('en-US', {
+    $('#beginDate').keyup(function() {
+        if ($(this).val().length === 10) {
+            $('#extEligPlus90button').remove();
+            let extEligPlus90 = addDays($('#beginDate').val(), 90);
+            extEligPlus90 = new Date(extEligPlus90).toLocaleDateString('en-US', {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
-        });
-		$('#beginDate').parent().after('<div class="centered-text rounded-border-box" id="extEligPlus90button" style="padding: 2px; background-color: #dcdcdc; cursor: pointer;">+90: ' + extEligPlus90 + '</div>');
-        $('#extEligPlus90button').click(function() {
-            $('#allowedExpirationDate').val(extEligPlus90);
-            const event = new Event('change');
-            document.querySelector('#allowedExpirationDate').dispatchEvent(event);
-            $('#save').focus();
-        });
-	});
+            });
+            $('#beginDate').parent().after('<div tabindex=0 class="centered-text rounded-border-box" id="extEligPlus90button" style="padding: 2px; background-color: #dcdcdc; cursor: pointer;">+90: ' + extEligPlus90 + '</div>');
+            eleFocus('#extEligPlus90button')
+            $('#ui-datepicker-div').hide()
+            $('#extEligPlus90button').click(function() {
+                $('#allowedExpirationDate').val(extEligPlus90);
+                const event = new Event('change');
+                document.querySelector('#allowedExpirationDate').dispatchEvent(event);
+                $('#save').focus();
+            });
+        }
+    })
 };
 //SECTION END CaseEligibilityResultApproval Add 90 days to date entered to ExtElig Begin Date
 
@@ -997,13 +1005,6 @@ if (window.location.href.indexOf("CaseEligibilityResultSelection") > -1) {
     } else {
         !$('.Unapproved.Ineligible').hasClass('selected') && ($('.Unapproved.Ineligible').click());
     };
-    /*let $ineligible = $('tbody > tr > td').filter(function() { return $(this).text() === 'Ineligible' });
-    let $eligible = $('tbody > tr > td').filter(function() { return $(this).text() === 'Eligible' });
-    if ($('.Unapproved-Elig-Result').siblings($eligible)) {
-        $('.Unapproved-Elig-Result').siblings($eligible).eq(0).click()
-    } else {
-        $('.Unapproved-Elig-Result').siblings($ineligible).eq(0).click()
-    };*/
 };
 //SECTION END Custom fix and text for CaseEligibilityResultSelection
 
@@ -1012,11 +1013,11 @@ if (window.location.href.indexOf("CaseEligibilityResult") > -1 && window.locatio
     let interval;
     function check() {
         if ($('[id$="TableAndPanelData"]').css('display') == "none") {
-            clearInterval(interval);// clearInterval will stop its periodical execution.
+            clearInterval(interval);//clearInterval will stop its periodical execution.
             window.open(document.getElementById("Eligibility Results Selection").firstElementChild.getAttribute('href'), "_self")
         };
     };
-    interval = setInterval(check, 200);// Create an instance of the check function interval
+    interval = setInterval(check, 200);//Create an instance of the check function interval
     check();
 };
 //SECTION END Redirect if we're on elig results and there's no version selected
@@ -1313,17 +1314,17 @@ if (window.location.href.indexOf('CaseTransfer') > -1) {
                 };
             });
             foo.observe(document.getElementById('caseTransferToName'), { attributes: true })
-            const targetNode = document.getElementById('caseTransferToWorkerId')// Select the node that will be observed for mutations
-            const config = { attributes: true };// Options for the observer (which mutations to observe)
-            const callback = (mutationList, observer) => {// Callback function to execute when mutations are observed
+            const targetNode = document.getElementById('caseTransferToWorkerId')//Select the node that will be observed for mutations
+            const config = { attributes: true };//Options for the observer (which mutations to observe)
+            const callback = (mutationList, observer) => {//Callback function to execute when mutations are observed
                 for (const mutation of mutationList) {
                     $('#caseTransferToWorkerId').val('X169CCA');
                     document.getElementById('caseTransferToWorkerId').dispatchEvent(event);
                     document.getElementById('caseTransferToName').dispatchEvent(event);
                 };
             };
-            const observer = new MutationObserver(callback);// Create an observer instance linked to the callback function
-            observer.observe(targetNode, config);// Start observing the target node for configured mutations
+            const observer = new MutationObserver(callback);//Create an observer instance linked to the callback function
+            observer.observe(targetNode, config);//Start observing the target node for configured mutations
             $('#caseTransferFromType option:eq(1)').prop('selected','true')
             document.getElementById('caseTransferFromType').dispatchEvent(event);
         } else {
@@ -1539,16 +1540,16 @@ if (window.location.href.indexOf('ServicingAgencyOutgoingTransfers') > -1) {
 
 ///////////////////////////////// FUNCTIONS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
 
-// Definition
+//Definition
 function setIntervalLimited(callback, interval, x) {
     for (var i = 0; i < x; i++) {
         setTimeout(callback, i * interval);
     };
 };
 /*
-// Usage
+//Usage
 setIntervalLimited(function() {
-    console.log('hit');          // => hit...hit...etc (every second, stops after 10)
+    console.log('hit');          //=> hit...hit...etc (every second, stops after 10)
 }, 1000, 10);
 */
 
@@ -1632,9 +1633,13 @@ function getLastName(commaName) {
     return lastName
 };
 //
-
-
-
+window.addEventListener('keydown', function(e) {//Don't scroll when using spacebar to click buttons
+  if(e.keyCode == 32 && e.target.className.includes('custom-form-button')) {
+      console.log(e.target.className)
+    e.preventDefault();
+  }
+});
+//
 function addGlobalStyle(css) { //To allow for adding CSS styles
     var head, style;
     head = document.getElementsByTagName('head')[0];

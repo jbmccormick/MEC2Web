@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.69
+// @version      0.71
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -310,7 +310,11 @@ margin-bottom: 3px !important;
 margin-top: 3px !important;
 }
 
-input.col-lg-offset-2, input.col-md-offset-2 {
+input.col-md-offset-2 {
+margin-left: 25% !important;
+}
+
+input.col-lg-offset-2 {
 margin-left: 16.66666667% !important;
 }
 
@@ -534,7 +538,7 @@ height: 15px !important;
 
 #memberComments, #comments, #textbox2 {
 width: 61.3ch !important;
-padding: .5ch !important;
+padding: 0 .5ch 0 .5ch !important;
 overflow: hidden !important;
 }
 

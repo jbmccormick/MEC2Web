@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.71
+// @version      0.72
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -149,7 +149,7 @@ const rowThreeButtonArray = {
 		financialBilling:["Billing", "FinancialBilling", "_self", "Billing", "FinancialBillingSelf", "billingButtons"],
 		financialBillingApproval:["Billing Approval", "FinancialBillingApproval", "_self", "Billing Approval", "FinancialBillingApprovalSelf", "billingButtons"],
 		financialBillsList:["Bills List", "BillsList", "_self", "Bills List", "BillsListSelf", "billingButtons"],
-		financialPayHistory:["Pay History","CasePaymentHistory", "_self", "Case Payment History", "CasePaymentHistorySelf", "billingButtons"],
+		financialPayHistory:["Payment History","CasePaymentHistory", "_self", "Case Payment History", "CasePaymentHistorySelf", "billingButtons"],
 		financialAbsentDays:["Absent Days", "FinancialAbsentDayHolidayTracking", "_self", "Tracking Absent Day Holiday", "FinancialAbsentDayHolidayTrackingSelf", "billingButtons"],
 		financialRegistrationFee:["Registration Fee Tracking", "FinancialBillingRegistrationFeeTracking", "_self", "Tracking Registration Fee", "FinancialBillingRegistrationFeeTrackingSelf", "billingButtons"],
 		financialManualPayments:["Manual Payments", "FinancialManualPayment", "_self", "Manual Payments", "FinancialManualPaymentSelf", "billingButtons"],
@@ -451,11 +451,11 @@ if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#n
 (window.location.href.indexOf("ServicingAgencyIncomingTransfers") > -1 && !viewMode) && eleFocus('#workerIdTo')
 
 //SUB-SECTION START Billing Pages
-if (window.location.href.indexOf("FinancialBilling") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#receivedDate') }
-if (window.location.href.indexOf("FinancialBillingApproval") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#copayCollected') }
-if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
-if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
-if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("FinancialBilling") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#billedTimeType') }
+if (window.location.href.indexOf("FinancialBillingApproval") > -1) { viewMode ? eleFocus('#approveBillingDuplicateButton') : eleFocus('#remittanceComments') }
+if (window.location.href.indexOf("FinancialBillingRegistrationFeeTracking") > -1) { viewMode ? eleFocus('#addDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("FinancialAbsentDayHolidayTracking") > -1) { viewMode ? eleFocus('#addDuplicateButton') : eleFocus('#caseTransferFromType') }
+if (window.location.href.indexOf("FinancialManualPayment") > -1) { viewMode ? eleFocus('#mpProviderId') : eleFocus('#mpProviderId') }
 if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
 
 //SUB-SECTION START Non-collection pages
@@ -1041,7 +1041,7 @@ window.location.href.indexOf('CaseFraud') > -1 && ($('.col-md-3, .col-lg-3').rem
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus") > -1) {
 	if ($('label[for="requestMessage"]').parent(':contains("CASE LOCKED IN MEC2")')) {
-        $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I acknowledge that I take responsibility for my own actions. Click this text to show the "Unlock" button.</div>')
+        $('#caseLockStatusDetail').append('<div style="font-size: 20px; background-color: yellow;" id="acceptMyTerms">I solemnly swear I am up to no good. Click this text to show the "Unlock" button.</div>')
         $('#acceptMyTerms').click(function() {
             $("#caseLockStatusUnlockButtonArea").show();
             $("#acceptMyTerms").remove();
@@ -1371,6 +1371,15 @@ if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
     //target.appendChild(destination);
 };
 //SECTION END FinancialBilling Fix to display table
+
+//SECTION START FinancialBillingApproval button to add comments
+if (window.location.href.indexOf("FinancialBillingApproval") > -1 && !viewMode) {
+    $('#remittanceComments').parents('.form-group').append('<div id="unpaidCopayNote" class="fake-custom-button-nodisable fake-custom-button"">Unpaid Copay</div>');
+    $('#unpaidCopayNote').click(function() { $('#userComments').val('Copay is unpaid, provider did not indicate if there is a payment plan.') })
+    $('#remittanceComments').parents('.form-group').append('<div id="paymentPlanNote" class="fake-custom-button-nodisable fake-custom-button style="float: right;"">Payment Plan</div>');
+    $('#paymentPlanNote').click(function() { $('#userComments').val('Provider indicated there is a payment plan for the unpaid copay.') })
+};
+//SECTION END FinancialBillingApproval button to add comments
 
 //SECTION START Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 if (window.location.href.indexOf("FinancialManualPayment") > -1) {

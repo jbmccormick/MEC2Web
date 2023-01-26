@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.71
+// @version      0.72
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -263,6 +263,7 @@ margin-top: 0px !important;
 margin-bottom: 2px !important;
 margin-top: 0px !important;
 padding-bottom: 5px !important;
+padding-top: 5px !important;
 background-color: #f5f5f5 !important;
 }
 
@@ -308,14 +309,6 @@ padding-top: 0px !important;
 .marginBottom20 {
 margin-bottom: 3px !important;
 margin-top: 3px !important;
-}
-
-input.col-md-offset-2 {
-margin-left: 25% !important;
-}
-
-input.col-lg-offset-2 {
-margin-left: 16.66666667% !important;
 }
 
 #newTabField {
@@ -537,20 +530,20 @@ height: 15px !important;
 }
 
 #memberComments, #comments, #textbox2 {
-width: 61.3ch !important;
+width: 61.5ch !important;
 padding: 0 .5ch 0 .5ch !important;
 overflow: hidden !important;
 }
 
-#noteStringText {
+#noteStringText, #reason {
 height: 78.1ch;
-width: 101.3ch !important;
+width: 101.5ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
 }
 
 .col-lg-7.col-md-7 > #message {
-width: 51.3ch !important;
+width: 51.5ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
 }

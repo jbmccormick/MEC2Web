@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.73
+// @version      0.74
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -438,9 +438,9 @@ if (window.location.href.indexOf("CaseEligibilityResultApprovalPackage") > -1) {
     observer.observe(document.querySelector('#confirmPopup'), {attributeFilter: ['style']});
 }
 //SUB-SECTION START Service Authorization pages
-(window.location.href.indexOf("CaseCreateServiceAuthorizationResults") > -1 && viewMode) && eleFocus('#createDuplicateButton')
-(window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1 && viewMode) && eleFocus('#CaseCopayDistributionSelf')
-(window.location.href.indexOf("CaseCopayDistribution") > -1 && viewMode) && eleFocus('#CaseServiceAuthorizationApprovalSelf')
+if (window.location.href.indexOf("CaseCreateServiceAuthorizationResults") > -1 && viewMode) { eleFocus('#createDuplicateButton') }
+if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1 && viewMode) { eleFocus('#CaseCopayDistributionSelf') }
+if (window.location.href.indexOf("CaseCopayDistribution.htm") > -1 && viewMode) { eleFocus('#CaseServiceAuthorizationApprovalSelf') }
 if (window.location.href.indexOf("CaseServiceAuthorizationApproval") > -1 && viewMode) {
     $('strong:contains("Background transaction in process.")').length > 0 ? $('#approveDuplicateButton, #approve').attr('disabled','disabled').addClass('custom-form-button-disabled') : eleFocus('#approveDuplicateButton')
 }
@@ -452,7 +452,7 @@ if (window.location.href.indexOf("CaseServiceAuthorizationApprovalPackage") > -1
 
 //SUB-SECTION START Transfer pages
 if (window.location.href.indexOf("CaseTransfer") > -1) { viewMode ? eleFocus('#newDuplicateButton') : eleFocus('#caseTransferFromType') }
-(window.location.href.indexOf("ServicingAgencyIncomingTransfers") > -1 && !viewMode) && eleFocus('#workerIdTo')
+if (window.location.href.indexOf("ServicingAgencyIncomingTransfers") > -1 && !viewMode) { eleFocus('#workerIdTo') }
 
 //SUB-SECTION START Billing Pages
 if (window.location.href.indexOf("FinancialBilling") > -1) { viewMode ? eleFocus('#editDuplicateButton') : eleFocus('#billedTimeType') }
@@ -477,7 +477,7 @@ if (window.location.href.indexOf('CaseNotes') > -1) {
         else { $('#noteMemberReferenceNumber').focus(function() { setTimeout(document.querySelector('#save').scrollIntoView({ behavior: 'smooth', block: 'end' }), 0) })
         eleFocus('#noteMemberReferenceNumber') }
 };
-(window.location.href.indexOf('CaseWrapUp') > -1) && eleFocus('#doneDuplicateButton')
+if (window.location.href.indexOf('CaseWrapUp') > -1) { eleFocus('#doneDuplicateButton') }
 if (window.location.href.indexOf("CaseApplicationInitiation") > -1) { if (viewMode) { eleFocus('#new') } else { $('#pmiNumber').attr('disabled') === 'disabled' ? eleFocus('#next') : eleFocus('#pmiNumber') } };
 if (window.location.href.indexOf("CaseReapplicationAddCcap") > -1) { ($('#next').attr('disabled') === 'disabled') ? eleFocus('#addccap') : eleFocus('#next') }
 // next
@@ -530,26 +530,33 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
 
     //SECTION START Delete all alerts of current name onclick
     $('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
+    // $('#deleteTop').after('<div class="form-button custom-form-button centered-text" id="deleteAllDupe" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
+    // $('#deleteAllDupe').val('Delete All').on("click", function() { })
     $('h4:contains("Case/Provider List")').after('<h4 style="float: right; display:inline-flex color: #003865; font-size: 1.2em; font-weight: bold;" id="alertMessage"></h4>');
     $('#deleteAll').val('Delete All').on("click", function() {
-        let caseNumberToDelete = $('#caseNumber').val();//$("#groupId").val();
+        let caseNumberToDelete = $('#caseNumber').val();
         let caseName = $('#groupName').val();
-        doDeleteAll(caseNumberToDelete, caseName);
+        let caseOrProvider = $('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()
+        doDeleteAll(caseNumberToDelete, caseName, caseOrProvider);
     });
-    function doDeleteAll(caseNumberToDelete, caseName) {
+    function doDeleteAll(caseNumberToDelete, caseName, caseOrProvider) {
         const observer = new MutationObserver(doDeleteAll);
         observer.disconnect();
-        if (caseNumberToDelete == $('#caseNumber').val() && $('#delete').val() !== 'Please wait') {
+        if (caseNumberToDelete == $('#caseNumber').val() && $('#delete').val() !== 'Please wait') {//if 0 alerts, will fail due to #caseNumber.val being changed by the page to ''
             $('#delete').click();
-            setTimeout(function() {return doDeleteAll(caseNumberToDelete, caseName)}, 1000);
+            setTimeout(function() {return doDeleteAll(caseNumberToDelete, caseName, caseOrProvider)}, 1000);
         } else if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() < 1) {//Any alerts to delete?
-            $('#alertMessage').text('Delete All ended. All alerts deleted from case ' + caseNumberToDelete + '.');
+            $('#alertMessage').text('Delete All ended. All alerts deleted from ' + caseOrProvider + ' ' + caseNumberToDelete + '.');
         } else if ($('#delete').val() !== 'Delete Alert') {
             $('#alertMessage').text('Waiting for Delete button to be available.');
             observer.observe(document.querySelector('#delete'), {attributeFilter: ['value']});//attributes: true,
         } else if (caseNumberToDelete !== $('#caseNumber').val()) {
             if (!$('#caseOrProviderAlertsTable td:contains("' + caseName + '")')) {
-                $('#alertMessage').text('Case number not present.')
+                if (caseOrProvider === 'case') {
+                    $('#alertMessage').text('Case number not present.')
+                } else {
+                    $('#alertMessage').text('Provider ID not present.')
+                }
             };
             $('td:contains("' + caseName + '")').parent('tr').click();
             setTimeout(function() {return doDeleteAll(caseNumberToDelete, caseName)}, 1000);
@@ -713,11 +720,11 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
             snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
         };
     });
-};
+// };
 //SECTION END Copy client mail to address to clipboard on Case Address page
 
 //SECTION START CaseAddress changes and fixes
-if (window.location.href.indexOf("CaseAddress") > -1) {
+// if (window.location.href.indexOf("CaseAddress") > -1) {
     $('#phone1').parents('.panel-box-format').find('div>label.col-lg-2').removeClass('col-lg-2').addClass('col-lg-3');
     $('#phone1').parents('.panel-box-format').find('div.col-lg-1').remove();
     $('label.col-md-2').addClass('col-md-3').removeClass('col-md-2');//Fix wrongly sized columns for several labels on Case Address
@@ -1176,7 +1183,7 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
 };
 //SECTION END Custom items for CaseOverview
 
-//SECTION START CasePaymentHistory Add buttons to navigate to FinancialBilling in correct BWP
+//SECTION START CasePaymentHistory Add links to navigate to FinancialBilling in correct BWP
 if (window.location.href.indexOf("CasePaymentHistory") > -1) {
     $('div.col-lg-3.col-md-3>input').width('100%');
     $('#paymentHistoryTable tr').children('td:nth-of-type(3)').each(function() {
@@ -1185,6 +1192,7 @@ if (window.location.href.indexOf("CasePaymentHistory") > -1) {
             $(this).append('<a href="FinancialBilling.htm?parm2=' + $("#caseId").val() + '&parm3=' + linkText.replace(" - ", "").replaceAll("/","") + '", target="_blank">' + linkText + '</a>');
     });
 };
+//SECTION START CasePaymentHistory Add links to navigate to FinancialBilling in correct BWP
 
 //SECTION START Highlighting unchecked household members on reapplication
 if (window.location.href.indexOf("CaseReapplicationAddCcap.htm") > -1) {
@@ -1368,13 +1376,17 @@ if (window.location.href.indexOf("ClientSearch") > -1) {
 };
 //SECTION START Fixing the table height of the Client Search table
 
-//SECTION START FinancialBilling Fix to display table
+//SECTION START FinancialBilling Fix to display table, edit h4 for billing worker
 if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
     addGlobalStyle('.form-control.borderless.padL0.padR0 { padding: 0px !important; }');
-    //let target = document.getElementById('billingRegistrationFeesTable_wrapper').parentNode;
     document.getElementById('billingRegistrationFeesTable_wrapper').parentNode.previousElementSibling.classList.remove('clearfix');
-    //let destination = target.parentNode;
-    //target.appendChild(destination);
+    if (!viewMode) {
+        let childAndProviderNames = getFirstName($('#billingChildTable>tbody>tr.selected>td:eq(1)').html()) + " " + getLastName($('#billingChildTable>tbody>tr.selected>td:eq(1)').html()) + " at " + $('#billingProviderTable>tbody>tr.selected>td:eq(0)').html()
+        $('h4:not(h4:contains("Version Information"))').each(function() {
+            $(this).html($(this).html() + ' ' + childAndProviderNames)
+        })
+        if ($('strong:contains("Warning")').length > 0) { $('#saveDuplicateButton').click() }
+    }
 };
 //SECTION END FinancialBilling Fix to display table
 
@@ -1530,7 +1542,7 @@ if (window.location.href.indexOf("ProviderSearch") > -1) {
     waitForElmValue('#providerSearchTable > tbody > tr > td').then(() => {
         $('tbody tr:contains("Inactive")').addClass('inactive inactive-hidden')
         $('tbody tr td:last-of-type').each(function() {
-            if (!localCounties.includes($(this).text())) {
+            if (!localCounties.includes($(this).text()) && $('#providerIdNumber').val().length === 0) {
                 $(this).parent('tr')
                     .addClass('out-of-area out-of-area-hidden')
             };
@@ -1669,6 +1681,21 @@ function getLastName(commaName) {
 window.addEventListener('keydown', function(e) {//Don't scroll when using spacebar to click buttons
   if(e.keyCode == 32 && e.target.className.includes('custom-form-button')) {
     e.preventDefault();
+  }
+});
+//
+$('html').css('scroll-behavior','smooth')
+window.addEventListener('keydown', function(e) {//Smooth scroll to bottom with End
+  if (!e.shiftKey && e.keyCode === 35 && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      document.querySelector('#footer_info').scrollIntoView()
+  }
+});
+//
+window.addEventListener('keydown', function(e) {//Smooth scroll to top with Home
+  if (!e.shiftKey && e.keyCode === 36 && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      document.querySelector('#greenline').scrollIntoView()
   }
 });
 //

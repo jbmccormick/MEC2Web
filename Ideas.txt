@@ -1,0 +1,53 @@
+Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
+
+Income/expense pages: If amounts are blank, change date tabindex to -1
+
+CaseWrapUp
+Case Wrap-Up successfully submitted.
+Has 4 bonus buttons, focus Eligibility?
+
+FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
+Need to parseInt($('#weekOneMonday').val()) to remove letters and convert to number
+If feasible, highlight if entered hours exceed approved hours.
+If info available, highlight dates outside of SA approval.
+
+CaseCreateEligibilityResults
+strong contains Results successfully submitted.
+-> hide #buttonHouse
+
+CaseUnearnedIncome
+ Warning: This data will expire 01/22/2023.
+-> focus Save (or autosave?)
+
+ProviderNotes: Notes Important Group ain't all right
+
+CaseEligibilityResultSelection
+SA bonus buttons -> not with unapproved results
+
+Client search
+If only 1 result, select result
+
+Provider search
+If only 1 result showing, select result
+
+Alt+S to also click save. N for new, E for edit.
+
+CaseEligibilityResultApproval
+Make fields line up across panels
+
+CaseCreateEligibilityResults
+If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, else CaseEligibilityResultSelectionSelf
+
+Active case list
+Check suspended cases for a childsProvider entry. Flag if none for delaying redetermination date to allow case to auto-close beforehand.
+
+If active element = table, down/up goes to next/previous row
+
+CaseAddress "Warning: Effective date" & !viewMode
+eleFocus Save
+
+CaseChildProvider
+editMode: If no start date, remove tabindex from end dates
+
+CaseAction
+If case action exists, focus Delete

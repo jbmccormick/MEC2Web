@@ -24,7 +24,7 @@ div[class^="dataTables_"]:not(.dataTables_length):not(.dataTables_sizing) {
 width: inherit;
 }
 
-.flex-row, .form-group, .col-lg-12, .col-md-12, .row, .visible-lg {
+.form-group>#providerData, .flex-row, .col-lg-12, .col-md-12, .row, .visible-lg, .form-group:not(.col-lg-1, .col-md-1, .col-lg-2, .col-md-2, .col-lg-3, .col-md-3, .col-lg-4, .col-md-4, .col-lg-5, .col-md-5, .col-lg-6, .col-md-6, .col-lg-7, .col-md-7, .col-lg-8, .col-md-8, .col-lg-9, .col-md-9, .col-lg-10, .col-md-10, .col-lg-11, .col-md-11) {
 display: flex !important;
 flex-basis: 100%;
 flex-wrap: wrap;

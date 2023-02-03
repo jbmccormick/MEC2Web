@@ -493,7 +493,10 @@ if (window.location.href.indexOf("CaseReapplicationAddCcap") > -1) { ($('#next')
 // }
 //SECTION START Fix issue caused by giving .form-group the display: flex property
 $('.visible-sm').remove()
-if (window.location.href.indexOf("ClientSearch") > -1) { $('.visible-lg>label').unwrap() }
+if (window.location.href.indexOf("ClientSearch") > -1 || window.location.href.indexOf("/Provider") > -1) {//Information") > -1 || window.location.href.indexOf("ProviderOverview") > -1 || window.location.href.indexOf("ProviderNotes
+    $('.visible-lg>label, .visible-lg>.col-lg-4, .visible-lg>.col-lg-2').unwrap()
+}
+
 //SECTION START Active caseload numbers
 if (window.location.href.indexOf("ActiveCaseList") > -1) {
     $('h5').append(" " + $('td:contains("Active")').length + " active. " + ($('td:contains("Suspended")').length + $('td:contains("Temporarily Ineligible")').length) + " suspended/TI.")
@@ -1136,9 +1139,9 @@ if (window.location.href.indexOf('CaseNotes') > -1 || window.location.href.index
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').setAttribute('rows', '29');
     $('br').remove();
-    $('#noteSummary')
-        .parent().removeClass('col-lg-4 col-md-4 col-sm-4').addClass('col-lg-9 col-md-10')
-        .parents('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-6 col-md-7');
+    $('#noteSummary').css('width','100%')
+        .parent().removeClass('col-lg-4 col-md-4 col-sm-4 col-lg-3').addClass('col-lg-10 col-md-10')
+        .parents('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-7 col-md-7');
     $('label[for="noteSummary"]')
         .removeClass('col-lg-3 col-md-3 col-sm-3').addClass('col-lg-2 col-md-2');
     $('label[for="noteCreator"]').siblings().addBack()
@@ -1160,16 +1163,17 @@ if (window.location.href.indexOf('CaseNotes') > -1 || window.location.href.index
     $('#noteImportant').height('28px')
     $('label[for="noteMemberReferenceNumber"]')
         .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
-    $('#noteMemberReferenceNumber').parent()
+    $('#noteMemberReferenceNumber, #notePerson').css('width','100%')
+        .parent()
         .removeClass('col-lg-4 col-md-4 col-sm-4 textInherit').addClass('col-lg-10 col-md-10 textInherit')
-        .add('label[for="noteMemberReferenceNumber"]').wrapAll('<div id="noteMemberReferenceNumberGroup" class="col-lg-4 col-md-5 form-group"></div>')
+        .add('label[for="noteMemberReferenceNumber"], label[for="notePerson"]').wrapAll('<div id="noteMemberReferenceNumberGroup" class="col-lg-5 col-md-5 form-group"></div>')
     $('label[for="noteCategory"]')
         .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
         .css('margin-left','')
     addGlobalStyle('label[for="noteCategory"] { width: 61px !important }');
     $('#noteCategory').parent()
         .removeClass('col-lg-3 col-md-3 col-sm-3 textInherit').addClass('col-lg-10 col-md-10 textInherit')
-        .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-5 col-md-5 form-group"></div>')
+        .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-4 col-md-4 form-group"></div>')
     $('.col-lg-6.col-md-6.col-sm-6.col-xs-6.form-group.textInherit:not(".col-xl-8,.col-xl-6")').hide()
     $('.col-xs-2.col-sm-2.col-md-1.col-lg-1:not(:has("input"))').hide()
     $('.col-xs-5.col-sm-5.col-md-5.col-lg-5').hide();
@@ -1566,17 +1570,16 @@ if (window.location.href.indexOf('ProviderInformation') > -1) {
 
 //SECTION START
 if (window.location.href.indexOf('ProviderLicense') > -1) {
-    $('.row').siblings('br').remove();
+    //$('.row').siblings('br').remove();
     $('.col-lg-6.col-md-8.col-sm-10.col-xs-12').removeClass('col-lg-6 col-md-8 col-sm-10 col-xs-12').addClass('col-lg-6 col-md-6');
     $('.col-lg-5.col-md-5').removeClass('col-md-5 col-lg-5').addClass('col-md-6 col-lg-6');
 }
 //SECTION END
 
 if (window.location.href.indexOf("ProviderOverview") > -1) {
-    $('div.col-lg-3').removeClass('col-lg-3 col-md-3 col-md-2').addClass('col-md-2 col-lg-2');
+    $('div.col-lg-3').removeClass('col-lg-3 col-md-3').addClass('col-md-2 col-lg-2');
     $('div.textInherit.col-md-2.col-lg-2:not(.padL0)').removeClass('col-md-2 col-lg-2').addClass('col-lg-4 col-md-4');
     $('h4:contains("Provider Information")').css('display','table')
-    $('.form-group').css('display','block')
 };
 
 //SECTION START Auto-filter ProviderSearch results

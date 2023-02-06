@@ -1,7 +1,7 @@
 td: ToTitleCase?
 
 ProviderSearch
-Enter key pressing search
+if indexOf from=CaseChildProvider < 0, hide #Select, #back
 
 Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
 

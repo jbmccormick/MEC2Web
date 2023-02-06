@@ -1,3 +1,8 @@
+td: ToTitleCase?
+
+ProviderSearch
+Enter key pressing search
+
 Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
 
 Income/expense pages: If amounts are blank, change date tabindex to -1
@@ -47,7 +52,8 @@ CaseAddress "Warning: Effective date" & !viewMode
 eleFocus Save
 
 CaseChildProvider
-editMode: If no start date, remove tabindex from end dates
+editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
 
 CaseAction
 If case action exists, focus Delete
+

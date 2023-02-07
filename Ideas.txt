@@ -1,3 +1,7 @@
+DarkMode: Focused input/select needs better indicator
+
+Bug: CaseAction page formatting is wrong
+
 td: ToTitleCase?
 
 ProviderSearch
@@ -41,7 +45,10 @@ CaseEligibilityResultApproval
 Make fields line up across panels
 
 CaseCreateEligibilityResults
-If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, else CaseEligibilityResultSelectionSelf
+If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
+else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig results? Strong "Results successfully submitted."
+CaseEligibilityResultSelection (And SA pages?)
+If Strong "Background transaction" countdown timer and reload?
 
 Active case list
 Check suspended cases for a childsProvider entry. Flag if none for delaying redetermination date to allow case to auto-close beforehand.

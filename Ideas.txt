@@ -1,28 +1,24 @@
-DarkMode: Focused input/select needs better indicator
+Done. DarkMode: Focused input/select needs better indicator
 
-Bug: CaseAction page formatting is wrong
+Done. Bug: CaseAction page formatting is wrong
 
-td: ToTitleCase?
+Done. td: ToTitleCase?
 
 ProviderSearch
 if indexOf from=CaseChildProvider < 0, hide #Select, #back
 
-Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
+Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
 
-Income/expense pages: If amounts are blank, change date tabindex to -1
+Done. Income/expense pages: If amounts are blank, change date tabindex to -1
 
-CaseWrapUp
-Case Wrap-Up successfully submitted.
-Has 4 bonus buttons, focus Eligibility?
+Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
 
 FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
 Need to parseInt($('#weekOneMonday').val()) to remove letters and convert to number
 If feasible, highlight if entered hours exceed approved hours.
 If info available, highlight dates outside of SA approval.
 
-CaseCreateEligibilityResults
-strong contains Results successfully submitted.
--> hide #buttonHouse
+Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
 
 CaseUnearnedIncome
  Warning: This data will expire 01/22/2023.

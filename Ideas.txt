@@ -51,12 +51,40 @@ Check suspended cases for a childsProvider entry. Flag if none for delaying rede
 
 If active element = table, down/up goes to next/previous row
 
-CaseAddress "Warning: Effective date" & !viewMode
-eleFocus Save
+CaseAddress 
+"Warning: Effective date" & !viewMode: eleFocus Save
+Copy Mail Address: Margin-right 0
 
 CaseChildProvider
 editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
 
 CaseAction
 If case action exists, focus Delete
+
+Summary:
+iframe the heck outta that page.
+Also have a button to check for problem pages (unverified items, forms No, etc)
+
+CaseCSIA:
+elefocus viewMode? New : Actual Date
+Remove tabindex from several fields
+
+Alerts - Delete All:
+Count each type of alert, output into end message.
+
+CaseEducationActivity
+elefocus on edit: pmiNbrNew
+
+CaseRedetermination:
+Defer tabindex -1
+
+CaseMemberII: editMode elefocus actualDate
+
+CaseCSE: editMode, forms completed = blank, elefocus actualDate
+
+FundingAvailability: editMode: elefocus basicSlidingFeeFundsAvailableCode
+
+All pages after application: Store application date, auto-enter for blank actual dates?
+
+Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 

@@ -58,8 +58,7 @@ Copy Mail Address: Margin-right 0
 CaseChildProvider
 editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
 
-CaseAction
-If case action exists, focus Delete
+Done. CaseAction: If case action exists, focus Delete
 
 Summary:
 iframe the heck outta that page.
@@ -72,8 +71,7 @@ Remove tabindex from several fields
 Alerts - Delete All:
 Count each type of alert, output into end message.
 
-CaseEducationActivity
-elefocus on edit: pmiNbrNew
+Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
 
 CaseRedetermination:
 Defer tabindex -1
@@ -86,5 +84,5 @@ FundingAvailability: editMode: elefocus basicSlidingFeeFundsAvailableCode
 
 All pages after application: Store application date, auto-enter for blank actual dates?
 
-Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
+Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 

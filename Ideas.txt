@@ -13,21 +13,16 @@ Done. Income/expense pages: If amounts are blank, change date tabindex to -1
 
 Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
 
-FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
-Need to parseInt($('#weekOneMonday').val()) to remove letters and convert to number
-If feasible, highlight if entered hours exceed approved hours.
-If info available, highlight dates outside of SA approval.
+Done. FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
+Done. If feasible, highlight if entered hours exceed approved hours.
 
 Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
 
-CaseUnearnedIncome
- Warning: This data will expire 01/22/2023.
--> focus Save (or autosave?)
+Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)
 
 ProviderNotes: Notes Important Group ain't all right
 
-CaseEligibilityResultSelection
-SA bonus buttons -> not with unapproved results
+Done. CaseEligibilityResultSelection: SA bonus buttons -> not with unapproved results
 
 Client search
 If only 1 result, select result
@@ -37,8 +32,7 @@ If only 1 result showing, select result
 
 Alt+S to also click save. N for new, E for edit.
 
-CaseEligibilityResultApproval
-Make fields line up across panels
+Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels
 
 CaseCreateEligibilityResults
 If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
@@ -73,8 +67,7 @@ Count each type of alert, output into end message.
 
 Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
 
-CaseRedetermination:
-Defer tabindex -1
+Done. CaseRedetermination: Defer tabindex -1
 
 CaseMemberII: editMode elefocus actualDate
 

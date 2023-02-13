@@ -73,9 +73,11 @@ CaseMemberII: editMode elefocus actualDate
 
 CaseCSE: editMode, forms completed = blank, elefocus actualDate
 
-FundingAvailability: editMode: elefocus basicSlidingFeeFundsAvailableCode
+Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
 
-All pages after application: Store application date, auto-enter for blank actual dates?
+Done. All pages after application: Store application date, auto-enter for blank actual dates?
+
+Income/expense pages: Store Payment Change date, auto-enter even if value exists.
 
 Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 

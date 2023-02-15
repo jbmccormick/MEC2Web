@@ -1,3 +1,11 @@
+CaseList: Enter clicks #submit
+
+Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
+
+Done. CaseCSE: Good Cause review date hiding is backwards
+
+Done. #reSubmit: Add hidden important in CSS
+
 Done. DarkMode: Focused input/select needs better indicator
 
 Done. Bug: CaseAction page formatting is wrong
@@ -55,12 +63,16 @@ editMode: If no start date, remove tabindex from end dates. Edit current tabinde
 Done. CaseAction: If case action exists, focus Delete
 
 Summary:
-iframe the heck outta that page.
-Also have a button to check for problem pages (unverified items, forms No, etc)
+Step 1: links in new tabs except redetermination and application.
+Step 2: iframe the heck outta that page.
+Step 3: Button to check for problem pages (unverified items, forms No, etc)
 
 CaseCSIA:
 elefocus viewMode? New : Actual Date
-Remove tabindex from several fields
+Collapse many things, including MI and Gender
+Default birthplaceCountry USA doEvent, birthplaceStateOrProvince Minnesota doEvent, birthplaceCounty STLOUIS doEvent, 
+Remove tabindex from several non-hidden fields
+#deceasedDate collapsed; #deceased .change to val Yes remove collapse #deceasedDate
 
 Alerts - Delete All:
 Count each type of alert, output into end message.
@@ -68,6 +80,7 @@ Count each type of alert, output into end message.
 Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
 
 Done. CaseRedetermination: Defer tabindex -1
+Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
 
 CaseMemberII: editMode elefocus actualDate
 
@@ -81,3 +94,12 @@ Income/expense pages: Store Payment Change date, auto-enter even if value exists
 
 Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 
+eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
+
+table { font-size: 14px; }
+
+CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append to parent to make it first in list?
+
+Table.click eleFocus editDupe - all pages? CaseChildProvider only?
+
+CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe

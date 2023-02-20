@@ -2,31 +2,10 @@ CaseList: Enter clicks #submit
 
 Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
 
-Done. CaseCSE: Good Cause review date hiding is backwards
-
-Done. #reSubmit: Add hidden important in CSS
-
-Done. DarkMode: Focused input/select needs better indicator
-
-Done. Bug: CaseAction page formatting is wrong
-
-Done. td: ToTitleCase?
-
 ProviderSearch
 if indexOf from=CaseChildProvider < 0, hide #Select, #back
 
 Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
-
-Done. Income/expense pages: If amounts are blank, change date tabindex to -1
-
-Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
-
-Done. FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
-Done. If feasible, highlight if entered hours exceed approved hours.
-
-Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
-
-Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)
 
 ProviderNotes: Notes Important Group ain't all right
 
@@ -60,8 +39,6 @@ Copy Mail Address: Margin-right 0
 CaseChildProvider
 editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
 
-Done. CaseAction: If case action exists, focus Delete
-
 Summary:
 Step 1: links in new tabs except redetermination and application.
 Step 2: iframe the heck outta that page.
@@ -85,13 +62,7 @@ CaseMemberII: editMode elefocus actualDate
 
 CaseCSE: editMode, forms completed = blank, elefocus actualDate
 
-Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
-
-Done. All pages after application: Store application date, auto-enter for blank actual dates?
-
 Income/expense pages: Store Payment Change date, auto-enter even if value exists.
-
-Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 
 eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
 
@@ -102,3 +73,32 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
 CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
+
+Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
+
+Done. All pages after application: Store application date, auto-enter for blank actual dates?
+
+Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
+
+Done. CaseAction: If case action exists, focus Delete
+
+Done. CaseCSE: Good Cause review date hiding is backwards
+
+Done. #reSubmit: Add hidden important in CSS
+
+Done. DarkMode: Focused input/select needs better indicator
+
+Done. Bug: CaseAction page formatting is wrong
+
+Done. td: ToTitleCase?
+
+Done. Income/expense pages: If amounts are blank, change date tabindex to -1
+
+Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
+
+Done. FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
+Done. If feasible, highlight if entered hours exceed approved hours.
+
+Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
+
+Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)

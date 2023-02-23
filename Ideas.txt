@@ -78,6 +78,8 @@ CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveD
 
 CaseNotes: PMI Merge - hide these case notes?
 
+Done. $('strong:contains("."):not([class="modal-message"]:not(:last-child))').after('<br>')
+
 Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
 
 Done. All pages after application: Store application date, auto-enter for blank actual dates?

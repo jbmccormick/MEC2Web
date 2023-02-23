@@ -1,3 +1,5 @@
+CaseCSE: If good cause, renewal date is flipped (hiding when should show)
+
 CaseList: Enter clicks #submit
 
 Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
@@ -73,6 +75,8 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
 CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
+
+CaseNotes: PMI Merge - hide these case notes?
 
 Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
 

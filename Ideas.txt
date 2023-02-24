@@ -29,7 +29,7 @@ If only 1 result, select result
 Provider search
 If only 1 result showing, select result
 
-Alt+S to also click save. N for new, E for edit.
+Alt+S to also click save. N for new, E for edit. If #quit.length > 0, #next & #previous hotkeys are...? alt + left right? 
 
 Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels
 

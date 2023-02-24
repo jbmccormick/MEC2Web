@@ -2,6 +2,16 @@ CaseCSE: If good cause, renewal date is flipped (hiding when should show)
 
 CaseList: Enter clicks #submit
 
+ClientSearch: Enter clicks search #submitbtn
+
+Strong: "Actual date is missing" eleFocus #actualDate
+
+CaseMemberI: Make link to member history always available
+
+Bug: CaseCSE - Dupe Wrap Up always shows disabled
+
+Case activities: !viewMode If activity begin date !== '', eleFocus end date
+
 Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
 
 ProviderSearch

@@ -1,6 +1,10 @@
 Elig result highlighting: Update on table click.
 
+CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
+
 CaseCSE: If good cause, renewal date is flipped (hiding when should show)
+
+elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
 
 CaseList: Enter clicks #submit
 
@@ -69,8 +73,9 @@ Count each type of alert, output into end message.
 
 Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
 
-Done. CaseRedetermination: Defer tabindex -1
-Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
+CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
+
+CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
 
 CaseMemberII: editMode elefocus actualDate
 
@@ -86,9 +91,9 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
-CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
-
 CaseNotes: PMI Merge - hide these case notes?
+
+Done. CaseRedetermination: Defer tabindex -1
 
 Done. $('strong:contains("."):not([class="modal-message"]:not(:last-child))').after('<br>')
 

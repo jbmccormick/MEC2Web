@@ -2,6 +2,8 @@ Elig result highlighting: Update on table click.
 
 CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
 
+Change color for custom buttons (clicked, hover) with inverse
+
 CaseCSE: If good cause, renewal date is flipped (hiding when should show)
 
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)

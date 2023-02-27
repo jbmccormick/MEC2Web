@@ -1,3 +1,5 @@
+Elig result highlighting: Update on table click.
+
 CaseCSE: If good cause, renewal date is flipped (hiding when should show)
 
 CaseList: Enter clicks #submit

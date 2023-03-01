@@ -1,10 +1,14 @@
+Done. CaseDisability: elefocus dupeNew or #memberReferenceNumberNewMember
+
 Elig result highlighting: Update on table click.
 
-CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
+Done. Change color for custom buttons (clicked, hover) and Highlighting ineligible fields with inverse
 
-Change color for custom buttons (clicked, hover) with inverse
+Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
 
-CaseCSE: If good cause, renewal date is flipped (hiding when should show)
+Done. CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
+
+Done. CaseCSE: If good cause, renewal date is flipped (hiding when should show)
 
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
 
@@ -29,7 +33,7 @@ Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every p
 
 ProviderNotes: Notes Important Group ain't all right
 
-Done. CaseEligibilityResultSelection: SA bonus buttons -> not with unapproved results
+Done. CaseEligibilityResultSelection: SA, Special Letter buttons -> not with unapproved results
 
 Client search
 If only 1 result, select result

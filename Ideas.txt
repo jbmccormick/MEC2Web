@@ -1,14 +1,9 @@
-Done. CaseDisability: elefocus dupeNew or #memberReferenceNumberNewMember
 
 Elig result highlighting: Update on table click.
 
-Done. Change color for custom buttons (clicked, hover) and Highlighting ineligible fields with inverse
+Earned/unearned/expense? Payment change hide if page starts blank
 
 Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
-
-Done. CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
-
-Done. CaseCSE: If good cause, renewal date is flipped (hiding when should show)
 
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
 
@@ -18,22 +13,13 @@ ClientSearch: Enter clicks search #submitbtn
 
 Strong: "Actual date is missing" eleFocus #actualDate
 
-CaseMemberI: Make link to member history always available
-
 Bug: CaseCSE - Dupe Wrap Up always shows disabled
 
 Case activities: !viewMode If activity begin date !== '', eleFocus end date
 
-Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
-
-ProviderSearch
-if indexOf from=CaseChildProvider < 0, hide #Select, #back
-
 Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
 
 ProviderNotes: Notes Important Group ain't all right
-
-Done. CaseEligibilityResultSelection: SA, Special Letter buttons -> not with unapproved results
 
 Client search
 If only 1 result, select result
@@ -48,6 +34,7 @@ Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make f
 CaseCreateEligibilityResults
 If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
 else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig results? Strong "Results successfully submitted."
+
 CaseEligibilityResultSelection (And SA pages?)
 If Strong "Background transaction" countdown timer and reload?
 
@@ -58,7 +45,7 @@ If active element = table, down/up goes to next/previous row
 
 CaseAddress 
 "Warning: Effective date" & !viewMode: eleFocus Save
-Copy Mail Address: Margin-right 0
+Done. Copy Mail Address: Margin-right 0
 
 CaseChildProvider
 editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
@@ -77,8 +64,6 @@ Done. #deceasedDate collapsed; #deceased .change to val Yes remove collapse #dec
 Alerts - Delete All:
 Count each type of alert, output into end message.
 
-Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
-
 CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
 
 CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
@@ -91,13 +76,31 @@ Income/expense pages: Store Payment Change date, auto-enter even if value exists
 
 eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
 
-table { font-size: 14px; }
-
 CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append to parent to make it first in list?
 
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
 CaseNotes: PMI Merge - hide these case notes?
+
+Done. CaseDisability: elefocus dupeNew or #memberReferenceNumberNewMember
+
+Done. CaseOverview: tr = td contains "MFIP, FS, HC": position: sticky, z-index: 1, bottom: math(tr * height -)
+
+Done. Change color for custom buttons (clicked, hover) and Highlighting ineligible fields with inverse
+
+Done. CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
+
+Done. CaseCSE: If good cause, renewal date is flipped (hiding when should show)
+
+Done. CaseMember: Make link to member history always available
+
+Done. Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
+
+Done. CaseEligibilityResultSelection: SA, Special Letter buttons -> not with unapproved results
+
+Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
+
+Done. table { font-size: 14px; }
 
 Done. CaseRedetermination: Defer tabindex -1
 

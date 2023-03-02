@@ -1,23 +1,36 @@
-
-Elig result highlighting: Update on table click.
-
+Simple:
 Earned/unearned/expense? Payment change hide if page starts blank
 
-Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
-
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
+
+Strong: "Actual date is missing" eleFocus #actualDate
+
+Case activities: !viewMode If activity begin date !== '', eleFocus end date
+
+CaseCreateEligibilityResults
+If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
+else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig results? Strong "Results successfully submitted."
+
+CaseChildProvider
+editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
+
+CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
+
+eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
+
+CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append to parent to make it first in list?
+
+Table.click eleFocus editDupe - all pages? CaseChildProvider only?
+
+CaseNotes: PMI Merge - hide these case notes?
+
+Projects:
 
 CaseList: Enter clicks #submit
 
 ClientSearch: Enter clicks search #submitbtn
 
-Strong: "Actual date is missing" eleFocus #actualDate
-
-Bug: CaseCSE - Dupe Wrap Up always shows disabled
-
-Case activities: !viewMode If activity begin date !== '', eleFocus end date
-
-Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
+CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
 
 ProviderNotes: Notes Important Group ain't all right
 
@@ -29,11 +42,9 @@ If only 1 result showing, select result
 
 Alt+S to also click save. N for new, E for edit. If #quit.length > 0, #next & #previous hotkeys are...? alt + left right? 
 
-Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels
+Bug: CaseCSE - Dupe Wrap Up always shows disabled
 
-CaseCreateEligibilityResults
-If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
-else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig results? Strong "Results successfully submitted."
+Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
 
 CaseEligibilityResultSelection (And SA pages?)
 If Strong "Background transaction" countdown timer and reload?
@@ -43,44 +54,33 @@ Check suspended cases for a childsProvider entry. Flag if none for delaying rede
 
 If active element = table, down/up goes to next/previous row
 
-CaseAddress 
-"Warning: Effective date" & !viewMode: eleFocus Save
-Done. Copy Mail Address: Margin-right 0
-
-CaseChildProvider
-editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
-
 Summary:
 Step 1: links in new tabs except redetermination and application.
 Step 2: iframe the heck outta that page.
 Step 3: Button to check for problem pages (unverified items, forms No, etc)
 
-CaseCSIA:
-elefocus viewMode? New : Actual Date
-Done. Collapse many things, including MI and Gender
-Done. Default birthplaceCountry USA doEvent, birthplaceStateOrProvince Minnesota doEvent, birthplaceCounty STLOUIS doEvent, 
-Done. #deceasedDate collapsed; #deceased .change to val Yes remove collapse #deceasedDate
-
 Alerts - Delete All:
 Count each type of alert, output into end message.
 
-CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
-
-CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
-
-CaseMemberII: editMode elefocus actualDate
-
-CaseCSE: editMode, forms completed = blank, elefocus actualDate
-
 Income/expense pages: Store Payment Change date, auto-enter even if value exists.
 
-eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
+Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
 
-CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append to parent to make it first in list?
+Done. Elig result highlighting: Update on table click.
 
-Table.click eleFocus editDupe - all pages? CaseChildProvider only?
+CaseAddress 
+Done. "Warning: Effective date" & !viewMode: eleFocus Save
+Done. Copy Mail Address: Margin-right 0
 
-CaseNotes: PMI Merge - hide these case notes?
+Done. CaseMemberII: editMode elefocus actualDate
+
+Done. CaseCSE: editMode, forms completed = blank, elefocus actualDate
+
+CaseCSIA:
+Done. elefocus viewMode? New : Actual Date
+Done. Collapse many things, including MI and Gender
+Done. Default birthplaceCountry USA doEvent, birthplaceStateOrProvince Minnesota doEvent, birthplaceCounty STLOUIS doEvent, 
+Done. #deceasedDate collapsed; #deceased .change to val Yes remove collapse #deceasedDate
 
 Done. CaseDisability: elefocus dupeNew or #memberReferenceNumberNewMember
 
@@ -134,3 +134,5 @@ Done. If feasible, highlight if entered hours exceed approved hours.
 Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
 
 Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)
+
+Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels

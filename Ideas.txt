@@ -22,7 +22,7 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
-CaseNotes: PMI Merge - hide these case notes?
+CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
 
 Projects:
 

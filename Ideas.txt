@@ -1,4 +1,6 @@
 Simple:
+Done, with fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
+
 Earned/unearned/expense? Payment change hide if page starts blank
 
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)

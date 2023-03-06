@@ -1,11 +1,12 @@
 Simple:
 Done, with fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
 
-Earned/unearned/expense? Payment change hide if page starts blank
+Done. Earned/unearned/expense? Payment change hide if page starts blank
 
 elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
 
-Strong: "Actual date is missing" eleFocus #actualDate
+Done. Strong: "Actual date is missing" eleFocus #actualDate
+Done. eleFocus #actualDate: If today is within the BWP, add today's date.
 
 Case activities: !viewMode If activity begin date !== '', eleFocus end date
 
@@ -26,21 +27,21 @@ Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
 CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
 
+iframe: filter: invert 180?
+
 Projects:
 
 CaseList: Enter clicks #submit
 
 ClientSearch: Enter clicks search #submitbtn
 
-CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add text to page if '#redeterminationStatus' .val === "Updates Required"
+CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add 'Must approve results!' to page if '#redeterminationStatus' .val === "Updates Required"
 
 ProviderNotes: Notes Important Group ain't all right
 
-Client search
-If only 1 result, select result
+Client search: If only 1 result, select result
 
-Provider search
-If only 1 result showing, select result
+Provider search: If only 1 result showing, select result
 
 Alt+S to also click save. N for new, E for edit. If #quit.length > 0, #next & #previous hotkeys are...? alt + left right? 
 If viewMode and , unmodified keys for /n/ew, /e/dit, /w/rap-up, /d/elete, delete-/a/ll, next (right), previous (left), /c/ancel notice, /r/emove cancel...

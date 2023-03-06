@@ -43,6 +43,7 @@ Provider search
 If only 1 result showing, select result
 
 Alt+S to also click save. N for new, E for edit. If #quit.length > 0, #next & #previous hotkeys are...? alt + left right? 
+If viewMode and , unmodified keys for /n/ew, /e/dit, /w/rap-up, /d/elete, delete-/a/ll, next (right), previous (left), /c/ancel notice, /r/emove cancel...
 
 Bug: CaseCSE - Dupe Wrap Up always shows disabled
 

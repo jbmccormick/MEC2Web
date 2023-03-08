@@ -1,5 +1,13 @@
 Simple:
-Done, with fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
+Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
+
+getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview
+
+CaseRedetermination: !viewMode: Updates Required, elefocus date
+
+Tabindex-1 fields: Add class, style = grayed out
+
+Done, plus fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
 
 Done. Earned/unearned/expense? Payment change hide if page starts blank
 

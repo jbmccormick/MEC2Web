@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.73
+// @version      0.74
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -357,7 +357,7 @@ margin-left: 0px !important;
 margin-right: 0px !important;
 }
 
-div.row .form-group:not(".form-button-margins"), #override .form-group>.col-lg-12:first-child:last-child, #override h1, #override .row>.form-group {
+div.row .form-group:not(.form-button-margins), #override .form-group>.col-lg-12:first-child:last-child, #override h1, #override .row>.form-group {
 margin-bottom: 0px !important;
 }
 
@@ -374,7 +374,7 @@ margin-bottom: 3px !important;
 margin-bottom: 3px !important;
 }
 
-#override div.form-group :is(label, select, input:not(".form-button-margins")), #override div.row is:(label, select, input), #override div.col-lg-12 is:(label, select, input) {
+#override div.form-group :is(label, select, input:not(.form-button-margins)), #override div.row is:(label, select, input), #override div.col-lg-12 is:(label, select, input) {
 padding: 0px 6px 0px 6px !important;
 margin-top: 0px !important;
 margin-left: 0px !important;
@@ -687,12 +687,18 @@ color: #111 !important;
 background: var(--formButtonBackground) !important;
 }
 
-:focus {
-box-shadow: 0 0 10px 4px #0056a1;
-outline: none;
+*:not(a):focus {
+box-shadow: 3px 3px 0px rgba(0, 0, 0, .05), 0 0 8px 2px rgba(102, 175, 233, .8) !important;
+outline: none !important;
 transition: all .2s ease-in;
 }
-
+a:focus {
+outline: none !important;
+filter: drop-shadow(0 0 4px rgba(124, 255, 238, 1));
+}
+tr:focus{
+box-shadow: none !important;
+}
 .form-control {
 color: black !important;
 }
@@ -797,10 +803,18 @@ filter: none !important;
 box-shadow: 0 0 10px 2px inset #785050 !important;
 background-color: white !important;
 }
-:focus {
-box-shadow: 0 0 10px 4px #0056a1;
+*:not(a):focus {
+box-shadow: 0 0 10px 4px #0056a1 !important;
 outline: none !important;
 transition: all .2s ease-in;
+}
+a:focus {
+outline: none !important;
+filter: drop-shadow(0 0 7px #0056a1) !important;
+}
+.selected a:focus {
+outline: none !important;
+filter: drop-shadow(0 0 6px #006ce0) !important;
 }
 tr:focus {
 box-shadow: none !important;

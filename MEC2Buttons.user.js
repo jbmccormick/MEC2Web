@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.75
+// @version      0.76
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -363,6 +363,7 @@ $('#newTabField').keydown(function(e) {
 `///////////////////////////////////////////////////////////////////////////// NAVIGATION BUTTONS SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 //////////////////////////////////////////////////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
+const allCapsWords = ['MN','DHS','WI','HC','FS','MFIP','DWP','CCAP','CCMF','BSF','TY']
 $('.dataTables_wrapper').parent('.form-group').removeClass('form-group')
 //Seasonal items, just for fun
 $('h1').prepend('<span class="icon">⛄ </span>');
@@ -858,7 +859,7 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
 
     //SECTION START CaseChildProvider hiding fields if provider type is not LNL
     function childProviderPage() {
-        let $lnlGroup = $('#careInHome, #providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parentsUntil('.form-group');
+        let $lnlGroup = $('#careInHome, #providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate, #exemptionReason, #exemptionPeriodBeginDate, #formSent, #signedFormReceived').parents('.form-group');
         if ($('#providerType').val() !== "Legal Non-licensed" && $('#providerType').val() !== '') {//not LNL
             $lnlGroup.addClass('collapse');
             if (!viewMode) { $('#providerLivesWithChild, #careInHome, #relatedToChild').val("N") }//not LNL, edit mode
@@ -867,8 +868,9 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
             if (!viewMode) { $lnlGroup.removeClass('collapse') }//is LNL, edit mode
             else {//is LNL, view mode
                 $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate').each(function() {
-                    if ($(this).val() === '') { $(this).parents('.col-lg-12').addClass('collapse') }
-                    else { $(this).parents('.col-lg-12').removeClass('collapse') }
+                    if ($(this).val() === '') { $(this).parents('.form-group').addClass('collapse') }
+                    //if ($(this).val() === '') { $(this).parents('.col-lg-12').addClass('collapse') }
+                    else { $(this).parents('.form-group').removeClass('collapse') }
                 });
             };
         };
@@ -1347,8 +1349,13 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
             snackBar('Copied! <br> Redetermination mailed, due ' + redetDate);
         })
     }
-    $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow')
-    document.querySelectorAll('.stickyRow').forEach(function(element, index) {element.style.bottom = index * 24 + "px"})
+    // $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow')
+    // let i = document.querySelectorAll('.stickyRow').length -1
+    // // document.querySelectorAll('.stickyRow').forEach(function(element, index) {element.style.bottom = index * 24 + "px"})
+    // document.querySelectorAll('.stickyRow').forEach(function(element, index) {
+    //     element.style.bottom = i * $('tbody>tr:eq(0)').height() + "px"
+    //     i--
+    // })
 };
 //SECTION END Custom items for CaseOverview
 if (window.location.href.indexOf("CasePageSummary") > -1) {
@@ -1784,11 +1791,13 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
         $('#noteStringText').val($('#noteStringText').val().replace(/\u0009/g, "    "))
     })
 }
-$('td:not(:has(*)):not([class*="sorting"]):not(:contains("MN DHS"), :contains(" of "))').each(function() {
-    $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", ")))
-    $(this).text($(this).text().replace(/\bBsf\b/g, "BSF").replace(/\bTy\b/g, "TY").replace(/\bCcmf\b/g, "CCMF").replace(/\bMfip\/dwp\b/g, "MFIP/DWP").replace(/\bFs\b/g, "FS").replace(/\bHc\b/g, "HC").replace(/\bMn\b/g, "MN").replace(/\bWi\b/g, "WI"))
+// $('td:not(:has(*)):not([class*="sorting"]):not(:contains("MN DHS"), :contains(" of "))').each(function() {
+//     $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", ")))
+//     $(this).text($(this).text().replace(/\bBsf\b/g, "BSF").replace(/\bTy\b/g, "TY").replace(/\bCcmf\b/g, "CCMF").replace(/\bMfip\/dwp\b/g, "MFIP/DWP").replace(/\bFs\b/g, "FS").replace(/\bHc\b/g, "HC").replace(/\bMn\b/g, "MN").replace(/\bWi\b/g, "WI"))
+// })
+$('td:not(:has(*)):not([class*="sorting"]):not(:contains(" of "))').each(function() {
+    $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", "), [allCapsWords]))
 })
-
 //Definition
 function setIntervalLimited(callback, interval, x) {
     for (var i = 0; i < x; i++) {
@@ -1862,12 +1871,25 @@ function addDays(date, days) {
 };
 //
 
-function toTitleCase(str) {
-  return str.toLowerCase().split(' ').map(function (word) {
-    return (word.charAt(0).toUpperCase() + word.slice(1));
-  }).join(' ');
-};
+// function toTitleCase(str) {
+//   return str.toLowerCase().split(' ').map(function (word) {
+//     return (word.charAt(0).toUpperCase() + word.slice(1));
+//   }).join(' ');
+// };
 //
+function toTitleCase(value, ...excludedWordList) {//toTitleCase(str, ['excluded','words'])
+  const exceptions = excludedWordList
+    .flat(Infinity)
+    .map(item => String(item).trim())
+    .join('|');
+  return String(value)
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(
+      RegExp(`\\b(?!${ exceptions })(?<upper>[\\w])(?<lower>[\\w]+)\\b`, 'g'),
+      (match, upper, lower) => `${ upper.toUpperCase() }${ lower.toLowerCase() }`,
+    );
+}
 
 function reorderCommaName(commaName) {
     let caseNameBackwards = toTitleCase(commaName).replace(/\b\w\b/,'').trim();

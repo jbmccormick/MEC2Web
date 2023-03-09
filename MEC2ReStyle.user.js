@@ -246,7 +246,7 @@ margin-bottom: 5px;
 margin-bottom: 5px !important;
 }
 
-label.toLabel {
+#override .toLabel {
 padding: 0px !important;
 margin-left: -13px !important;
 margin-right: 8px !important;
@@ -258,7 +258,7 @@ border: 1.5px solid;
 border-radius: 4px;
 }
 
-.auto-clearfix, #user_sign-in_content2 .content_35pad::after, .panel-box-format::after, .form-group::after, .col-lg-12::after {
+.auto-clearfix, #user_sign-in_content2 .content_35pad::after, .panel-box-format::after, .form-group::after, .col-lg-12::after, #serviceTableActionsArea, #serviceTableAddServiceArea {
   content: "";
   clear: both;
   display: table;
@@ -315,7 +315,7 @@ margin-bottom: 3px !important;
 margin-top: 3px !important;
 }
 
-div[class^="col-lg-"]:not(.col-lg-1), div[class^="col-md-"]:not(.col-md-1) {
+div[class^="col-lg-"]:not(.col-lg-1):not(div[class^="col-lg-offset"]), div[class^="col-md-"]:not(.col-md-1):not(div[class^"col-md-offset"]) {
 padding-top: 0px !important;
 padding: 0px 6px 0px var(--paddingLeft);
 margin-top: 0px !important;
@@ -323,7 +323,7 @@ margin-left: 0px !important;
 margin-right: 0px !important;
 }
 
-#override label~div:has(select, input, textarea) {
+#override label~div:has(select, input, textarea, span) {
 //reStyle;
 padding-left: calc(var(--paddingLeft) - 7px) !important;
 }
@@ -350,7 +350,7 @@ display: flex;
 align-items: center;
 }
 
-#override div.col-md-1 {
+#override div.col-md-1:not(.toLabel) {
 padding: 0px 0px 0px 0px !important;
 margin-top: 0px !important;
 margin-left: 0px !important;

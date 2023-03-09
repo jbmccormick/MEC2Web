@@ -363,7 +363,7 @@ $('#newTabField').keydown(function(e) {
 `///////////////////////////////////////////////////////////////////////////// NAVIGATION BUTTONS SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 //////////////////////////////////////////////////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
-const allCapsWords = ['MN','DHS','WI','HC','FS','MFIP','DWP','CCAP','CCMF','BSF','TY']
+const allCapsWords = ['MN','DHS','WI','HC','FS','MFIP','DWP','CCAP','CCMF','BSF','TY','MAXIS','PRISM','TSS','SW','SE','NW','NE','APT','STE','USA','PRI','MEC2','FEIN','SSN']
 $('.dataTables_wrapper').parent('.form-group').removeClass('form-group')
 //Seasonal items, just for fun
 $('h1').prepend('<span class="icon">⛄ </span>');
@@ -1349,13 +1349,11 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
             snackBar('Copied! <br> Redetermination mailed, due ' + redetDate);
         })
     }
-    // $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow')
-    // let i = document.querySelectorAll('.stickyRow').length -1
-    // // document.querySelectorAll('.stickyRow').forEach(function(element, index) {element.style.bottom = index * 24 + "px"})
-    // document.querySelectorAll('.stickyRow').forEach(function(element, index) {
-    //     element.style.bottom = i * $('tbody>tr:eq(0)').height() + "px"
-    //     i--
-    // })
+    $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow').addClass('stillNeedsBottom')
+    document.querySelectorAll('.stickyRow').forEach(function(element, index) {
+        element.style.bottom = ($('.stillNeedsBottom').length -1) * $(element).height() + "px"
+        $(element).removeClass('stillNeedsBottom')
+    })
 };
 //SECTION END Custom items for CaseOverview
 if (window.location.href.indexOf("CasePageSummary") > -1) {
@@ -1582,6 +1580,18 @@ if (window.location.href.indexOf("FinancialBillingApproval") > -1 && !viewMode) 
 //SECTION START Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 if (window.location.href.indexOf("FinancialManualPayment") > -1) {
     $('.row').addClass('clearfix');
+    $('div.col-xl-9.col-lg-9.col-md-9.col-sm-9.col-xs-9.form-group.textInherit').removeClass('col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9')
+    $('#childrenTableAddChildArea>col-lg-8').removeClass('col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8')
+    $('div.col-lg-1').addClass('toLabel centered-right-label').height('28','px')
+    $('.row>.col-lg-5~.col-lg-7').removeClass('col-lg-7').addClass('col-lg-6')
+    $('.row>.col-lg-5').removeClass('col-lg-5').addClass('col-lg-6')
+    $('#serviceTableAddServiceArea label.col-lg-3').removeClass('col-lg-3').addClass('col-lg-4')
+    $('#mpSelectBillingPeriod').parent().removeClass('col-lg-8').addClass('col-lg-7')
+    $('#childrenTableAddChildArea>.form-group').removeClass('col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8 form-group')
+    $('label[for="mpChildRefNumToAdd"]').removeClass('col-lg-4').addClass('col-lg-3')
+    $('label[for="mpChildRefNumToAdd"]~div').removeClass('col-lg-7').addClass('col-lg-6')
+    $('#childrenTableAddChildArea .row~.row>.col-lg-4').removeClass('col-lg-4').addClass('col-lg-3')
+    $('#childrenTableAddChildArea .row~.row input, #serviceTableAddServiceArea>.col-lg-8 input').unwrap()
 };
 //SECTION END Adding clearfix class to 'row' on FinancialManualPayment because they didn't do form-groups or anything that they did on the rest of the site
 
@@ -1758,6 +1768,7 @@ if (window.location.href.indexOf("ProviderSearch") > -1 && window.location.href.
 if (window.location.href.indexOf("ProviderTaxInfo") > -1) {
     $('#validateTaxIdButton').parent().removeClass('col-xs-12 col-sm-12 col-md-12 col-md-offset-2 col-lg-12 col-lg-offset-2').addClass('col-lg-offset-3 col-md-offset-3');
     $('label.col-lg-2').removeClass('col-lg-2 col-md-2').addClass('col-lg-3 col-md-3');
+    $('label:contains("-")').addClass('collapse')
 };
 
 //SECTION START ServicingAgencyOutgoingTransfers column fixes
@@ -1795,8 +1806,8 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
 //     $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", ")))
 //     $(this).text($(this).text().replace(/\bBsf\b/g, "BSF").replace(/\bTy\b/g, "TY").replace(/\bCcmf\b/g, "CCMF").replace(/\bMfip\/dwp\b/g, "MFIP/DWP").replace(/\bFs\b/g, "FS").replace(/\bHc\b/g, "HC").replace(/\bMn\b/g, "MN").replace(/\bWi\b/g, "WI"))
 // })
-$('td:not(:has(*)):not([class*="sorting"]):not(:contains(" of "))').each(function() {
-    $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", "), [allCapsWords]))
+$('td:not(:has(*)):not(thead *):not(:contains(" of "))').each(function() {
+    $(this).text(toTitleCase($(this).text(), [allCapsWords]))
 })
 //Definition
 function setIntervalLimited(callback, interval, x) {
@@ -2180,8 +2191,7 @@ $(".marginTop10").removeClass("marginTop10" );
 $(".padding-top-5px").removeClass("padding-top-5px" );
 $('.col-lg-offset-3').addClass('col-md-offset-3');
 $('.col-lg-3.col-md-2.col-sm-2.control-label.textR.textInherit').removeClass('col-md-2').addClass('col-md-3');
-$('input[id$="ZipCodePlus4"]').addClass('collapse');
-$('div[id$="ZipDash"]').add($('div[id$="ZipDash"]').next()).addClass('collapse');
+$('div[id*="ZipDash"]').add($('div[id*="ZipDash"]').next()).add($('input[id*="ZipCodePlus4"]')).add($('input[id*="zipCodePlus4"]')).addClass('collapse');
 $('.col-xs-3.col-sm-3.col-md-3.col-lg-1').removeClass('col-md-3').addClass('col-md-1');
 //SECTION END Post load changes to the page
 

@@ -1891,27 +1891,6 @@ function addDays(date, days) {
     return result;
 };
 //
-
-// function toTitleCase(str) {
-//   return str.toLowerCase().split(' ').map(function (word) {
-//     return (word.charAt(0).toUpperCase() + word.slice(1));
-//   }).join(' ');
-// };
-//
-function toTitleCase(value, ...excludedWordList) {//toTitleCase(str, ['excluded','words'])
-  const exceptions = excludedWordList
-    .flat(Infinity)
-    .map(item => String(item).trim())
-    .join('|');
-  return String(value)
-    .trim()
-    .replace(/\s+/g, ' ')
-    .replace(
-      RegExp(`(?!\\b${ exceptions }\\b)\\b(?<upper>[\\w])(?<lower>[\\w]+)\\b`, 'g'),
-      (match, upper, lower) => `${ upper.toUpperCase() }${ lower.toLowerCase() }`,
-    );
-}
-
 function reorderCommaName(commaName) {
     let caseNameBackwards = toTitleCase(commaName).replace(/\b\w\b/,'').trim();
     let caseName = caseNameBackwards.split(",")[1].trim() + " " + caseNameBackwards.split(",")[0].replace(/,/,'')
@@ -2012,9 +1991,6 @@ function fixUpdateDateAndUpdateUser() {
 };
 fixUpdateDateAndUpdateUser();
 //SECTION START Fix where and how Update Date and Update User are displayed
-
-//testing
-console.log($('.visible-lg:not(:has(*))'))
 
 //SECTION START Reverses Period options order, makes most recent visible
 function selectPeriod() {

@@ -39,6 +39,8 @@ iframe: filter: invert 180?
 
 Projects:
 
+Alerts, InactiveCaseload: Stop button for when automated process is happening.
+
 CaseList: Enter clicks #submit
 
 ClientSearch: Enter clicks search #submitbtn
@@ -120,7 +122,7 @@ Done. $('strong:contains("."):not([class="modal-message"]:not(:last-child))').af
 
 Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
 
-Done. All pages after application: Store application date, auto-enter for blank actual dates?
+Done. All pages after application: Store actualDate date, auto-enter for blank actual dates
 
 Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
 

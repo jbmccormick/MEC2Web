@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.76
+// @version      0.77
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -363,7 +363,7 @@ $('#newTabField').keydown(function(e) {
 `///////////////////////////////////////////////////////////////////////////// NAVIGATION BUTTONS SECTION END \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 //////////////////////////////////////////////////////////////////////////// PAGE SPECIFIC CHANGES SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
-const allCapsWords = ['MN','DHS','WI','HC','FS','MFIP','DWP','CCAP','CCMF','BSF','TY','MAXIS','PRISM','TSS','SW','SE','NW','NE','APT','STE','USA','PRI','MEC2','FEIN','SSN']
+const allCapsWords = ["MN", "DHS", "WI", "HC", "FS", "MFIP", "DWP", "CCAP", "CCMF", "BSF", "TY", "MAXIS", "PRISM", "TSS", "SW", "SE", "NW", "NE", "APT", "STE", "USA", "PRI", "MEC2", "FEIN", "SSN", "MX", "CC", "SLC"];
 $('.dataTables_wrapper').parent('.form-group').removeClass('form-group')
 //Seasonal items, just for fun
 $('h1').prepend('<span class="icon">⛄ </span>');
@@ -384,7 +384,6 @@ function eleFocus(ele) {
 };
 //SUB-SECTION START All pages - popup menu
 if ($('#confirmPopup, #addChildConfirmPopup').length > 0) {
-    $('#confirmButtons').children('input').each(function() {console.log($(this).val()[0])})
     const observer = new MutationObserver(function(e) {
         //if style == display: block {
         eleFocus('#confirmButtons>#confirm')
@@ -394,12 +393,9 @@ if ($('#confirmPopup, #addChildConfirmPopup').length > 0) {
                 window.addEventListener('keydown', function(e) {
                     switch (e.code) {
                         case 'KeyO':
-                        case 'KeyY':
                             e.preventDefault()
                             $('#confirmButtons').children('input').eq(0).click()
-                            console.log('Yes')
                             break
-                        case 'KeyN':
                         case 'KeyC':
                             e.preventDefault()
                             $('#confirmButtons').children('input').eq(1).click()
@@ -788,6 +784,7 @@ if (window.location.href.indexOf("CaseAction") > -1) {
 
 //SECTION START Copy client mail to address to clipboard on Case Address page
 if (window.location.href.indexOf("CaseAddress") > -1) {
+    let $mailingFields = $('h4:contains("Mailing Address")').siblings().find('input, select').add($('#residenceStreet2')).not($('#mailingZipCodePlus4'))
     function firstNameSplitter(name) {
         if (name.split(",")[1].split(" ").length > 3) {
             return name.split(",")[1].split(" ")[1] + " " + name.split(",")[1].split(" ")[2]
@@ -825,16 +822,14 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
             $(this).val() == '' && ($(this).parents('.form-group').addClass('collapse'))
         });
     };
+    function checkMailingAddress() {
+        $mailingFields.parents('.form-group').removeClass('collapse')
+        $mailingFields.each(function() {
+            $(this).val() == '' && ($(this).parents('.form-group').addClass('collapse'))
+        })
+    };
     if (viewMode) {
         $('#caseAddressTable').click(function() { checkMailingAddress() });
-    };
-    let mailingFields = $('h4:contains("Mailing Address")').siblings().find('input, select').add($('#residenceStreet2')).not($('#mailingZipCodePlus4'))
-    function checkMailingAddress() {
-        $(mailingFields).parents('.form-group').removeClass('collapse')
-        $(mailingFields).each(function() {
-            $(this).val() == '' && ($(this).parents('.form-group').addClass('collapse'))
-            console.log($(this).prop('id') + ": " + $(this).val())
-        })
     };
 };
 //SECTION END CaseAddress changes and fixes
@@ -1636,6 +1631,7 @@ if (window.location.href.indexOf("InactiveCaseList") > -1) {
 //SECTION START Fix lastUpdateWorker/CaseWorker offsets
 if (window.location.href.indexOf("lastUpdateWorker") > -1 || window.location.href.indexOf("CaseWorker") > -1) {
     $('.panel-box-format input~input').removeClass('col-md-offset-2').addClass('col-lg-offset-2 col-md-offset-3');
+    $('input[id$="Email"]').width('300','px')
 };
 //SECTION END Fix lastUpdateWorker offsets
 
@@ -1802,12 +1798,26 @@ if (window.location.href.indexOf("CaseNotes") > -1) {
         $('#noteStringText').val($('#noteStringText').val().replace(/\u0009/g, "    "))
     })
 }
-// $('td:not(:has(*)):not([class*="sorting"]):not(:contains("MN DHS"), :contains(" of "))').each(function() {
-//     $(this).text(toTitleCase($(this).text().replace(/,(?! )/g, ", ")))
-//     $(this).text($(this).text().replace(/\bBsf\b/g, "BSF").replace(/\bTy\b/g, "TY").replace(/\bCcmf\b/g, "CCMF").replace(/\bMfip\/dwp\b/g, "MFIP/DWP").replace(/\bFs\b/g, "FS").replace(/\bHc\b/g, "HC").replace(/\bMn\b/g, "MN").replace(/\bWi\b/g, "WI"))
-// })
+function addCommaSpace(value) {
+return String(value)
+    .replace(/,(\S)/g, ", $1")
+}
+function toTitleCase(value, ...excludedWordList) {
+  const exceptions = excludedWordList
+    .flat(Infinity)
+    .map(item => String(item).trim())
+    .join('\\b|\\b');
+  return String(value)
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(
+      RegExp(`\\b(?!\\b${ exceptions }\\b)(?<upper>[\\w])(?<lower>[\\w]+)`, 'g'),
+      (match, upper, lower) => `${ upper.toUpperCase() }${ lower.toLowerCase() }`,
+    );
+}
 $('td:not(:has(*)):not(thead *):not(:contains(" of "))').each(function() {
-    $(this).text(toTitleCase($(this).text(), [allCapsWords]))
+    $(this).text( addCommaSpace( $(this).text() ) )
+    $(this).text( toTitleCase( $(this).text(), allCapsWords ) )
 })
 //Definition
 function setIntervalLimited(callback, interval, x) {
@@ -1897,7 +1907,7 @@ function toTitleCase(value, ...excludedWordList) {//toTitleCase(str, ['excluded'
     .trim()
     .replace(/\s+/g, ' ')
     .replace(
-      RegExp(`\\b(?!${ exceptions })(?<upper>[\\w])(?<lower>[\\w]+)\\b`, 'g'),
+      RegExp(`(?!\\b${ exceptions }\\b)\\b(?<upper>[\\w])(?<lower>[\\w]+)\\b`, 'g'),
       (match, upper, lower) => `${ upper.toUpperCase() }${ lower.toLowerCase() }`,
     );
 }

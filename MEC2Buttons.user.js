@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.77
+// @version      0.78
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1345,10 +1345,17 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
         })
     }
     $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow').addClass('stillNeedsBottom')
-    document.querySelectorAll('.stickyRow').forEach(function(element, index) {
-        element.style.bottom = ($('.stillNeedsBottom').length -1) * $(element).height() + "px"
-        $(element).removeClass('stillNeedsBottom')
+    waitForElmHeight('#programInformationData > tbody > tr > td').then(() => {
+        document.querySelectorAll('.stickyRow').forEach(function(element, index) {
+            element.style.bottom = ($('.stillNeedsBottom').length -1) * element.childNodes[0].clientHeight + "px"
+            $(element).removeClass('stillNeedsBottom')
+        })
     })
+    setTimeout(function() {
+        document.querySelectorAll('.stickyRow').forEach(function(element, index) {
+            console.log(element.clientHeight)
+        })
+    }, 1000)
 };
 //SECTION END Custom items for CaseOverview
 if (window.location.href.indexOf("CasePageSummary") > -1) {
@@ -1862,6 +1869,24 @@ function waitForElmValue(selector) {
             };
         });
         observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+};
+function waitForElmHeight(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector).offsetHeight > 0) {
+            return resolve(document.querySelector(selector));
+        };
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector).offsetHeight > 0) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            };
+        });
+        observer.observe(document.body, {
+            attributes: true,
             childList: true,
             subtree: true
         });

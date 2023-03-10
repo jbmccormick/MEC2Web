@@ -1,4 +1,6 @@
 Simple:
+tables: border-bottom: none;
+
 Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
 getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview

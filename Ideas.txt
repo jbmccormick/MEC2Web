@@ -1,7 +1,7 @@
 Urgent:
 Done. AlertCreateAlert: Not adding a month, only giving current month
 
-Add to excluded list: TI, EE, SA, MNB, ES
+Done. Add to excluded list: TI, EE, SA, MNB, ES
 
 Simple:
 tables: border-bottom: none;

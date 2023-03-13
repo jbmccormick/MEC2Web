@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.78
+// @version      0.79
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -31,7 +31,6 @@ if (primaryPanelID.getAttribute('Id') == "greenline") {
 	addGlobalStyle('.custom-button-clicked { background-color: #A6EDF7; }');
 	addGlobalStyle('.panel.panel-default { margin-top: 0px !important; }');
 };
-//$('head').append('<link rel="icon" type="image/png" href="https://www.dhs.state.mn.us/main/groups/secure/documents/twocolumns/~export/DHS16_139409~293~MANUALS_HCT/59499.png">');
 
 `/////////////////////////////////////////////////////////////////////////////////////////////////// EARLY EVENTS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ `
 
@@ -166,7 +165,6 @@ const rowThreeButtonArray = {
 	providerButtons:{//arrayName:["Button Name", "PageNameWithoutDotHtm", "_self or _blank", "Id of Parent", "Id of Button", "RowTwoParent"],
 		providerOverview:["Overview","ProviderOverview", "_self", "Provider Overview", "ProviderOverviewSelf", "providerButtons"],
         providerNotes:["Notes","ProviderNotes", "_self", "Provider Notes", "ProviderNotesSelf", "providerButtons"],
-		//providerSearch:["Search","ProviderSearch", "_blank", "Provider Search", "ProviderSearchSelf", "providerButtons"],
 		providerInformation:["Info", "ProviderInformation", "_self", "Provider Information", "ProviderInformationSelf", "providerButtons"],
 		providerAddress:["Address", "ProviderAddress", "_self", "Provider Address", "ProviderAddressSelf", "providerButtons"],
 		providerNotices:["Notices", "ProviderNotices", "_self", "Provider Notices", "ProviderNoticesSelf", "providerButtons"],
@@ -562,10 +560,6 @@ if ($('strong:contains("Actual Date is missing")').length) {
 //SECTION START Page Specific Changes
 
 //SECTION START Fix issue caused by giving .form-group the display: flex property
-// if (window.location.href.indexOf("CaseList.htm") > -1) {
-//     $('#serviceAgencyName').unwrap()
-// }
-//SECTION START Fix issue caused by giving .form-group the display: flex property
 $('.visible-sm').remove()
 if (window.location.href.indexOf("ClientSearch") > -1 || window.location.href.indexOf("/Provider") > -1 || window.location.href.indexOf("/getProvider") > -1 || window.location.href.indexOf("CaseOverview") > -1 ) {
     $('.visible-lg>label, .visible-lg>.col-lg-4, .visible-lg>.col-lg-2').unwrap()
@@ -675,9 +669,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
         changeButtonText();
     });
     waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
-        //onAlertsLoaded();
         changeButtonText();
-        //goScrollIntoView();
     });
     //SECTION END Do action based on Alert Type
 
@@ -739,7 +731,6 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
 
     //SECTION START Resize the Alert page's Explanation viewable area
     $('.h1-parent-row').siblings('br[clear!="all"]').remove();
-    //$('.col-lg-12').addClass('clearfix');//Should already be clearfix'd later in the script
     addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
     $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
     $('#message').parents('.row').prev('br').remove();
@@ -815,8 +806,8 @@ if (window.location.href.indexOf("CaseAddress") > -1) {
 //SECTION START CaseAddress changes and fixes
     $('#phone1').parents('.panel-box-format').find('div>label.col-lg-2').removeClass('col-lg-2').addClass('col-lg-3');
     $('#phone1').parents('.panel-box-format').find('div.col-lg-1').remove();
-    $('label.col-md-2').addClass('col-md-3').removeClass('col-md-2');//Fix wrongly sized columns for several labels on Case Address
-    $('#mailingStreet1').val() == '' && !$('#edit').prop('disabled') && (checkMailingAddress())//Shrink mailing address if blank
+    $('label.col-md-2').addClass('col-md-3').removeClass('col-md-2');//Fixes wrongly sized columns for several labels on Case Address
+    $('#mailingStreet1').val() == '' && !$('#edit').prop('disabled') && (checkMailingAddress())//Shrinks mailing address if blank
     if (viewMode) {
         $('#phone2, #phone3, #contactNotes, #email').each(function() {
             $(this).val() == '' && ($(this).parents('.form-group').addClass('collapse'))
@@ -849,7 +840,6 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
     $('#providerInfoButton').click(function() {
         window.open("/ChildCare/ProviderInformation.htm?providerId=" + $('#providerId').val(), "_blank");
     });
-    //$('#reporterTypeCheckboxes input[name="reporterTypeSelections"]:not(:eq(0))').before('<br>');
     //SECTION END Open provider information page from Child's Provider page
 
     //SECTION START CaseChildProvider hiding fields if provider type is not LNL
@@ -864,7 +854,6 @@ if (window.location.href.indexOf("CaseChildProvider") > -1) {
             else {//is LNL, view mode
                 $('#providerLivesWithChildBeginDate, #careInHomeOfChildBeginDate').each(function() {
                     if ($(this).val() === '') { $(this).parents('.form-group').addClass('collapse') }
-                    //if ($(this).val() === '') { $(this).parents('.col-lg-12').addClass('collapse') }
                     else { $(this).parents('.form-group').removeClass('collapse') }
                 });
             };
@@ -904,7 +893,6 @@ if (window.location.href.indexOf("CaseCreateEligibilityResults") > -1) {
 
 //SECTION START Fill Child Support PDF Forms
 if (window.location.href.indexOf("CaseCSE") > -1) {
-    //$('#caseInputSubmit').after('<div class="custom-button fake-custom-button centered-text" id="csForms" style="display: inline-flex; margin-left: 10px !important;">CS Forms</div>');
     $('#cseDetailsFormsCompleted').parent().after('<div class="custom-button fake-custom-button centered-text flex-right" id="csForms">Generate CS Forms</div>');
     $('#csForms').click(function() {
         let caseNumber = $('#caseId').val();
@@ -940,12 +928,7 @@ if (window.location.href.indexOf("CaseCSE") > -1) {
     $('#csePriTable').click(function() { cseReviewDate() });
     function cseReviewDate() {
         $('h4:contains("Good Cause")').siblings().removeClass('collapse')
-        $('h4:contains("Good Cause")').siblings().children('div').children('input, select').filter(function() {return $(this).val() === ''}).parents('.form-group').addClass('collapse')
-        // if ($('#cseGoodCauseClaimStatus').val() === 'Not Claimed') {
-        //     $('#cseGoodCauseReviewNextGCReviewDate').parents('.form-group').addClass('collapse');
-        // } else {
-        //     $('#cseGoodCauseReviewNextGCReviewDate').parents('.form-group').removeClass('collapse');
-        // };
+        $('h4:contains("Good Cause")').siblings().children('div').children('input, select').filter(function() {return $(this).val() === ''}).not('#cseGoodCauseClaimStatus').parents('.form-group').addClass('collapse')
     };
     cseReviewDate()
     $('#cseGoodCauseClaimStatus').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text flex-right" id="cseGoodCauseClaimStatusToggle">Toggle extra info</div>');
@@ -1053,8 +1036,6 @@ if (window.location.href.indexOf("CaseEarnedIncome") > -1 || window.location.hre
         $('#ceiPaymentEnd, #paymentEndDate').prop('tabindex', -1)
     }
     $( "h4:contains('Actual Income'), h4:contains('Student Income'), h4:contains('Actual Expense')" ).nextAll().addClass("collapse")
-    // $( "h4:contains('Student Income')" ).nextAll().addClass("collapse")
-    // $( "h4:contains('Actual Expense')" ).nextAll().addClass("collapse")
 };
 //SECTION END CaseEarnedIncome CaseUnearnedIncome CaseExpense collapse unnecessary H4s
 
@@ -1182,7 +1163,6 @@ if (window.location.href.indexOf("CaseExpense") > -1) {
 	let hiddenExp = $('#projectionExpenseUnitType, #projectionExpenseNumberOfUnits').parents('.form-group');
 	hiddenExp.addClass('collapse');
 	$('label[for="projectionExpenseAmount"]').parent().append('<div class="fake-custom-button fake-custom-button-nodisable centered-text flex-right" id="ceiShowHide2">Toggle extra info</div>');
-    // $('#projectionExpenseAmount').parent().after('<div class="fake-custom-button fake-custom-button-nodisable centered-text flex-right" id="ceiShowHide2">Toggle extra info</div>');
 	$('#ceiShowHide2').click(function() { $(hiddenExp).toggleClass('collapse') });
     $('.col-md-2.col-lg-2').removeClass('col-lg-2 col-md-2').addClass('col-md-3 col-lg-3');
     $('#paymentBeginDate').css('margin-right', '4px');
@@ -1207,7 +1187,7 @@ if (window.location.href.indexOf("CaseLockStatus") > -1) {
 //SECTION END CaseLockStatus Reveal Unlock button
 
 //SECTION START Open CaseMemberHistory page from CaseMember with 'button'
-if (window.location.href.indexOf("CaseMember") > -1) {//$('#page-wrap').length == 0
+if (window.location.href.indexOf("CaseMember") > -1) {
     $('label[for="memberReferenceNumber"]').attr('id','openHistory').css('border-width','1px').css('border-color','gray').css('border-style','solid');
     $('#openHistory').click(function() {
         window.open('/ChildCare/CaseMemberHistory.htm?parm2=' + $('#caseId').val(), '_blank');
@@ -1320,8 +1300,6 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
     $('label[for="redeterminationDueDate"]').nextAll('div.col-lg-3:eq(0)').attr('id','redetDate');
     if ($('#redetDate').text().length > 19) {
         $('#cccciH4').append('<div id="copyFollowUpButton" class="class=fake-custom-button fake-custom-button-nodisable centered-text flex-right">Follow Up Date</div>');
-        // $('label[for="redeterminationDueDate"]').parents('.form-group').siblings('h4')
-        //     .after('<div id="copyRedetButton" class="class=fake-custom-button fake-custom-button-nodisable centered-text flex-right">Follow Up Date</div>');
         $('#copyFollowUpButton').click(function() {
             let redetDate = $('label[for="redeterminationDueDate"]').siblings('div.col-lg-3.col-md-3').eq(0).text().replace(/\n|\t/g, '').slice(0, 10)
             let redetPlus = (addDays(redetDate, 44));
@@ -1332,8 +1310,6 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
         $('#redetDate').append('<div id="redetDateChild">');
         $('#redetDateChild').click(function() {
             let redetDate = $('label[for="redeterminationDueDate"]').siblings('div.col-lg-3.col-md-3').eq(0).text().replace(/\n|\t/g, '').slice(0, 10)
-            // navigator.clipboard.writeText(document.getElementById('redetDate').innerText);
-            // snackBar('Copied! <br>' + document.getElementById('redetDate').innerText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
             navigator.clipboard.writeText(redetDate);
             snackBar('Copied! <br>' + redetDate);
         });
@@ -1344,10 +1320,11 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
             snackBar('Copied! <br> Redetermination mailed, due ' + redetDate);
         })
     }
-    $('td:contains("HC")').add($('td:contains("FS")')).add($('td:contains("DWP")')).add($('td:contains("MFIP")')).parent().addClass('stickyRow').addClass('stillNeedsBottom')
+    $('#programInformationData td:contains("HC"), #programInformationData td:contains("FS"), #programInformationData td:contains("DWP"), #programInformationData td:contains("MFIP")').parent().addClass('stickyRow').addClass('stillNeedsBottom')
     waitForElmHeight('#programInformationData > tbody > tr > td').then(() => {
         document.querySelectorAll('.stickyRow').forEach(function(element, index) {
-            element.style.bottom = ($('.stillNeedsBottom').length -1) * element.childNodes[0].clientHeight + "px"
+            console.log($('.stillNeedsBottom').length -1)
+            element.style.bottom = ($('.stillNeedsBottom').length -1) * (document.querySelector('#programInformationData').getBoundingClientRect().height / document.querySelectorAll('#programInformationData tbody tr').length) + "px"
             $(element).removeClass('stillNeedsBottom')
         })
     })
@@ -1420,7 +1397,7 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
             childList["child" + index].ageCat0 = $('#ageRateCategory').val();
             childList["child" + index].ageCat1 = $('#ageRateCategory2').val();
         });
-        let caseNameBackwards = toTitleCase($('#caseHeaderData').children().prop('innerText').slice(5)).replace(/\b\w\b/,'').trim();//remove "Name:" and middle initial
+        let caseNameBackwards = toTitleCase($('#caseHeaderData').children().prop('innerText').slice(5)).replace(/\b\w\b/,'').trim();//removes "Name:" and middle initial
         const formInfo = {
             pdfType:"BillingForm",
             xNumber:localStorage.getItem("MECH2.userIdNumber"),
@@ -1456,7 +1433,6 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview") > -1) {
     `);
     $('#billingForm').click(function() { getCopay($('#caseId').val(), $('#selectPeriod').val().replace(/\//g, '').split(' - ')[0] + $('#selectPeriod').val().replace(/\//g, '').split(' - ')[1]) })//getCopay activates billingFormInfo
     $('#copyProviderMailing').click(function() {
-        //$('#hiddenLoadDiv').load("/ChildCare/ProviderAddress.htm?providerId=" + $('#providerInfoTable .selected td').eq(0).prop('innerHTML') + " #providerData")
         console.log($('#providerInfoTable .selected td').eq(0).prop('innerHTML'))
     });
     $('#providerAddressButton').click(function() {
@@ -1488,9 +1464,9 @@ if (window.location.href.indexOf("CaseSupportActivity") > -1) {
 //SECTION END CaseSpecialActivity Duplicate start date into end date for Ext Elig
 
 //SECTION START Close case transfer to x169CCA; Auto enter transfer info if have sessionStorage value; Add button to viewMode page to do transfer;
-if (window.location.href.indexOf("CaseTransfer") < 0) { (localStorage.setItem('MECH2.activelyTransferring','noThanks')) }//prevent accidental case transfer activity when loading that page
+if (window.location.href.indexOf("CaseTransfer") < 0) { (localStorage.setItem('MECH2.activelyTransferring','noThanks')) }//prevents accidental case transfer activity when loading that page
 if (window.location.href.indexOf("CaseTransfer") > -1) {
-    $('div.col-lg-6:not(:has(*))').addClass('collapse') //Hide CaseTransfer empty div
+    $('div.col-lg-6:not(:has(*))').addClass('collapse') //Hides CaseTransfer empty div
     $('#caseTransferFromAllowedUREndsDate, #caseTransferFromAssignmentServicingEndsDate, #caseTransferFromVoid, #caseTransferFromTransferImmediately, #caseTransferToTransferEffectiveDate, #caseTransferToEarlyAcceptance, #caseTransferToName').prop('tabindex', -1)
 
 //Automatic case transfer section start
@@ -1618,7 +1594,7 @@ if (window.location.href.indexOf("InactiveCaseList") > -1) {
         window.open('/ChildCare/' + (ele).attr('href'), 'transferiframe');
     };
     const oldClosedArray = Array.from(document.querySelectorAll('.oldClosed'), (caseNumber) => caseNumber.id)
-    function transferAllClosed() {//todo fix this section as it does not wait to finish before attempting the next case
+    function transferAllClosed() {
         addEventListener('storage', function(key, newValue) {
             if (oldClosedArray.length > 0 && event.key === 'MECH2.doClose' && event.newValue === 'didClose') { caseTransferEvent() }
         })
@@ -1793,9 +1769,6 @@ if ($('#actualDate').length) {
 if (!viewMode && sessionStorage.getItem('actualDate') !== null && $('#actualDate').length && !$('#actualDate').val().length) {
     $('#actualDate').val(sessionStorage.getItem('actualDate'))
 }
-// if (sessionStorage.getItem('actualDate') !== null) {
-//     $('#actualDate').parents('.form-group').append('<div id="stopActualDate" class="custom-button">Forget Date</div>')
-// }
 $('#wrapUp').click(function() {
     sessionStorage.removeItem('actualDate')
 })//
@@ -2002,11 +1975,6 @@ function fixUpdateDateAndUpdateUser() {
         .children('input').width('11ch').end()
         .children('a').width('9ch');
     let $updateSiblings = window.location.href.indexOf("CaseNotes") > -1 ? $('#storage').parent() : $updateParent.siblings('div');//button div
-    // $updateParent.siblings('br').remove();
-    // $updateSiblings.children('br').remove();
-    // $updateSiblings.prop('class','clearfix');
-    // $updateSiblings.addClass('updateSiblings');
-    // $updateSiblings.removeClass('col-md-8 col-lg-8 col-md-7 col-lg-7 col-xs-7 col-sm-7');
     $updateSiblings.prop('class','clearfix').addClass('updateSiblings').removeClass('col-md-8 col-lg-8 col-md-7 col-lg-7 col-xs-7 col-sm-7');
     $updateSiblings.find('input.form-button').addClass('form-button-margins');
     $updateSiblings.eq(0).append($updateSiblings.eq(1).children()).addClass('native-button-home');//move second row of buttons (if exist) to first row
@@ -2130,23 +2098,6 @@ $( window ).on( "load", function() {
     });
 });
 //SECTION END Make labels the same height as their next neighbor
-
-//SECTION START Removing extra BRs and using clearfix to prevent overlapping elements -- With ReStyle clearing floats on certain elements, all BR are removed so this is no longer needed
-// function deburrThePage() {
-// 	$('br + br').remove();
-// 	$('#caseHeaderData + br').add($('#caseHeaderData').prev('br')).add($('#caseHeaderData').parent().prev('br')).add($('#caseHeaderData > br:last-child')).remove();
-// 	$('.visible-lg:has("br:only-child"), .visible-md:has("br:only-child"), .visible-sm:has("br:only-child")').remove();
-// 	$('.panel-box-format').prev('br').add($('.panel-box-format').parent().prev('br')).remove();
-// 	$('.form-group').prev('br').add($('.form-group + br')).add($('.form-group > br:first-child')).remove();
-// 	$('h4').prev('br').add($('h4 + br')).remove();
-// 	$('div[id$="TableData"] > br').remove();//remove children BR under tables
-// 	$('div[id$="TableData"]').siblings('br').remove();//remove BR around tables
-// 	$('div[id$="Data_wrapper"]').siblings('br').remove();//remove BR around less conventionally named tables
-//     $('div[id$="TableAndPanelData"]').siblings('br').remove();//testing
-// 	//$('.panel-box-format, .form-group, .col-lg-12').addClass('clearfix');
-// };
-//deburrThePage();
-//SECTION END Removing extra BRs and using clearfix to prevent overlapping elements
 
 //SECTION START Duplicate buttons above H1 row
 if (window.location.href.indexOf("ctiveCaseList") < 0) {

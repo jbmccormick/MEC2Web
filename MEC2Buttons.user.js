@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.79
+// @version      0.80
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1525,6 +1525,14 @@ if (window.location.href.indexOf("ClientSearch") > -1) {
 
 //SECTION START FinancialBilling Fix to display table, edit h4 for billing worker
 if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
+    $('#billingRegistrationFeesTable_wrapper').parent().removeClass('col-lg-4 col-md-4').addClass('col-lg-5 col-md-5')
+    $('#carryBilledAmountsForward').parents('.form-group').removeClass('form-group').addClass('col-md-11 col-lg-11').append($('#calculate').parent())
+    $('#carryBilledAmountsForward').parents('.col-lg-8').removeClass('col-lg-8 col-md-8').addClass('col-lg-7 col-md-7')
+    $('#addBilledTime').parent().removeClass('col-lg-3 col-md-3 col-sm-3').addClass('col-lg-5 col-md-5')
+    $('#totalAmountBilled').parents('.col-lg-12').append($('#addBilledTime').parent())
+    $('#addRegistrationFee').parent().unwrap()
+    $('label[for="registrationFee"]').parent().removeAttr('style').unwrap().css('align-self','center')
+    $('label[for="totalAmountAllowed"]').parent().removeAttr('style').css('display','flex').css('flex-wrap','wrap').css('align-content','center')
     addGlobalStyle('.form-control.borderless.padL0.padR0 { padding: 0px !important; }');
     document.getElementById('billingRegistrationFeesTable_wrapper').parentNode.previousElementSibling.classList.remove('clearfix');
     if (!viewMode) {
@@ -1795,10 +1803,12 @@ function toTitleCase(value, ...excludedWordList) {
       (match, upper, lower) => `${ upper.toUpperCase() }${ lower.toLowerCase() }`,
     );
 }
-$('td:not(:has(*)):not(thead *):not(:contains(" of "))').each(function() {
-    $(this).text( addCommaSpace( $(this).text() ) )
-    $(this).text( toTitleCase( $(this).text(), allCapsWords ) )
-})
+if (window.location.href.indexOf("CaseNotes") < 0) {
+    $('td:not(:has(*)):not(thead *):not(:contains(" of "))').each(function() {
+        $(this).text( addCommaSpace( $(this).text() ) )
+        $(this).text( toTitleCase( $(this).text(), allCapsWords ) )
+    })
+}
 //Definition
 function setIntervalLimited(callback, interval, x) {
     for (var i = 0; i < x; i++) {

@@ -1,14 +1,18 @@
 Urgent:
+CaseCSE: Good Cause selection hiding on edit
+
 Done. AlertCreateAlert: Not adding a month, only giving current month
 
-Done. Add to excluded list: TI, EE, SA, MNB, ES
+, RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
 Simple:
+ActiveCaseList: Remove 'click Search' event 
+
 tables: border-bottom: none;
 
 Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
-getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview
+Done. getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview
 
 CaseRedetermination: !viewMode: Updates Required, elefocus date
 

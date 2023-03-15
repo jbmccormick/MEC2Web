@@ -1327,6 +1327,7 @@ if (window.location.href.indexOf("CaseOverview") > -1) {
             element.style.bottom = ($('.stillNeedsBottom').length -1) * (document.querySelector('#programInformationData').getBoundingClientRect().height / document.querySelectorAll('#programInformationData tbody tr').length) + "px"
             $(element).removeClass('stillNeedsBottom')
         })
+        $('.stickyRow:eq(0)').css('box-shadow','0px 1px black inset')
     })
     setTimeout(function() {
         document.querySelectorAll('.stickyRow').forEach(function(element, index) {

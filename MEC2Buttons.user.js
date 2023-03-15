@@ -748,7 +748,7 @@ if (window.location.href.indexOf("Alerts") > -1 && $('#new').length > 0) {
 if (window.location.href.indexOf("/AlertWorkerCreatedAlert") > -1) {// && window.location.href.indexOf("pageUrl") < 0
     $('#message').parent().after('<div class="fake-custom-button-nodisable fake-custom-button" style="float: left"; id="delayApproval" tabindex=0>MFIP Close Delay Alert</div>')
         $('#delayApproval').click(function() {
-            let result = new Date(new Date().setMonth(new Date().getMonth(), +1, 1)).toLocaleDateString('en-US', {
+            let result = new Date(new Date().setMonth(new Date().getMonth() +1, 1)).toLocaleDateString('en-US', {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",

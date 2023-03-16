@@ -1,11 +1,21 @@
 Urgent:
-CaseCSE: Good Cause selection hiding on edit
+Done. CaseCSE: Good Cause selection hiding on edit
 
 Done. AlertCreateAlert: Not adding a month, only giving current month
 
-, RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
+, RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
 Simple:
+CaseExpenses: to: is too far left
+
+CaseMember/ii/: If next, on table click, focus Next
+
+CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
+
+CaseUnearnedIncome: If editing, focus Amount
+
+CaseEmploymentActivity: Edit doesn't focus anything
+
 ActiveCaseList: Remove 'click Search' event 
 
 tables: border-bottom: none;
@@ -36,7 +46,7 @@ else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig result
 CaseChildProvider
 editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
 
-CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe
+CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe; Strong contains "Effective Date must be entered" elefocus EffectiveDate
 
 eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
 

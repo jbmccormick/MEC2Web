@@ -10,7 +10,7 @@ CaseExpenses: to: is too far left
 
 CaseMember/ii/: If next, on table click, focus Next
 
-CaseMemberII: If edit, if person is blank, focus person
+Done. CaseMemberII: If edit, if person is blank, focus person
 
 CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
 
@@ -18,15 +18,15 @@ CaseUnearnedIncome: If editing, focus Amount
 
 CaseEmploymentActivity: Edit doesn't focus anything
 
-ActiveCaseList: Remove 'click Search' event 
+Reported to state to be fixed. ActiveCaseList: Remove 'click Search' event 
 
-tables: border-bottom: none;
+Done. Overview program table: border-bottom: none;
 
 Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
 Done. getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview
 
-CaseRedetermination: !viewMode: Updates Required, elefocus date
+Done. CaseRedetermination: !viewMode: Updates Required, elefocus date
 
 Tabindex-1 fields: Add class, style = grayed out
 
@@ -34,12 +34,12 @@ Done, plus fix to residenceStreet2. CaseAddress: Mailing address street 2 not hi
 
 Done. Earned/unearned/expense? Payment change hide if page starts blank
 
-elefocus case input field if otherwise blank (no case, htm?parm2=&parm3=)
+Done. elefocus case input field if blank; or provider ID field
 
 Done. Strong: "Actual date is missing" eleFocus #actualDate
 Done. eleFocus #actualDate: If today is within the BWP, add today's date.
 
-Case activities: !viewMode If activity begin date !== '', eleFocus end date
+Done. Case activities: !viewMode If activity begin date !== '', eleFocus end date
 
 CaseCreateEligibilityResults
 If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 

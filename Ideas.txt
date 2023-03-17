@@ -10,6 +10,8 @@ CaseExpenses: to: is too far left
 
 CaseMember/ii/: If next, on table click, focus Next
 
+CaseMemberII: If edit, if person is blank, focus person
+
 CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
 
 CaseUnearnedIncome: If editing, focus Amount

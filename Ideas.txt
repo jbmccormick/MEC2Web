@@ -1,4 +1,6 @@
 Urgent:
+CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
+
 Done. CaseCSE: Good Cause selection hiding on edit
 
 Done. AlertCreateAlert: Not adding a month, only giving current month
@@ -6,9 +8,17 @@ Done. AlertCreateAlert: Not adding a month, only giving current month
 , RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
 Simple:
+Done. WorkerSearch: Buttons are messed up
+
+Done. WorkerAlerts: Make second button for extra month delay. Add dates to buttons.
+
 CaseExpenses: to: is too far left
 
 CaseMember/ii/: If next, on table click, focus Next
+
+Activity & Income pages: On table click, focus Edit
+
+Done. CaseEligibilityResult(subpages): Remove blank col-lg-1
 
 Done. CaseMemberII: If edit, if person is blank, focus person
 
@@ -24,7 +34,7 @@ Done. Overview program table: border-bottom: none;
 
 Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
-Done. getProviderOverview: activate buttons row 3 Provider, add selected button class to Overview
+Done. getProviderOverview: activate nav buttons: row 3 Provider, add selected button class to Overview
 
 Done. CaseRedetermination: !viewMode: Updates Required, elefocus date
 
@@ -61,6 +71,8 @@ CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden cas
 iframe: filter: invert 180?
 
 Projects:
+
+Change all date fields to be 12ch wide, plus the parents thereof if in a col-lg/col-md div. For first date field, reduce padding-right to 5px?
 
 Alerts, InactiveCaseload: Stop button for when automated process is happening.
 

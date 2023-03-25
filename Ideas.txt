@@ -8,6 +8,12 @@ Done. AlertCreateAlert: Not adding a month, only giving current month
 , RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
 Simple:
+CaseUnearnedIncome: If year = 2023, Add message if Tribal Payments selected that it is uncounted
+
+CaseChildProvider: Focus: on table click, focus edit. !viewMode: if end date !== '', focus primary end date, give border to end date !== '', care end reason
+
+Dupe buttons: add/remove TabIndex 0 when disabled/enabled
+
 Done. WorkerSearch: Buttons are messed up
 
 Done. WorkerAlerts: Make second button for extra month delay. Add dates to buttons.
@@ -72,6 +78,8 @@ iframe: filter: invert 180?
 
 Projects:
 
+Notice pages, Alerts with Worker Created selected: Add single arrow buttons around date fields, modify dates by 1 month per click
+
 Change all date fields to be 12ch wide, plus the parents thereof if in a col-lg/col-md div. For first date field, reduce padding-right to 5px?
 
 Alerts, InactiveCaseload: Stop button for when automated process is happening.
@@ -96,9 +104,10 @@ Bug: CaseCSE - Dupe Wrap Up always shows disabled
 Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
 
 CaseEligibilityResultSelection (And SA pages?)
-If Strong "Background transaction" countdown timer and reload?
+If Strong "Background transaction" countdown timer and reload? SA Page might also have 'No results for case'
 
 Active case list
+Add queries for additional subjects: Phone number, active providers, ...?
 Check suspended cases for a childsProvider entry. Flag if none for delaying redetermination date to allow case to auto-close beforehand.
 
 If active element = table, down/up goes to next/previous row

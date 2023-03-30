@@ -7,7 +7,7 @@ Done. AlertCreateAlert: Not adding a month, only giving current month
 
 , RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
-Simple:
+            Simple:
 CaseUnearnedIncome: If year = 2023, Add message if Tribal Payments selected that it is uncounted
 
 CaseChildProvider: Focus: on table click, focus edit. !viewMode: if end date !== '', focus primary end date, give border to end date !== '', care end reason
@@ -76,7 +76,9 @@ CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden cas
 
 iframe: filter: invert 180?
 
-Projects:
+            Projects:
+
+CasePaymentHistory: if end date !== row up end date && end date +1 !== row up start date: add span that says "Gap"? after BWP
 
 Notice pages, Alerts with Worker Created selected: Add single arrow buttons around date fields, modify dates by 1 month per click
 

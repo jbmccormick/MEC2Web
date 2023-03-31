@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.74
+// @version      0.76
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -193,7 +193,7 @@ display: flex;
 flex-direction: row;
 }
 
-[hidden], .navbar .navbar-inverse, .hidden-tr, .collapse, #reSubmit {
+[hidden], .navbar .navbar-inverse, .collapse, #reSubmit {
 display: none !important;
 }
 
@@ -556,10 +556,14 @@ padding: .5ch !important;
 overflow: hidden !important;
 }
 
-.col-lg-7.col-md-7 > #message {
+.col-sm-6 > #message {
 width: 51.5ch !important;
 padding: .5ch !important;
 overflow: hidden !important;
+}
+
+.col-sm-6:has(#message) {
+width: 54ch !important;
 }
 
 .native-button-home, #alertsTableAndPanelData #message {

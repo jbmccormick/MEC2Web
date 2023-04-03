@@ -5,9 +5,21 @@ Done. CaseCSE: Good Cause selection hiding on edit
 
 Done. AlertCreateAlert: Not adding a month, only giving current month
 
-, RSDI, SSI, WB, SAs, to, HL, HH, EP, CS, NCP, CP, PMI, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
+, RSDI, SSI, WB, RA, to, PMI, II, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
             Simple:
+CaseNotes: Show/Hide extra rows button: Add count of rows
+
+Worker created alert: Create alerts buttons aren't space-barrable (change to buttons with preventdefault) and need a margin between them
+
+ProviderNotices: #resend remove property Disabled
+
+CaseOverview?: Create elig results for BWP MFIP closed? need parm2= parm3=
+
+CaseCreateEligibilityResults: if STRONG = "Results successfully submitted." { button for eligselectionpage with focus } else focus #create
+
+CaseSupportActivity: Auto-end date on ext-elig-plan-ends needs a date picker closer (copy from CaseChildProvider)
+            
 CaseUnearnedIncome: If year = 2023, Add message if Tribal Payments selected that it is uncounted
 
 CaseUnearnedIncome, Expenses: !viewMode: focus #amount

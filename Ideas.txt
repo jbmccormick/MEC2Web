@@ -8,6 +8,12 @@ Done. AlertCreateAlert: Not adding a month, only giving current month
 , RSDI, SSI, WB, RA, to, PMI, II, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
             Simple:
+            
+Changes Log: Use <dl> and <dd> for lists? And check out <details><summary> for individual page info
+
+CaseChildProvider: #reporterType val = '' && #providerType !== '' && #providerType !== LNL, $('#myCheckbox[value="Not Applicable"]').click() (before focus)
+
+ProviderAddress: Make button to copy Mailing address, Change current address button name
 
 Worker created alert: Create alerts buttons aren't space-barrable (change to buttons with preventdefault) and need a margin between them
 
@@ -58,42 +64,9 @@ CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden cas
 
 iframe: filter: invert 180?
 
-Done. CaseNotes: Show/Hide extra rows button: Add count of rows
-
-Done. CaseCreateEligibilityResults: if STRONG = "Results successfully submitted." { button for eligselectionpage with focus } else focus #create
-
-Done. Dupe buttons: TabIndex -1/0 when disabled/enabled
-
-Done. WorkerSearch: Buttons are messed up
-
-Done. WorkerAlerts: Make second button for extra month delay. Add dates to buttons.
-
-Done. CaseMember/ii/: If next, on table click, focus Next, else focus editDupe
-
-Done. Activity & Income pages: On table click, focus Edit
-
-Done. CaseEligibilityResult(subpages): Remove blank col-lg-1
-
-Done. CaseMemberII: If edit, if person is blank, focus person
-
-Done. Overview program table: border-bottom: none;
-
-Done. getProviderOverview: activate nav buttons: row 3 Provider, add selected button class to Overview
-
-Done. CaseRedetermination: !viewMode: Updates Required, elefocus date
-
-Done, plus fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
-
-Done. Earned/unearned/expense? Payment change hide if page starts blank
-
-Done. elefocus case input field if blank; or provider ID field
-
-Done. Strong: "Actual date is missing" eleFocus #actualDate
-Done. eleFocus #actualDate: If today is within the BWP, add today's date.
-
-Done. Case activities: !viewMode If activity begin date !== '', eleFocus end date
-
             Projects:
+
+CaseCopayDistribution: Button: Copy #overrideReason, provider name/copay$ from #providerInformationTable, store in sessionStorage. Button: Retrieve storage, click Edit, enter #overrideReason, change copay$ for matching providers
 
 CaseChildProvider: "Warning: Have Provider Training requirements been met?" Function to check trainings completed and date done.
 
@@ -210,6 +183,7 @@ Done. Income/expense pages: If amounts are blank, change date tabindex to -1
 Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
 
 Done. FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
+
 Done. If feasible, highlight if entered hours exceed approved hours.
 
 Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
@@ -217,3 +191,39 @@ Done. CaseCreateEligibilityResults: strong contains Results successfully submitt
 Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)
 
 Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels
+
+Done. CaseNotes: Show/Hide extra rows button: Add count of rows
+
+Done. CaseCreateEligibilityResults: if STRONG = "Results successfully submitted." { button for eligselectionpage with focus } else focus #create
+
+Done. Dupe buttons: TabIndex -1/0 when disabled/enabled
+
+Done. WorkerSearch: Buttons are messed up
+
+Done. WorkerAlerts: Make second button for extra month delay. Add dates to buttons.
+
+Done. CaseMember/ii/: If next, on table click, focus Next, else focus editDupe
+
+Done. Activity & Income pages: On table click, focus Edit
+
+Done. CaseEligibilityResult(subpages): Remove blank col-lg-1
+
+Done. CaseMemberII: If edit, if person is blank, focus person
+
+Done. Overview program table: border-bottom: none;
+
+Done. getProviderOverview: activate nav buttons: row 3 Provider, add selected button class to Overview
+
+Done. CaseRedetermination: !viewMode: Updates Required, elefocus date
+
+Done, plus fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
+
+Done. Earned/unearned/expense? Payment change hide if page starts blank
+
+Done. elefocus case input field if blank; or provider ID field
+
+Done. Strong: "Actual date is missing" eleFocus #actualDate
+
+Done. eleFocus #actualDate: If today is within the BWP, add today's date.
+
+Done. Case activities: !viewMode If activity begin date !== '', eleFocus end date

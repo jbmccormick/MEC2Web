@@ -1,4 +1,6 @@
 Urgent:
+I broke note/overview buttons (clicking)...
+
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
 Done. CaseCSE: Good Cause selection hiding on edit

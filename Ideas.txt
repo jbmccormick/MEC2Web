@@ -11,6 +11,8 @@ Done. AlertCreateAlert: Not adding a month, only giving current month
 
             Simple:
 
+CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
+
 Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
 
 Alerts: if href includes WorkerCreatedAlerts and table 'case/provider list' is length 0, click submit

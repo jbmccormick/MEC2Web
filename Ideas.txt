@@ -68,7 +68,7 @@ iframe: filter: invert 180?
 
             Projects:
 
-CaseUnearnedIncome: If #incomeType.val().change = Unemployment Insurance, add 2 inputs: date and $; add button: calc and enter. OnClick, divide $ by #incomeProjectionAmount, multiply by 7, add that many days to date, put addedToDate in #paymentEndDate, make sure #tempIncome set to Yes
+CaseUnearnedIncome: If #incomeType.val().change = Unemployment Insurance, add 2 inputs: lastPaymentProcessDate and remainingBalance; add button: calc and enter. OnClick, divide remainingBalance by #incomeProjectionAmount, multiply by 7 (plus 7, round 0), subtract dateDiff of start date from lastPaymentProcessDate, add that many days to lastPaymentProcessDate, put addedToDate in #paymentEndDate, make sure #tempIncome set to Yes
 
 CaseCopayDistribution: Button: Copy #overrideReason, provider name/copay$ from #providerInformationTable, store in sessionStorage. Button: Retrieve storage, click Edit, enter #overrideReason, change copay$ for matching providers
 

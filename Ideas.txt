@@ -1,17 +1,9 @@
 Urgent:
-I broke note/overview buttons (clicking)...
-
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
-
-Done. CaseCSE: Good Cause selection hiding on edit
-
-Done. AlertCreateAlert: Not adding a month, only giving current month
-
-, RSDI, SSI, WB, RA, to, PMI, II, III, FL, STE,   DHS7054, HRF,  Done. Add to excluded list: TI, EE, SA, MNB, ES
 
             Simple:
 
-CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
+Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
 
 Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
 
@@ -129,6 +121,12 @@ Count each type of alert, output into end message.
 Income/expense pages: Store Payment Change date, auto-enter even if value exists.
 
 Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
+
+Done. CaseCSE: Good Cause selection hiding on edit
+
+Done. AlertCreateAlert: Not adding a month, only giving current month
+
+Done. I broke note/overview buttons (clicking)...
 
 Done. Elig result highlighting: Update on table click.
 

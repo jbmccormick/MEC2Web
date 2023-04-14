@@ -3,6 +3,12 @@ Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no backgro
 
             Simple:
 
+CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > div[label=maxIncomeAllowed].next.val, highlight div[label=totalAnnualizedIncome].next
+
+PaymentHistory: Sort by BWP descending
+
+CaseNotes: OnClick to OnPaste for fixing excel paste; also calculate spaces needed for bad character + spaces
+
 Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
 
 Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)

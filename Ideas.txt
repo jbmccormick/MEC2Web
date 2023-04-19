@@ -3,6 +3,10 @@ Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no backgro
 
             Simple:
 
+CaseNotes: #summary on save: "Redetermination has not been received - This famil" -> "Redetermination has not been received"
+
+CaseApplication: Remove disabled class from single arrow BWP nav buttons
+
 BWP nav buttons: add if #submit.disabled !== disabled
 
 CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > div[label=maxIncomeAllowed].next.val, highlight div[label=totalAnnualizedIncome].next
@@ -76,7 +80,9 @@ iframe: filter: invert 180?
 
             Projects:
 
-CaseUnearnedIncome: If #incomeType.val().change = Unemployment Insurance, add 2 inputs: lastPaymentProcessDate and remainingBalance; add button: calc and enter. OnClick, divide remainingBalance by #incomeProjectionAmount, multiply by 7 (plus 7, round 0), subtract dateDiff of start date from lastPaymentProcessDate, add that many days to lastPaymentProcessDate, put addedToDate in #paymentEndDate, make sure #tempIncome set to Yes
+CaseNotices: Cancel All? Cancel All but billing forms? Cancel All but first SA letters? Cancel All to specific target?
+
+CaseUnearnedIncome: If #incomeType.val().change to Unemployment Insurance, add 2 inputs: lastPaymentProcessDate and remainingBalance; add button: calc and enter. OnClick, divide remainingBalance by #incomeProjectionAmount, multiply by 7 (plus 7, round 0), subtract dateDiff of start date from lastPaymentProcessDate, add that many days to lastPaymentProcessDate, put addedToDate in #paymentEndDate, make sure #tempIncome set to Yes
 
 CaseCopayDistribution: Button: Copy #overrideReason, provider name/copay$ from #providerInformationTable, store in sessionStorage. Button: Retrieve storage, click Edit, enter #overrideReason, change copay$ for matching providers
 
@@ -115,7 +121,7 @@ CaseEligibilityResultSelection (And SA pages?)
 If Strong "Background transaction" countdown timer and reload? SA Page might also have 'No results for case'
 
 Active case list
-Add queries for additional subjects: Phone number, active providers, ...?
+Add queries for additional subjects: Phone number, active providers, CCAP program type vs MFIP open, ...?
 Check suspended cases for a childsProvider entry. Flag if none for delaying redetermination date to allow case to auto-close beforehand.
 
 If active element = table, down/up goes to next/previous row

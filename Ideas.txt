@@ -2,6 +2,9 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+CaseSpecialLetter: Other.click: .val = "See worker comments for details", Worker comments, if blank, .val = "Please submit the following verifications" br br "Contact me with any questions"
+
+CaseEmploymentActivity: If person selection is blank, activity end tabindex = 0
 
 CaseNotes: #summary on save: "Redetermination has not been received - This famil" -> "Redetermination has not been received"
 

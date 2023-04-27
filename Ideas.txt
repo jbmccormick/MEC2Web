@@ -2,6 +2,8 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+Add link to PMI Merge and Help Desk to Footer
+
 CaseSpecialLetter: Other.click: .val = "See worker comments for details", Worker comments, if blank, .val = "Please submit the following verifications" br br "Contact me with any questions"
 
 CaseEmploymentActivity: If person selection is blank, activity end tabindex = 0
@@ -16,7 +18,7 @@ CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > d
 
 PaymentHistory: Sort by BWP descending
 
-CaseNotes: OnClick to OnPaste for fixing excel paste; also calculate spaces needed for bad character + spaces
+CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
 
 Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
 

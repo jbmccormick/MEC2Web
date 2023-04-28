@@ -2,6 +2,8 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+All: #caseId.onpaste: Click submit?
+
 Add link to PMI Merge and Help Desk to Footer
 
 CaseSpecialLetter: Other.click: .val = "See worker comments for details", Worker comments, if blank, .val = "Please submit the following verifications" br br "Contact me with any questions"
@@ -18,11 +20,11 @@ CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > d
 
 PaymentHistory: Sort by BWP descending
 
-CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
+Done. CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
 
 Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
 
-Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
+Done. Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
 
 Alerts: if href includes WorkerCreatedAlerts and table 'case/provider list' is length 0, click submit
 
@@ -54,8 +56,6 @@ CaseExpenses: to: is too far left
 
 CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
 
-CaseUnearnedIncome: If editing, focus Amount
-
 CaseEmploymentActivity: Edit doesn't focus anything
 
 Reported to state to be fixed. ActiveCaseList: Remove 'click Search' event 
@@ -79,7 +79,7 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
-CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
+Done. CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
 
 iframe: filter: invert 180?
 

@@ -2,6 +2,8 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+CaseAddress: If SubHousing isn't blank and Country is USA, auto-hide in viewMode
+
 All: #caseId.onpaste: Click submit?
 
 Add link to PMI Merge and Help Desk to Footer

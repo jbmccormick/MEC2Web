@@ -2,6 +2,12 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+CaseSpecialLetter: Add checkbox with "Other [See worker comments below]" and have it auto-insert text and set cursor?
+
+CaseSpecialLetter: Use Alt+# keys to auto-insert text if cursor WorkerComments is focused?
+
+Income/Expense pages: On table click, focus Edit
+
 CaseAddress: If SubHousing isn't blank and Country is USA, auto-hide in viewMode
 
 All: #caseId.onpaste: Click submit?

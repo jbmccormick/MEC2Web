@@ -2,6 +2,10 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
+Income/Expense: !viewMode, membref === '', tabindex of end, change = -1
+
+CaseMemberII: if memberRef.slice(0,2) > 02, auto-fill marital (never), Last Grade (pre1st), US Citizen (yes), Cit verif (no)
+
 CaseAddress: Strong: Effective date must be entered in the cooresponding biweekly period. : focus effective date
 
 CaseMember: Race checkboxes: tabindex -1 if Known is blank/no; memberSsnVerification tabindex: delete if element not disabled; default languages and interpreter?

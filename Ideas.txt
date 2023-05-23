@@ -2,7 +2,13 @@ Urgent:
 Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
 
             Simple:
-Income/Expense: !viewMode, membref === '', tabindex of end, change = -1
+CaseEarnedIncome: On Edit, (!#memberReferenceNumberNewMember.length) focus ... if ceiVerification.val() = "No Verification Provided", focus that; else focus end 
+
+Case Overview: Provider ID #s -> change to links to Provider ID overview. On load and table.click
+
+Done. Income/Expense: !viewMode, membref === '', tabindex of end = -1
+
+Done. Income/Expense pages: On table click, focus Edit
 
 CaseMemberII: if memberRef.slice(0,2) > 02, auto-fill marital (never), Last Grade (pre1st), US Citizen (yes), Cit verif (no)
 
@@ -13,8 +19,6 @@ CaseMember: Race checkboxes: tabindex -1 if Known is blank/no; memberSsnVerifica
 CaseSpecialLetter: Add checkbox with "Other [See worker comments below]" and have it auto-insert text and set cursor?
 
 CaseSpecialLetter: Use Alt+# keys to auto-insert text if cursor WorkerComments is focused?
-
-Income/Expense pages: On table click, focus Edit
 
 CaseAddress: If SubHousing isn't blank and Country is USA, auto-hide in viewMode
 
@@ -78,7 +82,7 @@ Reported to state to be fixed. ActiveCaseList: Remove 'click Search' event
 
 Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
-Tabindex-1 fields: Add class, style = grayed out
+Tabindex-1 fields: Add class, style = grayed out - class created, needs style
 
 CaseCreateEligibilityResults
 If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 

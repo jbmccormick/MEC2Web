@@ -6,10 +6,6 @@ CaseEarnedIncome: On Edit, (!#memberReferenceNumberNewMember.length) focus ... i
 
 Case Overview: Provider ID #s -> change to links to Provider ID overview. On load and table.click
 
-Done. Income/Expense: !viewMode, membref === '', tabindex of end = -1
-
-Done. Income/Expense pages: On table click, focus Edit
-
 CaseMemberII: if memberRef.slice(0,2) > 02, auto-fill marital (never), Last Grade (pre1st), US Citizen (yes), Cit verif (no)
 
 CaseAddress: Strong: Effective date must be entered in the cooresponding biweekly period. : focus effective date
@@ -21,8 +17,6 @@ CaseSpecialLetter: Add checkbox with "Other [See worker comments below]" and hav
 CaseSpecialLetter: Use Alt+# keys to auto-insert text if cursor WorkerComments is focused?
 
 CaseAddress: If SubHousing isn't blank and Country is USA, auto-hide in viewMode
-
-All: #caseId.onpaste: Click submit?
 
 Add link to PMI Merge and Help Desk to Footer
 
@@ -39,12 +33,6 @@ BWP nav buttons: add if #submit.disabled !== disabled
 CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > div[label=maxIncomeAllowed].next.val, highlight div[label=totalAnnualizedIncome].next
 
 PaymentHistory: Sort by BWP descending
-
-Done. CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
-
-Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
-
-Done. Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
 
 Alerts: if href includes WorkerCreatedAlerts and table 'case/provider list' is length 0, click submit
 
@@ -72,15 +60,11 @@ CaseChildProvider: Focus: on table click, focus edit. !viewMode: if end date !==
 
 CaseServiceAuthorizationApproval: Focus: on table click, focus DupeApprove
 
-CaseExpenses: to: is too far left
-
 CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
 
 CaseEmploymentActivity: Edit doesn't focus anything
 
 Reported to state to be fixed. ActiveCaseList: Remove 'click Search' event 
-
-Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
 
 Tabindex-1 fields: Add class, style = grayed out - class created, needs style
 
@@ -99,9 +83,25 @@ CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append t
 
 Table.click eleFocus editDupe - all pages? CaseChildProvider only?
 
-Done. CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
-
 iframe: filter: invert 180?
+
+Done. CaseExpenses: to: is too far left
+
+Done. Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
+
+Done. All: #caseId.onpaste: Click submit?
+
+Done. Income/Expense: !viewMode, membref === '', tabindex of end = -1
+
+Done. Income/Expense pages: On table click, focus Edit
+
+Done. CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
+
+Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
+
+Done. Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
+
+Done. CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
 
             Projects:
 

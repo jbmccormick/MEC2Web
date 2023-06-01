@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.82
+// @version      0.82.1
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -380,7 +380,7 @@ $('#newTabField').keydown(function(e) {
 const allCapsWords = ["MN", "DHS", "WI", "HC", "FS", "MFIP", "DWP", "CCAP", "CCMF", "BSF", "TY", "MAXIS", "PRISM", "TSS", "SW", "SE", "NW", "NE", "APT", "STE", "USA", "PRI", "MEC2", "FEIN", "SSN", "MX", "CC", "SLC"];
 $('.dataTables_wrapper').parent('.form-group').removeClass('form-group')
 //Seasonal items, just for fun
-$('h1').prepend('<span class="icon">⛄ </span>');
+$('h1').prepend('<span class="icon">🌻 </span>');
 let $toLabel = $('label').filter(function() { return $(this).text() === 'to' || $(this).text() === 'to:' }).addClass('toLabel');//Making "to" between x to y elements smaller
 $('strong:contains("."):not([class="modal-message"]:not(:last-child))').after('<br>')//Breaking up multiple Warning/Edit Summary messages.
 

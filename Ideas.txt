@@ -1,6 +1,8 @@
-On new app, if Next or Prev not disabled, don't highlight fields
+Done. On new app, if Next or Prev not disabled, don't highlight fields
 
-FundingAvailability, CSIA: Needs auto-fill class
+Done. FundingAvailability, CSIA: Needs auto-fill class
+
+newTabField history: Use spread syntax (history = [ newHistoryObject, ...oldHistoryObjectArray ]) to do an unshift() which adds at the start of the array. 
 
 CaseMember: memberBirthDateVerification.change(memberIdVerification = memberBirthDateVerification)
 

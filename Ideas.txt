@@ -2,6 +2,10 @@ Done. On new app, if Next or Prev not disabled, don't highlight fields
 
 Done. FundingAvailability, CSIA: Needs auto-fill class
 
+CaseTransfer: Add link to https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=dhs16_140754
+
+Footer: Add link to old User Manual as default link, and new broken manual as an alternative
+
 newTabField history: Use spread syntax (history = [ newHistoryObject, ...oldHistoryObjectArray ]) to do an unshift() which adds at the start of the array. 
 
 CaseMember: memberBirthDateVerification.change(memberIdVerification = memberBirthDateVerification)

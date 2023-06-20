@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.83.1
+// @version      0.83.2
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -627,55 +627,83 @@ if (window.location.href.indexOf("ctiveCaseList.htm") > 0) {
 //SECTION END Fix the Name: row alignment
 
 ////// ALERTS.htm start //////
-if (window.location.href.indexOf("Alerts.htm") > -1 && $('#new').length > 0) {
+if (window.location.href.indexOf("/Alerts.htm") > -1) {
+    setTimeout(function() {
+        if ($('#alertTotal').val() > 0 && $('#caseOrProviderAlertsTable td.dataTables_empty').length) { $('#alertInputSubmit').click() }
+    }, 300)
+    $('#deleteInProgress').remove() //spinning gif
+    $('#delete').after($('#new'))
+    // $('#new').prop('style', 'margin-left: 0px !important;').after('<details><summary>Bug:</summary><span>Creating an alert when <strong>any</strong> case has 0 alerts will cause the Alerts page to display no alerts after saving the worker alert.</span></details>').parent().css('display','flex').css('gap','10px')
+    $('#new').prop('style', 'margin-left: 0px !important;').parent().css('display','flex').css('gap','10px')
+    $('#delete').parent().contents().filter(function() { return this.nodeType === 3}).remove()
+    $('[id^="workerCreatedAlertActionsArea"]:eq(1)').remove()
     //SECTION START Superfluous delete button
     $('label[for="message"]').parent('.row').remove();
     $('#alertsPanelData').css('overflow','visible');
-    $('#alertTotal').after('<div class="form-button custom-form-button centered-text" id="deleteTop">Delete Alert</div>')
+    $('#alertTotal').after('<button type="button" class="form-button custom-form-button centered-text" id="deleteTop">Delete Alert</button>')
     $('#deleteTop').click(function() { $('#delete').click()});
     //SECTION END Superfluous delete button
 
     //SECTION START Delete all alerts of current name onclick
-    let caseNumberToDelete
-    let caseName
-    let caseOrProvider
-    $('#delete').after('<div class="form-button custom-form-button centered-text" id="deleteAll" title="Delete All" value="Delete All" style="display: none;">Delete All</div>');
-    $('#deleteTop').after('<div class="form-button custom-form-button centered-text doNotDupe" id="deleteAll2" title="Delete All" value="Delete All">Delete All</div>');
+    let vNumberToDelete
+    let vCaseName
+    let vCaseOrProvider
+    let vCaseNumberOrProviderId
+    function fCaseNumberOrProviderId() {
+        switch (vCaseOrProvider) {
+            case "case":
+                return "#caseNumber"
+                break
+            case "provider":
+                return "#providerId"
+                break
+        }
+    }
+    $('#deleteTop').after('<button type="button" class="form-button custom-form-button centered-text doNotDupe" id="deleteAll" title="Delete All" value="Delete All">Delete All</button>');
     $('h4:contains("Case/Provider List")').after('<h4 style="float: right; display:inline-flex color: #003865; font-size: 1.2em; font-weight: bold;" id="alertMessage"></h4>');
-    $('#deleteAll, #deleteAll2').val('Delete All').on("click", function() {
-        caseNumberToDelete = $('#caseNumber').val();
-        caseName = $('#groupName').val();
-        caseOrProvider = $('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()
-        doDeleteAll(caseNumberToDelete, caseName, caseOrProvider);
+    $('#deleteAll').val('Delete All').on("click", function() {
+        vCaseOrProvider = $('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()
+        if (!["case", "provider"].includes(vCaseOrProvider)) { return }
+        vCaseNumberOrProviderId = fCaseNumberOrProviderId()
+        vNumberToDelete = $( vCaseNumberOrProviderId ).val()
+        vCaseName = $('#groupName').val()
+        fDoDeleteAll()
     });
     const observerDelete = new MutationObserver(e => {
-        // console.log(caseNumberToDelete, caseName, caseOrProvider)
-        doDeleteAll(caseNumberToDelete, caseName, caseOrProvider)
+        console.log('Mutation observerDelete called')
+        fDoDeleteAll()
     })
     observerDelete.observe(document.querySelector('#delete'), {attributeFilter: ['value']})
-    // const observer = new MutationObserver(e => { doDeleteAll(caseNumberToDelete, caseName, caseOrProvider) });
-    function doDeleteAll(caseNumberToDelete, caseName, caseOrProvider) {
+    function fDoDeleteAll() {//Test worker ID PWSCSP9
+        console.log('fDoDeleteAll called')
         if ($('#delete').val() !== "Please wait") {
-            if ($('#delete').val() === "Delete Alert" && caseNumberToDelete === $('#caseNumber').val() && caseNumberToDelete === $('#groupId').val() && $('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() > 0) {
+            if ($('#delete').val() === "Delete Alert" && vNumberToDelete === $( vCaseNumberOrProviderId ).val() && vNumberToDelete === $('#groupId').val() && $('#caseOrProviderAlertsTable td:contains("' + vCaseName + '")').nextAll().eq(1).html() > 0) {
                 $('#delete').click();
             } else {
-                doDeleteAllCheck(caseNumberToDelete, caseName, caseOrProvider)
+                fDoDeleteAllCheck()
             }
         }
     }
-    function doDeleteAllCheck() {
-        if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() > 0) {
-            $('#caseOrProviderAlertsTable td:contains("' + caseName + '")').parent('tr').click()
-            return doDeleteAll()
+    function fDoDeleteAllCheck() {
+        console.log('fDoDeleteAllCheck called')
+        if ($('#caseOrProviderAlertsTable td:contains(' + vCaseName + ')').nextAll().eq(1).html() > 0) {
+            $('#caseOrProviderAlertsTable td:contains(' + vCaseName + ')').parent('tr').click()
+            console.log('fDoDeleteAllCheck calling fDoDeleteAll')
+            return fDoDeleteAll()
         }
-        if ($('#caseOrProviderAlertsTable td:contains("' + caseName + '")').nextAll().eq(1).html() < 1) {//Any alerts to delete?
-            $('#alertMessage').text('Delete All ended. All alerts deleted from ' + caseOrProvider + ' ' + caseNumberToDelete + '.');
-        } else if (caseNumberToDelete !== $('#caseNumber').val()) {
-            if (!$('#caseOrProviderAlertsTable td:contains("' + caseName + '")')) {
-                if (caseOrProvider === 'case') {
-                    $('#alertMessage').text('Case number not present.')
-                } else {
-                    $('#alertMessage').text('Provider ID not present.')
+        if ($('#caseOrProviderAlertsTable td:contains("' + vCaseName + '")').nextAll().eq(1).html() < 1) {//Any alerts to delete?
+            $('#alertMessage').text('Delete All ended. All alerts deleted from ' + vCaseOrProvider + ' ' + vNumberToDelete + '.');
+        } else if (vNumberToDelete !== $('#caseNumber, #providerId').val()) {
+            if (!$('#caseOrProviderAlertsTable td:contains(' + vCaseName + ')')) {
+                switch(vCaseOrProvider) {
+                    case "case":
+                        $('#alertMessage').text('Case number not present.')
+                        break
+                    case "provider":
+                        $('#alertMessage').text('Provider ID not present.')
+                        break
+                    default:
+                        break
                 }
             };
         };
@@ -683,67 +711,182 @@ if (window.location.href.indexOf("Alerts.htm") > -1 && $('#new').length > 0) {
     //SECTION END Delete all alerts of current name onclick
 
     //SECTION START Do action based on Alert Type
+    function fGetCaseParameters() {
+        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
+        let parameter3alerts = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+        return '?parm2=' + parameter2alerts + '&parm3=' + parameter3alerts
+    }
+    function fGetProviderParameters() {
+        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
+        return '?providerId=' + parameter2alerts
+    }
+    //blarga
+
+    const aCaseCategoryButtons = [
+        ["Edits", "CaseEditSummary"],
+        ["Eligibility", "CaseEligibilityResultSelection"],
+        ["SA:O", "CaseServiceAuthorizationOverview"],
+        ["SA:A", "CaseServiceAuthorizationApproval"],
+        ["Provider", "CaseChildProvider"],
+        ["Address", "CaseAddress"],
+        ["Pages", "CasePageSummary"],
+        ["Notices", "CaseNotices"],
+        ["Notes", "CaseNotes"],
+        ["Overview", "CaseOverview"],
+        ["CSI", "CaseCSIA"],
+        /*
+        ["", ""],
+        */
+    ]
+    const aProviderCategoryButtons = [
+        ["Overview", "ProviderOverview"],
+        ["Registration", "ProviderRegistrationAndRenewal"],
+        ["Address", "ProviderAddress"],
+        ["Info", "ProviderInformation"],
+        ["Alias", "ProviderAlias"],
+        ["Rates", "ProviderRates"],
+        /*
+        ["", ""],
+        */
+    ]
+    $('#delete').parent().append('<div id="baseCategoryButtonsDiv" class="form-group-no-margins"><div id="caseCategoriesButtonsDiv" class="collapse form-group-button-children"></div><div id="providerCategoriesButtonsDiv" class="collapse form-group-button-children"></div></div>')
+    aCaseCategoryButtons.forEach(function(i) {
+        $('#caseCategoriesButtonsDiv').append('<button type="button" id='+ [i[1]] +'>' + [i[0]] + '</button>')
+    })
+    aProviderCategoryButtons.forEach(function(i) {
+        $('#providerCategoriesButtonsDiv').append('<button type="button" id='+ [i[1]] +'>' + [i[0]] + '</button>')
+    })
+    function fBaseCategoryButtons() {
+        switch ($('#caseOrProviderAlertsTable>tbody>.selected>td:eq(0)').text()) {
+            case "Case":
+                $('#providerCategoriesButtonsDiv').addClass('collapse')
+                $('#caseCategoriesButtonsDiv').removeClass('collapse')
+                break
+            case "Provider":
+                $('#caseCategoriesButtonsDiv').addClass('collapse')
+                $('#providerCategoriesButtonsDiv').removeClass('collapse')
+                break
+            default:
+                $('#caseCategoriesButtonsDiv').addClass('collapse')
+                $('#providerCategoriesButtonsDiv').addClass('collapse')
+                break
+        }
+    }
+    $('table').click(function() { fBaseCategoryButtons() })
+    $('#baseCategoryButtonsDiv').click(function(e) { if (e.target.tagName === "BUTTON") {
+        switch ($('#caseOrProviderAlertsTable>tbody>.selected>td:eq(0)').text()) {
+            case "Case":
+                window.open('/ChildCare/' + e.target.id + '.htm' + fGetCaseParameters(), '_blank')
+                break
+            case "Provider":
+                window.open('/ChildCare/' + e.target.id + '.htm' + fGetProviderParameters(), '_blank')
+                break
+            default:
+                break
+        }
+    } })
+    fBaseCategoryButtons()
+
+        //SUBSECTION START Buttons by Alert Details
     $('h4:contains("Alert Detail")').width('13%').attr('id','h4AlertDetail').css('display','inline-flex');
-    $('#h4AlertDetail').after('<div id="alertButtonHouse" style="display: inline-flex;"></div>');
+    $('#h4AlertDetail').after('<div id="alertButtonHouse" style="display: inline-flex;" class="button-row__nav"></div>');
     let anchorPoint = document.getElementById('alertButtonHouse');
-    let btnNavigation = document.createElement('div');
-    btnNavigation.type = 'div';
+    let btnNavigation = document.createElement('button');
+    btnNavigation.type = 'button';
     btnNavigation.innerHTML = "Select an alert";
     btnNavigation.id = "doTheThing";
-    btnNavigation.className = 'custom-button fake-custom-button';
-    anchorPoint.appendChild(btnNavigation);
-    btnNavigation.addEventListener("click", function() { goDoTheThing()});
+    btnNavigation.className = 'custom-button custom-button__floating';
+    // anchorPoint.appendChild(btnNavigation);
+    btnNavigation.addEventListener("click", function() { fGoDoTheThing()});
     let clickedAlert = $('#alertTable');
     $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
     $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
-        changeButtonText();
+        fChangeButtonText();
     });
     waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
-        changeButtonText();
+        fChangeButtonText()
+        fGetCaseParameters()
     });
-    function changeButtonText() {
-        let alertType = $('#alertTable .selected').children().eq(0).text()
-        if (alertType == '') {
-            document.getElementById('doTheThing').innerHTML = 'Click on Alert'
-        } else if (alertType == 'Eligibility') {
-            document.getElementById('doTheThing').innerHTML = alertType
-        } else {
-            document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
-        };
+        //SUBSECTION END Buttons by Alert Details
+
+
+    function fChangeButtonText() {
+        // let alertType = $('#alertTable .selected').children().eq(0).text()
+        // if (alertType === '') {
+        //     document.getElementById('doTheThing').innerHTML = 'Click on Alert'
+        // } else if (alertType === 'Eligibility') {
+        //     document.getElementById('doTheThing').innerHTML = alertType
+        // } else {
+        //     document.getElementById('doTheThing').innerHTML = alertType + ' is not yet supported'
+        // }
+        // switch ( $('#alertTable .selected').children().eq(0).text() ) {
+        //     case "eligibility":
+        //         break
+        //     case "":
+        //         break
+        // }
+        let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
     };
-    const alertCategories = {
-        eligibility:{},
-        serviceAuthorization:{},
+    const oAlertCategoriesLowerCase = {
+        template: {
+            page: "",
+            buttonText: "",
+            explanation: {
+                1: { text1: "", page: "" }
+            }
+        },
+        eligibility: {
+            page: "",
+            buttonText: "",
+            explanation: {
+                1: { text1: "", page: "" }
+            }
+        },
+        serviceauthorization: {
+            page: "",
+            buttonText: "",
+            explanation: {
+                1: { text1: "", page: "" }
+            }
+        },
     };
-    function goDoTheThing() {
-        //rewrite this section. Make arrays based on category, get category and match to startsWith?
+    /*function findPageParent() {
+    for (let category in alertCategories) {
+        for (let page in rowThreeButtonObject[grouping]) {
+            if (Object.hasOwn(rowThreeButtonObject[grouping][page], "pageWithoutDotHtm") && rowThreeButtonObject[grouping][page].pageWithoutDotHtm === thisPageName) {
+                if (viewMode && $('#buttonPanelThree').children().length === 0) { fillButtonRowThree(rowThreeButtonObject[grouping][page].rowTwoParent) }
+                return [grouping, page] }
+            else {
+                for (let page in gotoButtonsObject) {
+                    if (Object.hasOwn(gotoButtonsObject[page], "gotoPage") && gotoButtonsObject[page].gotoPage === thisPageName) { return [undefined, page] }
+    } } } } };
+    */
+    function fGoDoTheThing() {
         let messageText = document.getElementById('message');//alertTable
-        if (messageText.value == "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
-            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //caseOrProviderTable selected[0]
-            let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-            window.open('/ChildCare/CaseEligibilityResultSelection.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+        if (messageText.value === "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
+            window.open('/ChildCare/CaseEligibilityResultSelection.htm' + fGetCaseParameters(), '_blank')
         };
     };
     //SECTION END Do action based on Alert Type
 
     //SECTION START Copy Alert text, navigate to Case Notes
-    function copyExplanation() {
+    function fCopyExplanation() {
         let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
         navigator.clipboard
             .writeText(copyText)
             .then(() => {
             localStorage.setItem('mech2.caseNoteText', copyText);
             snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
-            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#caseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
+            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#vCaseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
             let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-            window.open('https://mec2.childcare.dhs.state.mn.us/ChildCare/CaseNotes.htm?parm2=' + parm2var + '&parm3=' + parm3var, '_blank')
+            window.open('/ChildCare/CaseNotes.htm' + fGetCaseParameters(), '_blank')
         })
             .catch(() => {
-            alert("Something went wrong");
+            console.log("Something went wrong");
         });
     };
-    $('#alertButtonHouse').prepend('<div class="custom-button fake-custom-button" id="copyAlertButton">Copy, goto Notes</div>');
-    $('#copyAlertButton').click(function() { copyExplanation()});
+    $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button>');
+    $('#copyAlertButton').click(function() { fCopyExplanation()});
     //SECTION END Copy Alert text, navigate to Case Notes
 
     //SECTION START Moving Worker ID and Worker Name to the section they are displayed in
@@ -752,17 +895,17 @@ if (window.location.href.indexOf("Alerts.htm") > -1 && $('#new').length > 0) {
     $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderAlertsTable_wrapper').parent())
     //SECTION END Moving Worker ID and Worker Name to the section they are displayed in
 
-    //SECTION START Resize the Alert page's Explanation viewable area
-    $('.h1-parent-row').siblings('br[clear!="all"]').remove();
-    addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
-    $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
-    $('#message').parents('.row').prev('br').remove();
-    $('label[for="groupId"]').text('Case #/PID:');
-    $('label[for="groupName"]').text('Case/Provider:');
-    $("#alertTable").on('click', function() {
-        $("#message").css('height', '100px');
-        $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
-    });
+    // //SECTION START Resize the Alert page's Explanation viewable area
+    // $('.h1-parent-row').siblings('br[clear!="all"]').remove();
+    // addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
+    // $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
+    // $('#message').parents('.row').prev('br').remove();
+    // $('label[for="groupId"]').text('Case #/PID:');
+    // $('label[for="groupName"]').text('Case/Provider:');
+    // $("#alertTable").on('click', function() {
+    //     $("#message").css('height', '100px');
+    //     $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
+    // });
 };
 //SECTION END Resize the Alert page's Explanation viewable area
 ////// ALERTS.htm end //////

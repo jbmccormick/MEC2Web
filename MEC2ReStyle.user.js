@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.76
+// @version      0.77.1
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -29,16 +29,58 @@ window.location.href.indexOf("Welcome.htm") > -1 && (window.open("/ChildCare/Ale
 GM_addStyle ( `
 :root {
 --paddingLeft: 12px;
---formButtonBackground: #cdcdcd;
-
+@media (prefers-color-scheme: light) {
 --lightmodeBodyBackground: #b9b9b9;
-//--lightmodeContainerBackground: #b9b9b9;
 --lightmodeContainerBackground: #e7e7e7;
 --lightmodePanelBackground: #e7e7e7;
+--bodyBackground: #b9b9b9;
+--panelBackground: #e7e7e7;
+--containerBackground: #e7e7e7;
+--tabindexNegativeOne: #bbbd58;
+--prefilledField: green;
+--requiredField: #aa0000;
+--formButtonBackground: #cdcdcd;
+--borderlessNotDisabledBackground: rgb(255 255 255 / 40%);
+--borderlessDisabledBackground: #dedede;
+--page-wrap: darkkhaki;
+--textColor: #000;
+--disabledTextColor: rgba(0,0,0,30%);
+--tableEven: #a8a8a8;
+--tableOdd: #dedede;
+--tableSelected: #95b0e6;
+--tableText: black;
+--customButtonHover: #DAF7A6;
+--customButtonOpenPage: #A6EDF7;
+}
 
---darkmodeBodyBackground: #c1c1c1;
+@media (prefers-color-scheme: dark) {
+--darkmodeBodyBackground: #3e3e3e;
 --darkmodeContainerBackground: #e7e7e7;
 --darkmodePanelBackground: #e7e7e7;
+--bodyBackground: #3e3e3e;
+--containerBackground: #181818;
+--panelBackground: #181818;
+--tabindexNegativeOne: #7a7373;
+--prefilledField: #f8cc69;
+--requiredField: #ff0000ad;
+--formButtonBackground: #323232;
+--textFieldEnabled: #000000;
+--borderlessNotDisabledBackground: #111111;
+--borderlessDisabledBackground: #212121;
+--enabledBorderColor: lightgray;
+--page-wrap: #051119;
+--textColor: #eee;
+--disabledTextColor: #ffffff80;
+--tableEven: #090909;
+--tableOdd: #181818;
+--tableSelected: #3d4a63;
+--tableText: white;
+--tableBorder: #222222;
+--headerColor: #a0d8ff;
+--aColor: #8cbbe5;
+--customButtonHover: #0fb22a;
+--customButtonOpenPage: #25b3ff;
+}
 }
 
 ` )//Variables end
@@ -72,6 +114,19 @@ flex-direction: row;
 
 //Testing Section
 GM_addStyle ( `
+.form-group-button-children > button {
+gap: 5px;
+background: var(--formButtonBackground);
+border: 1px solid var(--enabledBorderColor);
+padding: 0 5px;
+font-weight: bold;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-height: 28px;
+height: fit-content;
+width: fit-content;
+}
 .stickyRow {
 position: sticky !important;
 z-index: 50;

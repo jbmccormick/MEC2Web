@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.83.2
+// @version      0.83.3
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1378,65 +1378,99 @@ if (window.location.href.indexOf("CaseMemberII.htm") > -1) {
 
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes.htm") > -1) {
-    !viewMode && $('option[value="Application"]').after('<option value="Child Support Note">Child Support Note</option>');
-    $('#storage').addClass('collapse');
-    $('#noteArchiveType, #noteSearchStringText, #noteImportant').prop('tabindex', '-1');
-    $('table#caseNotesTable>tbody>tr:has(td:contains("Disbursed child care support")), table#caseNotesTable>tbody>tr:has(td:contains("PMI Merge"))').addClass('hidden-tr');//Hiding Disbursed Child Care Support payment rows
-    $('#reset').after('<button id="toggleCaseNotesRows" class="custom-button flex-right">Show Extra Rows</button>')
-    $('.hidden-tr').hide()
-    $('#toggleCaseNotesRows').click(function(e) {
-        e.preventDefault();
-        switch ($('#toggleCaseNotesRows').text()) {
-            case "Show Extra Rows":
-                $('#toggleCaseNotesRows').text("Hide Extra Rows")
-                $('.hidden-tr').hide()
-                break;
-            case "Hide Extra Rows":
-                $('#toggleCaseNotesRows').text("Show Extra Rows")
-                $('.hidden-tr').show()
-                break;
+    if (!viewMode) { $('h4:contains("Note")').after('<button type="button" class="custom-button__float custom-button__nodisable float-right" id="disAutoFormat" tabindex="-1">Disable Auto-Format</button>') }
+    $('#disAutoFormat').click(function(e) { e.preventDefault(); $(this).text($(this).text() === "Disable Auto-Format" ? "Enable Auto-Format" : "Disable Auto-Format") })
+    $('#save').click(function() {
+        if ($('#disAutoFormat').text() === "Disable Auto-Format") {
+            $('#noteSummary').val($('#noteSummary').val().replace(/Redetermination has not been received - This famil/, "Redetermination has not been received"))
+            $('#noteStringText').val($('#noteStringText').val().replace(/\n\ *`\ */g,"\n             ").replace(/^\ *([A-Z]+\ ?[A-Z]+:)\ */gm, (text, a) => `${' '.repeat(9- a.length)}${a}    `))//Using ` to auto-insert/correct spacing, and fix spacing around titles
+            // $('#noteStringText').val($('#noteStringText').val().replace(/\n\ *`\ */g,"\n             ").replace(/^\ *([A-Z]+\ ?[A-Z]+:)\ */gm, function(text, a) { `${' '.repeat(9- a.length)}${a}    `} ))//Using ` to auto-insert/correct spacing, and fix spacing around titles
         }
     })
-//SUB-SECTION START Disable Edit button if note date !== today (maybe make a ! button to enable and click edit?)
-    // let todayDate = new Date().toLocaleDateString('en-US', {
-    //             year: "numeric",
-    //             month: "2-digit",
-    //             day: "2-digit",
-    //     });
-    // const observer = new MutationObserver(disableEdit);
-    // observer.observe(document.querySelector('#rowIndex'), {attributes: true});
-    // function disableEdit() {
-    //     if ($('table tr.selected td').eq(1).text() !== todayDate) {
-    //         $('#edit').prop('disabled', true);
-    //     };
-    // };
-    // disableEdit();
+    $('#noteStringText').on('paste', function (event) {
+        if ($('#disAutoFormat').text() === "Disable Auto-Format") {
+            setTimeout(function() {$('#noteStringText').val($('#noteStringText').val().replace(/(\w)\(/g,"$1 (").replace(/\)(\w)/g,") $1")//Spaces around parentheses
+                                                            .replace(/\n\u0009/g,"\n             ").replace(/\n\ {9}\u0009/g, "\n             ").replace(/\n\ {16}/g,"\n             ").replace(/\u0009/g, "    ")//Spacing from pasting Excel cells
+                                                            .replace(/\n+/g,"\n"))//Multiple new lines to single new line
+                                  },1)
+        }
+    })
+    function textSelect(inp, s, e) {//moves cursor to selected position (s) or selects text between (s) and (e)
+        e = e || s;
+        if (inp.createTextRange) {
+            var r = inp.createTextRange();
+            r.collapse(true);
+            r.moveEnd('character', e);
+            r.moveStart('character', s);
+            r.select();
+        } else if (inp.setSelectionRange) {
+            inp.focus();
+            inp.setSelectionRange(s, e);
+        }
+    }
+    $('#noteStringText').keydown(function(e) {
+        if (e.key === "`") {
+            e.preventDefault()
+            let curPos = document.getElementById("noteStringText").selectionStart; // will give the current position of the cursor
+            console.log(curPos)
+            let currentText = $('#noteStringText').val();
+            let text_to_insert = "             ";
+            $('#noteStringText').val(currentText.slice(0,curPos) + text_to_insert + currentText.slice(curPos)); // setting the modified text in the text area
+            textSelect(document.getElementById('noteStringText'), curPos+13);
+        }
+    })
+    !viewMode && $('option[value="Application"]').after('<option value="Child Support Note">Child Support Note</option>');
+    $('#storage').addClass('collapse');
+    $('#noteArchiveType, #noteSearchStringText, #noteImportant').prop('tabindex', '-1')
+    $('table#caseNotesTable>tbody>tr:has(td:contains("Disbursed child care support")), table#caseNotesTable>tbody>tr:has(td:contains("PMI/SMI Merge"))').addClass('hidden-tr');//Hiding Disbursed Child Care Support payment rows
+    let hiddenTr = $('.hidden-tr').length
+    if (hiddenTr) {
+        $('#reset').after('<button type="button" id="toggleCaseNotesRows" class="custom-button__float custom-button__nodisable flex-right" data-hiding="true" title="Shows or hides PMI Merge and CS disbursion auto-notes">Show '+ hiddenTr +' Hidden Rows</button>')
+        $('.hidden-tr').hide()
+        $('#toggleCaseNotesRows').click(function(e) {
+            e.preventDefault();
+            switch (e.target.dataset.hiding) {
+                case "true":
+                    e.target.dataset.hiding = "false"
+                    e.target.innerHTML = "Hide "+ hiddenTr +" Extra Rows"
+                    $('.hidden-tr').show()
+                    break
+                case "false":
+                    e.target.dataset.hiding = "true"
+                    e.target.innerHTML = "Show "+ hiddenTr +" Hidden Rows"
+                    $('.hidden-tr').hide()
+                    break
+            }
+        })
+        waitForElmHeight('#caseNotesTable > tbody > tr:not(.hidden-tr)').then(() => { if ($('#caseNotesTable > tbody > tr:not(.hidden-tr)').length) { $('#caseNotesTable > tbody > tr:not(.hidden-tr)').eq(0).click() } } )
+    }
+    eleFocus('#newDuplicateButton')
 };
-//SUB-SECTION END CaseNotes Disable Edit button if note date !== today
 //SECTION END CaseNotes
 
 //SECTION START CaseNotes and ProviderNotes layout fix
-if (window.location.href.indexOf("Notes.htm") > -1) {//(window.location.href.indexOf("CaseNotes.htm") > -1 || window.location.href.indexOf("ProviderNotes.htm") > -1) {
+if (window.location.href.indexOf("Notes.htm") > -1) {//CaseNotes, ProviderNotes
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').rows = '29'
     $('br').remove();
-    $('#noteSummary').css('width','100%')
+    $('#noteArchiveType').width('unset')
+    $('#noteSummary').width('100%')
         .parent().removeClass('col-lg-4 col-md-4 col-sm-4 col-lg-3').addClass('col-lg-10 col-md-10')
-        .parents('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-7 col-md-7');
+        .closest('.form-group').removeClass('col-lg-5 col-md-5 col-sm-5 col-xs-5').addClass('col-lg-7 col-md-8');
     $('label[for="noteSummary"]')
-        .removeClass('col-lg-3 col-md-3 col-sm-3').addClass('col-lg-2 col-md-2');
-    $('label[for="noteCreator"]').siblings().addBack()
-        .wrapAll('<div class="col-lg-2 col-md-3 form-group" id="noteCreatorGroup"></div>');
+        .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-1 col-md-1');
+    $('label[for="noteCreator"]').siblings().addBack().wrapAll('<div class="col-lg-3 col-md-3 form-group" id="noteCreatorGroup"></div>')
+        // .end().addClass('test').removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
     $('#noteCreator')
-        .parent().removeClass('col-lg-4 col-md-4 col-sm-4 marginTop5').addClass('col-lg-7 col-md-7');
-    $('#noteCreatorGroup').appendTo($('label[for="noteSummary"]').parents('.row'));
+        .parent().removeClass('col-lg-4 col-md-4 col-sm-4 marginTop5').addClass('col-lg-5 col-md-6');
+    $('#noteCreatorGroup').appendTo($('label[for="noteSummary"]').closest('.row'));
     $('label:contains("Important")')
         .removeClass('col-lg-3 col-md-3 col-sm-4')
         .addClass('col-lg-2 col-md-2')
         .prop("innerText", "!")
         .attr('for','noteImportant')
-        .parents('.form-group').attr('id','removeMe')
-        .parents('.row').attr('id','addInfoRowOne')
+        .closest('.form-group').attr('id','removeMe')
+        .closest('.row').attr('id','addInfoRowOne')
         .height('28px')
     $('#noteImportant').parent()
         .removeClass('col-xs-2 col-sm-2 col-md-1 col-lg-1')
@@ -1447,13 +1481,13 @@ if (window.location.href.indexOf("Notes.htm") > -1) {//(window.location.href.ind
     $('#noteMemberReferenceNumber, #notePerson').css('width','100%')
         .parent()
         .removeClass('col-lg-4 col-md-4 col-sm-4 textInherit').addClass('col-lg-10 col-md-10 textInherit')
-        .add('label[for="noteMemberReferenceNumber"], label[for="notePerson"]').wrapAll('<div id="noteMemberReferenceNumberGroup" class="col-lg-5 col-md-5 form-group"></div>')
+        .add('label[for="noteMemberReferenceNumber"], label[for="notePerson"]').wrapAll('<div id="noteMemberReferenceNumberGroup" class="col-lg-5 col-md-6 form-group"></div>')
     $('label[for="noteCategory"]')
         .removeClass('col-lg-3 col-md-3 col-sm-4').addClass('col-lg-2 col-md-2')
         .css('margin-left','')
     addGlobalStyle('label[for="noteCategory"] { width: 61px !important }');
     $('#noteCategory').parent()
-        .removeClass('col-lg-3 col-md-3 col-sm-3 textInherit').addClass('col-lg-10 col-md-10 textInherit')
+        .removeClass('col-lg-3 col-md-3 col-sm-3 textInherit').addClass('col-lg-9 col-md-10 textInherit')
         .add('label[for="noteCategory"]').wrapAll('<div id="noteCategoryGroup" class="col-lg-4 col-md-4 form-group"></div>')
     $('.col-lg-6.col-md-6.col-sm-6.col-xs-6.form-group.textInherit:not(".col-xl-8,.col-xl-6")').addClass('collapse')
     $('.col-xs-2.col-sm-2.col-md-1.col-lg-1:not(:has("input"))').addClass('collapse')

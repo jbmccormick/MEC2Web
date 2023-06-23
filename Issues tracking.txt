@@ -1,0 +1,274 @@
+Urgent:
+Shouldn't be? CaseEligibilityResult: Don't disable #select if there's no background processing "Background transaction in process."
+
+            Simple:
+Mostly Done. Add link to PMI Merge and Help Desk to Footer
+
+? All pages: strong.rederrortext:not(:contains("Background transaction in process."), :contains("Actual Date is missing"), :contains("Background"), :contains("Warning"))
+
+CaseChildProvider: #reporterType val = '' && #providerType !== '' && #providerType !== LNL, $('#myCheckbox[value="Not Applicable"]').click() (before focus)
+
+ProviderAddress: Make button to copy Mailing address, Change current address button name
+
+Worker created alert: Create alerts buttons aren't space-barrable (change to buttons with preventdefault) and need a margin between them
+
+ProviderNotices: #resend remove property Disabled
+
+CaseOverview?: Create elig results for BWP MFIP closed? need parm2= parm3=
+
+CaseSupportActivity: Auto-end date on ext-elig-plan-ends needs a date picker closer (copy from CaseChildProvider)
+
+CaseUnearnedIncome: If year = 2023, Add message if Tribal Payments selected that it is uncounted
+
+CaseUnearnedIncome, Expenses: !viewMode: focus #amount
+
+CaseChildProvider: Focus: on table click, focus edit. !viewMode: if end date !== '', focus primary end date, give border to end date !== '', care end reason
+
+CaseServiceAuthorizationApproval: Focus: on table click, focus DupeApprove
+
+CaseApplicationInitiation: PMI.change(if not '', tab-index 0)
+
+CaseEmploymentActivity: Edit doesn't focus anything
+
+Reported to state to be fixed. ActiveCaseList: Remove 'click Search' event 
+
+Tabindex-1 fields: Add class, style = grayed out - class created, needs style
+
+CaseCreateEligibilityResults
+If Create available (either not disabled, or caseCERActionButtons not hidden) eleFocus Create, 
+else CaseEligibilityResultSelectionSelf or countdown timer and go to Elig results? Strong "Results successfully submitted."
+
+CaseChildProvider
+editMode: If no start date, remove tabindex from end dates. Edit current tabindex rules for reporter type, and remove tabindex logically (if none selected yet, if not LNL, etc)
+
+CaseAddress: Strong contains "Warning: Mailing Address indicates" elefocus SaveDupe; Strong contains "Effective Date must be entered" elefocus EffectiveDate
+
+eleFocii: if sessionStorage.actualDate.length > 0, elefocus next element
+
+CaseUnearnedIncome: #incomeType>option[value="Disbursed Child Support"] append to parent to make it first in list?
+
+Table.click eleFocus editDupe - all pages? CaseChildProvider only?
+
+Done. CaseEarnedIncome: On Edit, (!#memberReferenceNumberNewMember.length) focus ... if ceiVerification.val() = "No Verification Provided", focus that; else focus end 
+
+Done. Case Overview: Provider ID #s -> change to links to Provider ID overview. On load and table.click
+
+Done. CaseMemberII: if memberRef.slice(0,2) > 02, auto-fill marital (never), Last Grade (pre1st), US Citizen (yes), Cit verif (no)
+
+Done? CaseAddress: Strong: Effective date must be entered in the corresponding biweekly period. : focus effective date
+
+Done. CaseMember: Race checkboxes: hidden if blank/no; memberSsnVerification tabindex: delete if element not disabled; default languages and interpreter?
+
+Done. CaseSpecialLetter: Add checkbox with "Other [See worker comments below]"
+
+Done. CaseEmploymentActivity: If person selection is blank, activity end tabindex = -1
+
+Done. CaseNotes: #summary on save: "Redetermination has not been received - This famil" -> "Redetermination has not been received"
+
+Done. CaseApplication: BWP auto-selected based on application received date
+
+Done. BWP nav buttons: add if #submit.disabled !== disabled
+
+Done. CaseEligibilityResultFinancial: if div[label=totalAnnualizedIncome].next.val > div[label=maxIncomeAllowed].next.val, highlight div[label=totalAnnualizedIncome].next
+
+Done. PaymentHistory: Sort by BWP descending
+
+Done. Alerts: if href includes WorkerCreatedAlerts and table 'case/provider list' is length 0, click submit
+
+Done. CaseCSIA: instead of changing country to USA triggering the update for state/county, set it on table click
+
+Done. CaseExpenses: to: is too far left
+
+Done. Parent, CSE: Add check to see when modal is detected to prevent spacebar from clicking 'Add PRI/parent'
+
+Done. All: #caseId.onpaste: Click submit?
+
+Done. Income/Expense: !viewMode, membref === '', tabindex of end = -1
+
+Done. Income/Expense pages: On table click, focus Edit
+
+Done. CaseNotes: OnClick to OnPaste for fixing excel paste, update with spaces needed for bad character + spaces (bad + 5 or 16 -> 13, 7 -> 4), enter+enter -> enter, 
+
+Done. CaseNotes: PMI Merge hide text incorrect, should be PMI/SMI Merge
+
+Done. Alerts: Add text using <details> after "Create Alert" stating (Bug: Creating an alert when any case has 0 alerts will cause 0 alerts to show when returning)
+
+Done. CaseNotes: PMI Merge - hide these case notes, add button to show/hide hidden case notes
+
+            Projects:
+
+CaseSpecialLetter: Use Alt+# keys to auto-insert text if cursor WorkerComments is focused?
+
+Changes Log: Use <dl> and <dd> for lists? And check out <details><summary> for individual page info
+
+CaseNotices: Cancel All? Cancel All but billing forms? Cancel All but first SA letters? Cancel All to specific target?
+
+CaseUnearnedIncome: If #incomeType.val().change to Unemployment Insurance, add 2 inputs: lastPaymentProcessDate and remainingBalance; add button: calc and enter. OnClick, divide remainingBalance by #incomeProjectionAmount, multiply by 7 (plus 7, round 0), subtract dateDiff of start date from lastPaymentProcessDate, add that many days to lastPaymentProcessDate, put addedToDate in #paymentEndDate, make sure #tempIncome set to Yes
+
+CaseCopayDistribution: Button: Copy #overrideReason, provider name/copay$ from #providerInformationTable, store in sessionStorage. Button: Retrieve storage, click Edit, enter #overrideReason, change copay$ for matching providers
+
+CaseChildProvider: "Warning: Have Provider Training requirements been met?" Function to check trainings completed and date done.
+
+CasePaymentHistory: if end date !== row up end date && end date +1 !== row up start date: add span that says "Gap"? after BWP
+
+Notice pages, Alerts with Worker Created selected: Add single arrow buttons around date fields, modify dates by 1 month per click
+
+Change all date fields to be 12ch wide, plus the parents thereof if in a col-lg/col-md div. For first date field, reduce padding-right to 5px?
+
+Alerts, InactiveCaseload: Stop button for when automated process is happening.
+
+CaseList: Enter clicks #submit
+
+ClientSearch: Enter clicks search #submitbtn
+
+CaseOverview: Program Information table.click( if 
+
+CaseRedetermination: Warning: An Eligibility Approval -> auto-save, add 'Must approve results!' to page if '#redeterminationStatus' .val === "Updates Required"
+
+ProviderNotes: Notes Important Group ain't all right
+
+Client search: If only 1 result, select result
+
+Provider search: If only 1 result showing, select result
+
+Alt+S to also click save. N for new, E for edit. If #quit.length > 0, #next & #previous hotkeys are...? alt + left right? 
+If viewMode and , unmodified keys for /n/ew, /e/dit, /w/rap-up, /d/elete, delete-/a/ll, next (right), previous (left), /c/ancel notice, /r/emove cancel...
+
+Bug: CaseCSE - Dupe Wrap Up always shows disabled
+
+Table behavior (test): table { scroll-snap-type: y mandatory; scroll-padding: #? 0; } table td { scroll-snap-align: start; }
+
+CaseEligibilityResultSelection (And SA pages?)
+If Strong "Background transaction" countdown timer and reload? SA Page might also have 'No results for case'
+
+Active case list
+Add queries for additional subjects: Phone number, active providers, CCAP program type vs MFIP open, ...?
+Check suspended cases for a childsProvider entry. Flag if none for delaying redetermination date to allow case to auto-close beforehand.
+
+If active element = table, down/up goes to next/previous row
+
+Summary:
+Step 1: links in new tabs except redetermination and application.
+Step 2: iframe the heck outta that page.
+Step 3: Button to check for problem pages (unverified items, forms No, etc)
+
+Alerts - Delete All:
+Count each type of alert, output into end message.
+
+Income/expense pages: Store Payment Change date, auto-enter even if value exists.
+
+Done? Make Modal 'Yes' sitewide - check for modal first? Might not be on every page.
+
+Done. CaseCSE: Good Cause selection hiding on edit
+
+Done. AlertCreateAlert: Not adding a month, only giving current month
+
+Done. I broke note/overview buttons (clicking)...
+
+Done. Elig result highlighting: Update on table click.
+
+CaseAddress 
+Done. "Warning: Effective date" & !viewMode: eleFocus Save
+Done. Copy Mail Address: Margin-right 0
+
+Done. CaseMemberII: editMode elefocus actualDate
+
+Done. CaseCSE: editMode, forms completed = blank, elefocus actualDate
+
+CaseCSIA:
+Done. elefocus viewMode? New : Actual Date
+Done. Collapse many things, including MI and Gender
+Done. Default birthplaceCountry USA doEvent, birthplaceStateOrProvince Minnesota doEvent, birthplaceCounty STLOUIS doEvent, 
+Done. #deceasedDate collapsed; #deceased .change to val Yes remove collapse #deceasedDate
+
+Done. CaseDisability: elefocus dupeNew or #memberReferenceNumberNewMember
+
+Done. CaseOverview: tr = td contains "MFIP, FS, HC": position: sticky, z-index: 1, bottom: math(tr * height -)
+
+Done. Change color for custom buttons (clicked, hover) and Highlighting ineligible fields with inverse
+
+Done. CaseSupportActivity: Ext Elig: duplicate begin date in end date, verif other, plan No, focus save
+
+Done. CaseCSE: If good cause, renewal date is flipped (hiding when should show)
+
+Done. CaseMember: Make link to member history always available
+
+Done. Input needs padding-left treatment to line up Pass/Fail/N/A like CaseEligiblityResultFamily page (..Person page has the issue)
+
+Done. CaseEligibilityResultSelection: SA, Special Letter buttons -> not with unapproved results
+
+Done. CaseEducationActivity: elefocus on edit: pmiNbrNew
+
+Done. table { font-size: 14px; }
+
+Done. CaseRedetermination: Defer tabindex -1
+
+Done. $('strong:contains("."):not([class="modal-message"]:not(:last-child))').after('<br>')
+
+Done, but eleFocus isn't working right. FundingAvailability: editMode: basicSlidingFeeFundsAvailableCode = Y, elefocus date field.
+
+Done. All pages after application: Store actualDate date, auto-enter for blank actual dates
+
+Done. Activity pages? STRONG "Warning: This data will expire" elefocus saveDupe
+
+Done. CaseAction: If case action exists, focus Delete
+
+Done. CaseCSE: Good Cause review date hiding is backwards
+
+Done. #reSubmit: Add hidden important in CSS
+
+Done. DarkMode: Focused input/select needs better indicator
+
+Done. Bug: CaseAction page formatting is wrong
+
+Done. td: ToTitleCase?
+
+Done. Income/expense pages: If amounts are blank, change date tabindex to -1
+
+Done. CaseWrapUp: Case Wrap-Up successfully submitted. Has 4 bonus buttons, focus Eligibility?
+
+Done. FinancialBilling $('#weekOneMonday, #weekTwoTuesday, ...').change(function() { add together and update $('#totalHoursBilledWeekOne') })
+
+Done. If feasible, highlight if entered hours exceed approved hours.
+
+Done. CaseCreateEligibilityResults: strong contains Results successfully submitted. -> hide #buttonHouse
+
+Done. CaseUnearnedIncome: Warning: This data will expire 01/22/2023 -> focus Save (or autosave?)
+
+Due to inconsistent coding, not realistic. CaseEligibilityResultApproval: Make fields line up across panels
+
+Done. CaseNotes: Show/Hide extra rows button: Add count of rows
+
+Done. CaseCreateEligibilityResults: if STRONG = "Results successfully submitted." { button for eligselectionpage with focus } else focus #create
+
+Done. Dupe buttons: TabIndex -1/0 when disabled/enabled
+
+Done. WorkerSearch: Buttons are messed up
+
+Done. WorkerAlerts: Make second button for extra month delay. Add dates to buttons.
+
+Done. CaseMember/ii/: If next, on table click, focus Next, else focus editDupe
+
+Done. Activity & Income pages: On table click, focus Edit
+
+Done. CaseEligibilityResult(subpages): Remove blank col-lg-1
+
+Done. CaseMemberII: If edit, if person is blank, focus person
+
+Done. Overview program table: border-bottom: none;
+
+Done. getProviderOverview: activate nav buttons: row 3 Provider, add selected button class to Overview
+
+Done. CaseRedetermination: !viewMode: Updates Required, elefocus date
+
+Done, plus fix to residenceStreet2. CaseAddress: Mailing address street 2 not hiding if blank
+
+Done. Earned/unearned/expense? Payment change hide if page starts blank
+
+Done. elefocus case input field if blank; or provider ID field
+
+Done. Strong: "Actual date is missing" eleFocus #actualDate
+
+Done. eleFocus #actualDate: If today is within the BWP, add today's date.
+
+Done. Case activities: !viewMode If activity begin date !== '', eleFocus end date

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.83.4
+// @version      0.83.5
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -2051,17 +2051,19 @@ if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
             let weekTwoDays = [parseInt($('#weekTwoMonday').val()), parseInt($('#weekTwoTuesday').val()), parseInt($('#weekTwoWednesday').val()), parseInt($('#weekTwoThursday').val()), parseInt($('#weekTwoFriday').val()), parseInt($('#weekTwoSaturday').val()), parseInt($('#weekTwoSunday').val())]
             let $whichBilledWeek = changedId.indexOf("weekOne") > -1 ? $('#totalHoursBilledWeekOne') : $('#totalHoursBilledWeekTwo')
             let weekDaysChanged = changedId.indexOf("weekOne") > -1 ? weekOneDays : weekTwoDays
-            $whichBilledWeek.val(weekDaysChanged.reduce((partialSum, a) => partialSum + a, 0))
+            $whichBilledWeek.val(weekDaysChanged.reduce((partialSum, a) => partialSum + a, 0))//adds up array
             parseInt($('#totalHoursBilledWeekOne').val()) + parseInt($('#totalHoursBilledWeekTwo').val()) > parseInt($('#totalHoursOfCareAuthorized').val()) ? $('#totalHoursBilledWeekOne, #totalHoursBilledWeekTwo, #totalHoursOfCareAuthorized').addClass('red-outline') : $('#totalHoursOfCareAuthorized, #totalHoursBilledWeekOne, #totalHoursBilledWeekTwo').removeClass('red-outline')
         }
-        // $('#weekOneMonday, #weekOneTuesday, #weekOneWednesday, #weekOneThursday, #weekOneFriday, #weekOneSaturday, #weekOneSunday, #weekTwoMonday, #weekTwoTuesday, #weekTwoWednesday, #weekTwoThursday, #weekTwoFriday, #weekTwoSaturday, #weekTwoSunday').change(function() { addBillingRows($(this).prop('id')) } )
         $('table').click(function(e) {
             if (e.target.tagName.toLowerCase() === "input") { e.target.select() }
         })
         $('table:has(#weekOneMonday)').keyup(function(e) {
-            if (e.target.id.indexOf('week') === 0 && e.target.value > 0) { addBillingRows(e.target.id) }
-                                             else { e.target.value = 0 } })//addBillingRows($(this).prop('id')) } )
-        // $('table:has(#weekOneMonday)').keydown(function(e) { addBillingRows($(this).prop('id')) } )
+            console.log(e.target.value)
+            if (e.target.id.indexOf('week') === 0) {
+                if (e.target.value !== 0 && e.target.value !== '') { addBillingRows(e.target.id) }
+                else if (e.target.value === '') { e.target.value = 0 }
+            }
+        })
     }
 };
 //SECTION END FinancialBilling Fix to display table

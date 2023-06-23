@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.77.3
+// @version      0.77.4
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -11,11 +11,9 @@
 // ==/UserScript==
 
 (function() {
-    'use strict';
+'use strict';
 /* globals jQuery, $, waitForKeyElements */
-
 window.location.href.indexOf("Welcome.htm") > -1 && (window.open("/ChildCare/Alerts.htm", "_self"));//auto-redirect from Welcome to Alerts
-//Color variables
 GM_addStyle ( `
 :root {
 --paddingLeft: 12px;
@@ -34,12 +32,13 @@ GM_addStyle ( `
 --borderlessNotDisabledBackground: rgb(255 255 255 / 40%);
 --borderlessDisabledBackground: #dedede;
 --borderColor: #cccccc;
+--borderColorDisabled: ;
 --buttonBorderColor: #111111;
 --buttonBorderColorDisabled: #cccccc;
 --page-wrap: #e6f2fa;
 --textColor: #000000;
 --disabledTextColor: rgba(0,0,0,30%);
---tableEven: #a8a8a8;
+--tableEven: #eaeaea;
 --tableOdd: #dedede;
 --tableSelected: #95b0e6;
 --tableText: black;
@@ -68,6 +67,7 @@ GM_addStyle ( `
 --borderlessNotDisabledBackground: #111111;
 --borderlessDisabledBackground: #212121;
 --borderColor: #333333;
+--borderColorDisabled: ;
 --buttonBorderColor: #b8b8b8;
 --buttonBorderColorDisabled: #b8b8b8;
 --page-wrap: #051119;
@@ -93,12 +93,12 @@ GM_addStyle ( `
 }
 
 html, body {
-background-color: var(--darkmodeBodyBackground);
+background-color: var(--bodyBackground);
 }
 
-` )//Variables end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/*Variables end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
-GM_addStyle ( `
+
 #preFilledFields {
 color: var(--prefilledField);
 }
@@ -143,10 +143,15 @@ padding: 0 !important;
 display: block !important;
 margin: 3px !important;
 border: none !important;
-background: revert !important;
+background: var(--borderlessNotDisabledBackground) !important;
+color: var(--textColor);
 width: 60.5ch !important;
 overflow: hidden !important;
 max-height: 238px !important;
+}
+#override div.textarea_wrapper > textarea:is([readonly], [disabled]) {
+background: var(--borderlessDisabledBackground) !important;
+color: var(--textColor);
 }
 .even:not(.selected) {
 background: var(--tableEven) !important;
@@ -176,9 +181,9 @@ color: var(--aColor) !important;
 #footer_info {
 color: inherit !important;
 }
-` )
-//Testing Section
-GM_addStyle ( `
+
+/*Testing Section */
+
 a:has(#wrapUp) {
 display: inline-block;
 }
@@ -206,12 +211,12 @@ content: '🌻';
 display: flex;
 align-items: center;
 justify-content: center;
-    @media (min-width: 900px) {
-    font-size: 12px !important;
-    }
-    @media (min-width: 1200px) {
-    font-size: 13px !important;
-    }
+@media (min-width: 900px) {
+font-size: 12px !important;
+}
+@media (min-width: 1200px) {
+font-size: 13px !important;
+}
 }
 
 #billingTableAndPanelData table>tbody>tr:has(td.col-lg-1)>td {
@@ -261,22 +266,6 @@ flex-wrap: wrap;
 align-content: space-around;
 }
 
-details {
-min-height: 24px;
-margin:auto;
-border: 1px solid #aaa;
-border-radius: 4px;
-}
-
-details>summary {
-cursor: pointer;
-display: inline-flex;
-font-weight: bold;
-padding: 3px;
-text-align: center !important;
-justify-content: center;
-}
-
 .capitalize {
 text-transform: capitalize;
 }
@@ -290,7 +279,7 @@ max-height: 195px !important;
 }
 
 div#alertTable_wrapper tr>td:first-child {
-    width: 215px !important;
+width: 215px !important;
 }
 div#caseEligibilityResultFinancialTable_wrapper tr>td:is(:nth-child(8), :nth-child(9)) {
 doesntwork-width: 60px !important;
@@ -307,11 +296,11 @@ align-items: center;
 #providerNoticesSearchData_wrapper .dataTables_scrollBody, #caseNoticesSearchData_wrapper .dataTables_scrollBody, #providerPaymentHistoryData_wrapper .dataTables_scrollBody, #jobSearchDetailsTable_wrapper .dataTables_scrollBody {
 max-height: 486px !important;
 }
-` )//Testing Section end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/*Testing Section end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 
-//Flexed items
-GM_addStyle ( `
+/*Flexed items */
+
 
 .panel-box-format .form-group:not(.panel-box-format .form-group .col-lg-3 h4):not(.form-group.collapse), panel-box-format .col-lg-12 {
 margin-bottom: 3px !important;
@@ -373,10 +362,11 @@ margin: unset !important;
 padding: unset !important;
 }
 
-.form-group>#providerData, .flex-row, .col-lg-12, .col-md-12, .row, .visible-lg, .form-group:not([class^="col-"]:not([class$="12"])):not(.collapse, [style="display: none;"], [style="display: none"], [style="display:none"]) {
+.form-group>#providerData, .flex-row, .col-lg-12, .col-md-12, .row, .visible-lg, .form-group:not([class*="col-"]:not([class*="12"])):not(.collapse, [style="display: none;"], [style="display: none"], [style="display:none"]) {
 display: flex !important;
 flex-wrap: wrap;
 align-items: center;
+flex-grow: 1;
 }
 .form-group>#providerData {
 flex-grow: 1;
@@ -408,16 +398,13 @@ height: fit-content;
 width: fit-content;
 }
 
-` );// end flexed items ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/* end flexed items ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 /*
 div[id$="TableAndPanelData"]>div[id$="PanelData"] {
 margin-bottom: 5px;
 }
 */
-
-//
-GM_addStyle ( `
 
 #override .row {
 margin-left: 0px;
@@ -508,8 +495,8 @@ background: transparent !important;
 body#override div.dataTables_scrollBody>table {
 border-top: 0px !important;
 }
-tr.stickyRow:first-of-type {
-box-shadow: inset 0px 1px var(--borderColor);
+tr:not(.stickyRow)+tr.stickyRow {
+box-shadow: inset 0px 1px var(--textColor);
 }
 .col-lg-12.padL0.textInherit {
 padding-top: 0px !important;
@@ -520,7 +507,7 @@ margin-bottom: 3px !important;
 margin-top: 3px !important;
 }
 
-div[class^="col-lg-"]:not(.col-lg-1):not(div[class^="col-lg-offset"]), div[class^="col-md-"]:not(.col-md-1):not(div[class^"col-md-offset"]) {
+div[class^="col-lg-"]:not(.col-lg-1):not(div[class^="col-lg-offset"]), div[class^="col-md-"]:not(.col-md-1):not(div[class^="col-md-offset"]) {
 padding-top: 0px !important;
 padding: 0px 6px 0px var(--paddingLeft);
 margin-top: 0px !important;
@@ -578,7 +565,7 @@ margin-bottom: 3px !important;
 margin-bottom: 3px !important;
 }
 
-#override div.form-group :is(label, select, input:not(.form-button-margins)), #override div.row is:(label, select, input), #override div.col-lg-12 is:(label, select, input) {
+#override div.form-group :is(label, select, input:not(.form-button-margins)), #override div.row :is(label, select, input), #override div.col-lg-12 :is(label, select, input) {
 padding: 0px 6px 0px 6px !important;
 margin-top: 0px !important;
 margin-left: 0px !important;
@@ -598,49 +585,17 @@ padding-top: 5px !important;
 background-color: var(--panelBackground) !important;
 }
 
-is(#override .borderless, #override [borderless]):not(:disabled, .tabindex-negative-one, :read-only) {
-color: var(--textColor) !important;
-background-color: var(--borderlessNotDisabledBackground) !important;
-min-height: 28px;
-border-radius: 4px;
-border: 1px var(--borderColor) solid !important;
+
+
+
+:is(output, input, select, textarea, checkbox)[contenteditable="false"] {
+color: red !important;
+}
+[contenteditable] {
+background-color: red !important;
 }
 
-#override select.borderless:disabled {
--webkit-appearance: auto !important;
-}
 
-.borderless:disabled:not(.tabindex-negative-one), .borderless:read-only:not(.tabindex-negative-one) {
-background-color: var(--borderlessDisabledBackground) !important;
-border: 1px var(--borderColor) solid !important;
-}
-
-:is(select, textarea, input:not(.wiz-form-button, .form-button)):disabled, :is(select, textarea, input:not(.wiz-form-button, .form-button)):read-only {
-color: var(--textColor) !important;
-background: var(--borderlessDisabledBackground) !important;
-border: 1px var(--borderColor) solid !important;
-}
-:is(select, textarea, input:not(.wiz-form-button, .form-button)):read-only:not(:disabled) {
-color: var(--textColor) !important;
-background: var(--borderlessNotDisabledBackground) !important;
-border: 1px var(--borderColor) solid !important;
-}
-.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-background-color: var(--borderlessDisabledBackground) !important;
-color: var(--disabledTextColor);
-}
-:is(div, input).form-control:not(input[style*="border:none"]):not(input[type="checkbox"]), select.form-control {
-padding: 0px 5px !important;
-text-align: left !important;
-justify-content: center;
-height: 28px !important;
-color: var(--textColor) !important;
-background: var(--borderlessNotDisabledBackground) !important;
-border: 1px solid var(--borderColor) !important;
-}
-:is(div, input).form-control:not(input[style*="border:none"], input[type="checkbox"]):disabled, select.form-control:disabled {
-background: var(--borderlessDisabledBackground) !important;
-}
 textarea.form-control, .textarea_wrapper>textarea, #override label+div>textarea {
 background: var(--borderlessNotDisabledBackground) !important;
 color: var(--textColor) !important;
@@ -660,12 +615,8 @@ margin: 5px 10px 5px 0px !important;
 display: inline-flex;
 }
 
-.custom-button__disabled {
-border-color: var(--buttonBorderColor) !important;
-cursor: not-allowed !important;
-color: var(--disabledTextColor);
-}
 .custom-button, .custom-button__nodisable {
+color: var(--textColor);
 background: var(--formButtonBackground);
 cursor: pointer;
 border: 1px solid var(--buttonBorderColor);
@@ -676,12 +627,11 @@ padding: 3px 3px;
 padding: 3px 3px;
 }
 .custom-button__nav__plus {
-border-left: 0px;
+border-left: 0px transparent !important;
 margin-left: -5px;
 border-top-left-radius: 0px;
 border-bottom-left-radius: 0px;
 }
-
 .custom-button__floating {
 background: var(--formButtonBackground);
 width: fit-content;
@@ -693,6 +643,12 @@ justify-content: center;
 cursor: pointer;
 margin: 1px;
 border-radius: 4px;
+}
+.custom-button__disabled {
+border-color: var(--buttonBorderColor) !important;
+/*background: transparent !important;*/
+cursor: not-allowed !important;
+color: var(--disabledTextColor) !important;
 }
 
 .custom-form-button {
@@ -787,11 +743,6 @@ form#providerNoticesDetail textarea#textbox1, form#caseNoticesDetail textarea#te
 height: 520px !important;
 }
 
-#textbox1 {
-box-shadow: 0 0 10px 2px inset #c77272 !important;
-blarg: colors;
-}
-
 #noteStringText, #reason:not(select) {
 height: 78.1ch;
 width: 101.5ch !important;
@@ -870,6 +821,7 @@ padding: 2px 2px 0px 8px !important;
 
 #newTabField {
 height: 22px !important;
+width: 10ch;
 }
 
 :is(a, div)>input:is(#updateUser, #updateUserURL, #updateDate, #priEligibleActivity, #absentDaysUsed) {
@@ -916,10 +868,10 @@ margin: 0px 0px 0px 10px;
 height: 20px;
 }
 
-` );// Default section end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/* Default section end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
-//Color changes - default
-GM_addStyle ( `
+/*Color changes - default */
+
 .red-outline {
 outline: outset 3px #a94442 !important;
 blarg: colors;
@@ -985,17 +937,17 @@ background-color: transparent;
 }
 
 #inActiveCaseTable>tbody>tr>td>span {
-background-color: #dcdcdc;
-blarg: colors;
+background-color: var(--formButtonBackground);
+color: var(--textColor);
 cursor: pointer;
 padding: 0px 3px;
 margin: 1px;
-border: 1.5px solid #333;
+border: 1px solid var(--buttonBorderColor);
 border-radius: 4px;
 }
 
 #inActiveCaseTable>tbody>tr>td>span:hover {
-background-color: #DAF7A6;
+background-color: var(--customButtonHover);
 blarg: colors;
 }
 
@@ -1015,20 +967,16 @@ right: 25%;
 bottom: 30px;
 }
 
-` )//End color changes - default ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/*End color changes - default ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
 
-GM_addStyle ( `
+
 
 .custom-button__nav__browsing, .custom-button:not(.custom-button__disabled):hover {
---cbhbc: #DAF7A6;
 background-color: var(--customButtonHover) !important;
-blarg: colors;
 }
 .custom-button__nav__open-page {
---cbcbc: #A6EDF7;
 background-color: var(--customButtonOpenPage) !important;
-blarg: colors;
 }
 
 .container {
@@ -1088,11 +1036,56 @@ blarg: colors;
 background-color: black !important;
 }
 
+}/*end dark mode*/
+
+body#override .form-control:not([readonly], [disabled]) {/* forms.less 118, where most settings are done */
+color: var(--textColor);
+background-color: var(--borderlessNotDisabledBackground);
+border-color: var(--borderColor);
+box-shadow: var(--borderColor);
 }
-` )//End color changes - light, dark color scheme ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-GM_addStyle ( `
+
+button, html input[type="button"], input[type="reset"], input[type="submit"], .custom-button, .custom-button__nav__plus {/* normalize.less 290, button appearance */
+color: var(--textColor);
+background-color: var(--formButtonBackground);
+border: 1px solid var(--buttonBorderColor);
+box-shadow: var(--buttonBorderColor);
+}
+
+button[readonly], html input[readonly], html select[readonly] {/*  MEC.css 423 */
+color: var(--textColor);
+background-color: var(--borderlessDisabledBackground);
+border-color: var(--buttonBorderColor);
+}
+
+body#override :is(html input[disabled], html select[disabled]) {/* MEC2.css 414 background, color, border */
+color: var(--textColor);
+background-color: var(--borderlessDisabledBackground);
+border: 1px solid var(--borderColor);
+}
+
+body#override button[disabled] {/* MEC2.css 414 background, color, border */
+color: var(--textColor);
+background-color: var(--borderlessDisabledBackground);
+border: 1px solid var(--buttonBorderColor);
+}
+body :is(.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control) {/* forms.less 153, has priority */
+background-color: var(--borderlessDisabledBackground);
+border: 1px solid var(--borderColor);
+}
+
+html>body#override div.panel.panel-default form .form-control.borderless {/* MEC2.css 781 background-color, border-color, */
+color: var(--textColor);
+background-color: var(--borderlessDisabledBackground) !important;
+border-color: var(--borderColor) !important;
+}
+
 [hidden], .navbar .navbar-inverse, .collapse, #reSubmit {
 display: none !important;
+}
+
+:is(div, input).form-control:not(input[style*="border:none"], input[type="checkbox"]), select.form-control {
+height: 28px !important;
 }
 `)
 })();

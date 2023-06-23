@@ -595,12 +595,13 @@ color: red !important;
 background-color: red !important;
 }
 
-
+/*
 textarea.form-control, .textarea_wrapper>textarea, #override label+div>textarea {
 background: var(--borderlessNotDisabledBackground) !important;
 color: var(--textColor) !important;
 border: 1px solid var(--borderColor) !important;
 }
+*/
 
 #override :is(.updateParent input, #editSummaryPanelData input) {
 border: none !important;

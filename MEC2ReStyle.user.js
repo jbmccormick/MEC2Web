@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.77.5
+// @version      0.77.6
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -42,7 +42,7 @@ GM_addStyle ( `
 --tableOdd: #dedede;
 --tableSelected: #95b0e6;
 --tableText: black;
---aColor: #3337ab7;
+--aColor: #337ab7;
 --customButtonHover: #DAF7A6;
 --customButtonOpenPage: #A6EDF7;
 --wizFormButton: #021f00;

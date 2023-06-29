@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.83.5
+// @version      0.83.6
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2Buttons.user.js
 // ==/UserScript==
-
+/* globals jQuery, $, waitForKeyElements */
 (function() {
     'use strict';
 $('.marginBottom20').length && (console.log($('.marginBottom20')))
@@ -95,11 +95,15 @@ $('#done').click(function() {
     sessionStorage.removeItem('actualDate')
     sessionStorage.removeItem('processingApplication')
 })
-if (!viewMode) {
-    $(':is(select, input, textarea)[tabindex]:not([disabled], [readonly], [tabindex="-1"])').removeProp('tabindex')
+function resetTabIndex() {
+    $(':is(select, input, textarea)[tabindex]:not([disabled], [readonly])').removeProp('tabindex')
+    // $(':is(select, input, textarea)[tabindex]:not([disabled], [readonly], [tabindex="-1"])').removeProp('tabindex')
     $(':is(select, input, textarea)[tabindex]:not([tabindex="-1"]):is([disabled], [readonly])').prop('tabindex', '-1')
+}
+if (!viewMode) {
     if (('table').length) { setTimeout(function() { $(':is(.dataTables_wrapper, .dataTables_wrapper *)').prop('tabindex', '-1') },300 ) }
 }
+resetTabIndex()
 //
 $('.required-field').blur(function(event) { if (event.target.value !== '') { event.target.classList.remove('required-field') } })
 /* DIVIDER ////////////////////////////////////////////////////////////////////////////////////////////////// EARLY EVENTS SECTION end \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
@@ -374,19 +378,19 @@ function newTabFieldButtons() { //Text field to enter a case number to open in a
     ];
     //let buttonDivOne = document.getElementById("buttonPanelOne");
     let buttonDivOneNTF = document.getElementById("buttonPanelOneNTF")
-    let newTabFieldVar = document.createElement('input');
-    newTabFieldVar.id = 'newTabField'
-    newTabFieldVar.type = 'number'
-    newTabFieldVar.maxlength = '8'
-    newTabFieldVar.min = '1'
-    newTabFieldVar.max = '99999999'
-    newTabFieldVar.className = 'form-control'
-    newTabFieldVar.width = '9ch'
-    buttonDivOneNTF.appendChild(newTabFieldVar);
+    $('#buttonPanelOneNTF').append('<input id="newTabField" type="number" min="1" max="99999999" style="width: 10ch; height: 22px !important;" class="form-control"></input>')
+    // let newTabFieldVar = document.createElement('input');
+    // newTabFieldVar.id = 'newTabField'
+    // newTabFieldVar.type = 'number'
+    // newTabFieldVar.maxlength = '8'
+    // newTabFieldVar.min = '1'
+    // newTabFieldVar.max = '99999999'
+    // newTabFieldVar.className = 'form-control'
+    // newTabFieldVar.width = '10ch'
+    // buttonDivOneNTF.appendChild(newTabFieldVar);
     for(let i = 0; i < openNotesOrOverview.length; i++){
         let btnNavigation = document.createElement('button');
         btnNavigation.type = 'button';
-        btnNavigation.tabIndex = "-1"
         btnNavigation.innerHTML = [openNotesOrOverview[i][0]]
         btnNavigation.dataset.pageName = [openNotesOrOverview[i][1]]
         btnNavigation.id = [openNotesOrOverview[i][2]];
@@ -758,8 +762,14 @@ if (window.location.href.indexOf("ctiveCaseList.htm") > 0) {
 }
 //SECTION END Fix the Name: row alignment
 
-////// ALERTS.htm start //////
+////// ALERTS.htm start ////// ("Alerts.htm")
 if (window.location.href.indexOf("/Alerts.htm") > -1) {
+
+    //SUB-SECTION Moving Worker ID and Worker Name to the section they are displayed in
+    $('#inputWorkerId').parent().attr('id','workerIdRow')
+    $('#workerName').parent().attr('id','workerNameRow')
+    $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderAlertsTable_wrapper').parent())
+    //
     setTimeout(function() {
         if ($('#alertTotal').val() > 0 && $('#caseOrProviderAlertsTable td.dataTables_empty').length) { $('#alertInputSubmit').click() }
     }, 300)
@@ -768,38 +778,55 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     $('#delete').after($('#new'))
     // $('#new').prop('style', 'margin-left: 0px !important;').after('<details><summary>Bug:</summary><span>Creating an alert when <strong>any</strong> case has 0 alerts will cause the Alerts page to display no alerts after saving the worker alert.</span></details>').parent().css('display','flex').css('gap','10px')
     $('#new').prop('style', 'margin-left: 0px !important;').parent().css('display','flex').css('gap','10px')
-    $('#delete').parent().contents().filter(function() { return this.nodeType === 3}).remove()
+    // $('#delete').parent().contents().filter(function() { return this.nodeType === 3}).remove()
     $('[id^="workerCreatedAlertActionsArea"]:eq(1)').remove()
-    //SECTION START Superfluous delete button
+    //SUB-SECTION START Superfluous delete button
     $('label[for="message"]').parent('.row').remove();
     $('#alertsPanelData').css('overflow','visible');
     $('#alertTotal').after('<button type="button" class="form-button custom-form-button centered-text" id="deleteTop">Delete Alert</button>')
     $('#deleteTop').click(function() { $('#delete').click()});
-    //SECTION END Superfluous delete button
 
     //SECTION START Delete all alerts of current name onclick
+    let oCaseDetails = {}
     let vNumberToDelete
     let vCaseName
     let vCaseOrProvider
     let vCaseNumberOrProviderId
-    function fCaseNumberOrProviderId() {
-        switch (vCaseOrProvider) {
+    // function fCaseNumberOrProviderId(tableText) {
+    //     switch (tableText) {
+    //         case "case":
+    //             return "#caseNumber"
+    //             break
+    //         case "provider":
+    //             return "#providerId"
+    //             break
+    //     }
+    // }
+    function whatAlertType() {
+        switch ($('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()) {
             case "case":
-                return "#caseNumber"
+                return { page: "CaseNotes", type: "Case", number: $('#caseNumber').val(), name: $('') }
                 break
             case "provider":
-                return "#providerId"
+                return { page: "ProviderNotes", type: "Provider", number: $('#providerId').val() }
                 break
+            default:
+                return "whatAlertType; no matches found"
         }
     }
     $('#deleteTop').after('<button type="button" class="form-button custom-form-button centered-text doNotDupe" id="deleteAll" title="Delete All" value="Delete All">Delete All</button>');
     $('h4:contains("Case/Provider List")').after('<h4 style="float: right; display:inline-flex color: #003865; font-size: 1.2em; font-weight: bold;" id="alertMessage"></h4>');
     $('#deleteAll').val('Delete All').on("click", function() {
-        vCaseOrProvider = $('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()
-        if (!["case", "provider"].includes(vCaseOrProvider)) { return }
-        vCaseNumberOrProviderId = fCaseNumberOrProviderId()
-        vNumberToDelete = $( vCaseNumberOrProviderId ).val()
-        vCaseName = $('#groupName').val()
+        // vCaseOrProvider = $('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()//case or provider
+        vCaseOrProvider = whatAlertType().type
+        // if (!["case", "provider"].includes(vCaseOrProvider.toLowerCase())) { return }
+        if (!["case", "provider"].includes(vCaseOrProvider.toLowerCase())) { return }
+        // vCaseNumberOrProviderId = fCaseNumberOrProviderId(vCaseOrProvider)//#caseNumber or #providerID
+        // vNumberToDelete = $( vCaseNumberOrProviderId ).val()//value on page
+        vNumberToDelete = whatAlertType().number
+        oCaseDetails.numberToDelete = whatAlertType().number
+        oCaseDetails.name = whatAlertType().name
+        vCaseName = $('#groupName').val()//name on page
         fDoDeleteAll()
     });
     const observerDelete = new MutationObserver(e => {
@@ -810,7 +837,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     function fDoDeleteAll() {//Test worker ID PWSCSP9
         console.log('fDoDeleteAll called')
         if ($('#delete').val() !== "Please wait") {
-            if ($('#delete').val() === "Delete Alert" && vNumberToDelete === $( vCaseNumberOrProviderId ).val() && vNumberToDelete === $('#groupId').val() && $('#caseOrProviderAlertsTable td:contains("' + vCaseName + '")').nextAll().eq(1).html() > 0) {
+            // if ($('#delete').val() === "Delete Alert" && vNumberToDelete === $( vCaseNumberOrProviderId ).val() && vNumberToDelete === $('#groupId').val() && $('#caseOrProviderAlertsTable td:contains("' + vCaseName + '")').nextAll().eq(1).html() > 0) {
+            if ($('#delete').val() === "Delete Alert" && vNumberToDelete === whatAlertType().number && vNumberToDelete === $('#groupId').val() && $('#caseOrProviderAlertsTable td:contains("' + vCaseName + '")').nextAll().eq(1).html() > 0) {
                 $('#delete').click();
             } else {
                 fDoDeleteAllCheck()
@@ -853,19 +881,19 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
         return '?providerId=' + parameter2alerts
     }
-    //blarga
 
     const aCaseCategoryButtons = [
-        ["Edits", "CaseEditSummary"],
         ["Eligibility", "CaseEligibilityResultSelection"],
         ["SA:O", "CaseServiceAuthorizationOverview"],
         ["SA:A", "CaseServiceAuthorizationApproval"],
         ["Provider", "CaseChildProvider"],
         ["Address", "CaseAddress"],
-        ["Pages", "CasePageSummary"],
-        ["Notices", "CaseNotices"],
+        ["Members", "CaseMember"],
         ["Notes", "CaseNotes"],
         ["Overview", "CaseOverview"],
+        ["Edits", "CaseEditSummary"],
+        ["Pages", "CasePageSummary"],
+        ["Notices", "CaseNotices"],
         ["CSI", "CaseCSIA"],
         /*
         ["", ""],
@@ -878,6 +906,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         ["Info", "ProviderInformation"],
         ["Alias", "ProviderAlias"],
         ["Rates", "ProviderRates"],
+        ["Notices", "ProviderNotices"],
         /*
         ["", ""],
         */
@@ -960,26 +989,23 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         // }
         let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
     };
-    const oAlertCategoriesLowerCase = {
+    const oAlertCategoriesLowerCase = {//For smart navigation, and AutoCaseNotes
         template: {
-            page: "",
             buttonText: "",
             explanation: {
-                1: { text1: "", page: "" }
+                1: { textIncludes: "", page: "", caseNoteTitle: "" }
             }
         },
         eligibility: {
-            page: "",
             buttonText: "",
             explanation: {
-                1: { text1: "", page: "" }
+                1: { textIncludes: "", page: "", caseNoteTitle: "" }
             }
         },
         serviceauthorization: {
-            page: "",
             buttonText: "",
             explanation: {
-                1: { text1: "", page: "" }
+                1: { textIncludes: "", page: "", caseNoteTitle: "" }
             }
         },
     };
@@ -1004,46 +1030,46 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
 
     //SECTION START Copy Alert text, navigate to Case Notes
     function fCopyExplanation() {
-        let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
+        let copyText = document.getElementById("message").value//.replaceAll('\n', ' ');
         navigator.clipboard
             .writeText(copyText)
             .then(() => {
             localStorage.setItem('mech2.caseNoteText', copyText);
-            snackBar('Copied! <br>' + copyText.replace(/(?:\r\n|\r|\n)/g, '<br>'));
-            let parm2var = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText //$('#vCaseOrProviderTable_wrapper .selected').children('td:nth-child(3)')//.text()?
-            let parm3var = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-            window.open('/ChildCare/CaseNotes.htm' + fGetCaseParameters(), '_blank')
+            snackBar('Copied! <br>' + copyText/*.replace(/(?:\r\n|\r|\n)/g, '<br>')*/);
+            window.open('/ChildCare/CaseNotes.htm' + fGetCaseParameters(), '_blank')//fGetProviderParameters()
         })
-            .catch(() => {
-            console.log("Something went wrong");
+            .catch((error) => {
+            console.log("Copy Alert Detail explanation error", error);
         });
     };
     $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button>');
     $('#copyAlertButton').click(function() { fCopyExplanation()});
+    $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Case Note</button>');
+    $('#autoCaseNote').click(function() { fAutoCaseNote()});
     //SECTION END Copy Alert text, navigate to Case Notes
 
-    //SECTION START Moving Worker ID and Worker Name to the section they are displayed in
-    $('#inputWorkerId').parent().attr('id','workerIdRow')
-    $('#workerName').parent().attr('id','workerNameRow')
-    $('#workerIdRow, #workerNameRow').prependTo($('#caseOrProviderAlertsTable_wrapper').parent())
-    //SECTION END Moving Worker ID and Worker Name to the section they are displayed in
-
-    // //SECTION START Resize the Alert page's Explanation viewable area
-    // $('.h1-parent-row').siblings('br[clear!="all"]').remove();
-    // addGlobalStyle ('#message {	resize: none; width: 450px !important; padding: 5px; overflow: hidden; box-sizing: border-box; }');
-    // $('#message').parent().removeClass('col-lg-9 col-md-9').addClass('col-lg-12 col-md-12');
-    // $('#message').parents('.row').prev('br').remove();
-    // $('label[for="groupId"]').text('Case #/PID:');
-    // $('label[for="groupName"]').text('Case/Provider:');
-    // $("#alertTable").on('click', function() {
-    //     $("#message").css('height', '100px');
-    //     $("#message").css('height', $("#message").get(0).scrollHeight + 'px');
-    // });
+    //SECTION START Copy alert text to Case Notes via iframe
+    function fAutoCaseNote() {//whatAlertType().number
+        let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
+        $('div.panel:has(div#alertButtonHouse)').after('<div class="panel panel-default panel-box-format"><iframe id="notesIframe" name="notesIframe" height="300px" width="100%"></iframe></div>')
+        addEventListener('storage', function(key, newValue) {
+            // if (event.key === 'MECH2.doClose' && event.newValue === 'didClose') { fAutoCaseNoteSwitch() }
+            switch (event.key) {
+                case "MECH2.caseNotesViewLoaded": //case "MECH.autoNoteText":
+                    break
+                case "MECH2.caseNotesEditLoaded": //case "MECH.autoNoteStatus":
+                    break
+            }
+        })
+        let vDetailToNotes = [$('#message').val(), $( vCaseNumberOrProviderId ).val()]
+    }
+    function fAutoCaseNoteSwitch() {}
+    //SECTION END Copy alert text to Case Notes via iframe
 };
-//SECTION END Resize the Alert page's Explanation viewable area
-////// ALERTS.htm end //////
+    ////// ALERTS.htm end //////
+if (window.location.href.indexOf("/Alerts.htm") < 0) { (localStorage.setItem('MECH2.autoCaseNote','no')) }
 
-//SECTION START Add delay to approving MFIP close and TY/BSF open
+    //SECTION START Add delay to approving MFIP close and TY/BSF open
 if (window.location.href.indexOf("/AlertWorkerCreatedAlert.htm") > -1) {// && window.location.href.indexOf("pageUrl") < 0
     if ($('#providerAlertDisplay').css('display') === "none") {//Exclude provider workers
         let delayNextMonth = new Date(new Date().setMonth(new Date().getMonth() +1, 1)).toLocaleDateString('en-US', {year: "numeric", month: "2-digit", day: "2-digit", });
@@ -1131,6 +1157,10 @@ if (window.location.href.indexOf("CaseApplicationInitiation.htm") > -1) {
     //pmiNumber MutationObserver for value, tabindex of clientSearch = -1
     $('#retroApplicationDate').parents('.form-group').addClass('collapse');
     let timer = null
+    async function fAutoDateRange() {
+        console.log('success')
+    }
+    $('#applicationReceivedDate').change(function() { fAutoDateRange() })
     $('#applicationReceivedDate').keyup(async function(e) {
         if (timer) { return false }
         timer = window.setTimeout( function() { timer = null }, 200 )
@@ -1584,11 +1614,11 @@ if (window.location.href.indexOf("CaseMember.htm") > -1) {
     });
     $( "label:contains('American Indian or Alaskan Native')" ).prop('innerText', 'American Indian or AK Native');
     $( "label:contains('Pacific Islander or  Native Hawaiian')" ).prop('innerText', 'Pacific Islander or HI Native');
-    if ($('#next').length > 0) { $('table').click(function() {eleFocus('#next') } )}
+    if ($('#next').length > 0) { $('table').click(function() { eleFocus('#next') } )}
     if (!viewMode) {
         $('#memberAlienId, #memberDateOfDeath').prop('tabindex','-1').addClass('tabindex-negative-one')
         $('#memberSsnVerification').removeProp('tabindex')
-        let filledValueFields = $('#memberPanelsData :is(input, select):not([type="checkbox"], .form-button, [type="hidden"], [disabled="disabled"])').filter(function() { return $(this).val() !== '' } ).prop('tabindex','-1').addClass('tabindex-negative-one')
+        let filledValueFields = $('#memberPanelsData :is(input, select):not([type="checkbox"], .wiz-form-button, .form-button, [type="hidden"], [disabled="disabled"])').filter(function() { return $(this).val() !== '' } ).prop('tabindex','-1').addClass('tabindex-negative-one')
         $('#memberReferenceNumber').blur(function(event) {
             if (event.target.value.length > 1 && Number(event.target.value) > 2 && Number(event.target.value) < 10) { fillMemberDataChild(event.target) }
         })
@@ -1755,6 +1785,7 @@ if (window.location.href.indexOf("Notes.htm") > -1) {//CaseNotes, ProviderNotes
 
 //SECTION START Custom items for CaseOverview
 if (window.location.href.indexOf("CaseOverview.htm") > -1) {
+    $('#priEligibleActivity, #absentDaysUsed').css('color','inherit')
     $('#programInformationData').css('border-bottom', 'none')
     $('.col-xs-12:not(.col-lg-12), .visible-sm:not(.visible-lg)').remove()
     $('div.visible-lg>label').unwrap()
@@ -1794,7 +1825,7 @@ if (window.location.href.indexOf("CaseOverview.htm") > -1) {
         if ($('#participantInformationData_wrapper thead td:eq(0)').attr('aria-sort') !== "ascending") { $('#participantInformationData_wrapper thead td:eq(0)').click() }
     })
     $('table:not(#providerInformationData)').click(function() {
-        if ($('#providerInformationData>tbody>tr>td:first-child').length) {
+        if ($('#providerInformationData>tbody>tr>td:first-child').length && $('#providerInformationData>tbody>tr>td:first-child').text().toLowerCase() !== "no records found") {
             $('#providerInformationData>tbody>tr>td:first-child').each(function() {
                 $(this).replaceWith('<td><a href="ProviderOverview.htm?providerId=' + $(this).text() + '" target="_blank">' + $(this).text() + '</a></td>')
             })
@@ -1913,6 +1944,13 @@ if (window.location.href.indexOf("CaseServiceAuthorizationOverview.htm") > -1) {
 //SECTION END Fill manual Billing PDF Forms, also nav to Provider Address
 
 if (window.location.href.indexOf("CaseSpecialLetter.htm") > -1 || window.location.href.indexOf("ProviderSpecialLetter.htm") > -1 && !viewMode) {
+    $('.panel.panel-default.panel-box-format').click(function(e) {
+        let previousCheckbox = $(e.target).closest('label').prevAll('input[type="checkbox"]')
+        if (e.target.tagName.toLowerCase() === "input" && $(e.target).closest('label').prevAll('input[type="checkbox"]').length) {
+            e.target.closest('label').prevAll('input[type="checkbox"]').filter(function() { return $(this).prop('disabled') === false }).click()
+        }
+    })
+    //$('input[type="checkbox"]~label')
     $('#caseData input#other').click(function() {
         if ($(this).prop('checked')) {
             $('#otherTextbox')
@@ -1923,13 +1961,14 @@ if (window.location.href.indexOf("CaseSpecialLetter.htm") > -1 || window.locatio
     $('div.col-lg-offset-3').each(function() {
         $(this).children('label').prop("for", $(this).children('input.textInherit').prop('id'))
     })
-    setTimeout(function() {$('div.col-lg-offset-3 > label[for="other"], #otherCommentsDiv').wrapAll('<div style="display: flex; align-items: center;" id="specLetterOther">')}, 200)
+    setTimeout(function() { $('div.col-lg-offset-3 > label[for="other"], #otherCommentsDiv').wrapAll('<div style="display: flex; align-items: center;" id="specLetterOther"></div>') }, 100)
+    $('#status, #activity').on('input', function() { setTimeout(function() { resetTabIndex() }, 300) })
+    // setTimeout(function() { $('label.collapse').removeClass('collapse') }, 1)
     //textnode of " &nbsp;&nbsp; " follows the other field
 }
 
-if (window.location.href.indexOf("CaseSpecialLetter.htm") > -1 || window.location.href.indexOf("CaseMemo.htm") > -1) {
-    //
-}
+// if (window.location.href.indexOf("CaseSpecialLetter.htm") > -1 || window.location.href.indexOf("CaseMemo.htm") > -1) {
+// }
 
 //SECTION START CaseSpecialNeeds Column resizing
 if (window.location.href.indexOf("CaseSpecialNeeds.htm") > -1) {
@@ -2098,6 +2137,7 @@ if (window.location.href.indexOf("FinancialManualPayment.htm") > -1) {
 //SECTION START Close case transfer to x169CCA; Changing dates to links
 if (window.location.href.indexOf("InactiveCaseList.htm") > -1) {
     $('#footer_links').before('<iframe id="transferiframe" name="transferiframe" height="300px" width=' + $(".panel.panel-default").width() + '></iframe>');
+    //blarg dark-scheme causes a white background, not sure how to resolve
     let todayDate = new Date().getTime();
     $('#inActiveCaseTable tbody tr').children('td:nth-of-type(4)').each(function() {
         let closedDatePlus46 = addDays($(this).text(), 46).getTime();
@@ -2130,7 +2170,7 @@ if (window.location.href.indexOf("InactiveCaseList.htm") > -1) {
         window.open('/ChildCare/CaseTransfer.htm?parm2=' + oldClosedArray[0], 'transferiframe');
         oldClosedArray.shift()
     }
-    $('#workerSearch').parents('.col-lg-12').append('<div id="transferAllClosed" class="custom-button__floating custom-button flex-right">Transfer All Old Closed</div>')
+    $('#workerSearch').parents('.col-lg-12').append('<button type="button" id="transferAllClosed" class="custom-button__floating custom-button flex-right">Transfer All Old Closed</button>')
     $('#transferAllClosed').click(function() { transferAllClosed() });
 };
 //SECTION END Close case transfer to x169CCA; Changing dates to links
@@ -2159,7 +2199,7 @@ if (window.location.href.indexOf("ProviderAddress.htm") > -1) {
             removeNoEntryRows()
         })
     }
-    $('div.col-lg-1:contains("-")').addClass('collapse')
+    // $('div.col-lg-1:contains("-")').addClass('collapse')
     if (!viewMode) {
         if ($('#mailingSiteHomeCountry').val() === '') {
             $('#mailingSiteHomeCountry').val('USA').addClass('prefilled-field')
@@ -2309,7 +2349,7 @@ if (["FinancialClaimNotices.htm","ProviderMemo.htm","CaseMemo.htm","ProviderSpec
 if (window.location.href.indexOf("ProviderTaxInfo.htm") > -1) {
     $('#validateTaxIdButton').parent().removeClass('col-xs-12 col-sm-12 col-md-12 col-md-offset-2 col-lg-12 col-lg-offset-2').addClass('col-lg-offset-3 col-md-offset-3');
     $('label.col-lg-2').removeClass('col-lg-2 col-md-2').addClass('col-lg-3 col-md-3');
-    $('label:contains("-")').addClass('collapse')
+    // $('label:contains("-")').addClass('collapse')
 };
 
 //SECTION START ServicingAgencyOutgoingTransfers column fixes
@@ -2801,18 +2841,20 @@ $('#quit, #countiesTable #letterChoice, #reset').prop('tabindex', '-1') //quit, 
 $('#leaveDetailTemporaryLeavePeriodFrom, #leaveDetailTemporaryLeavePeriodTo, #leaveDetailExtendedEligibilityBegin, #tempLeavePeriodBegin, #tempLeavePeriodEnd, #extendedEligibilityBegin, #extendedEligibilityExpires, #redeterminationDate, #tempPeriodStart, #tempPeriodEnd, #deferValue').prop('tabindex', '-1').addClass('tabindex-negative-one');//EmploymentActivity, SupportActivity
 if (window.location.href.indexOf("ProviderSearch.htm") > -1) { ($('#ssn, #itin, #fein, #licenseNumber, #middleInitName').prop('tabindex', '-1').addClass('tabindex-negative-one')) }
 $('#leaveDetailRedeterminationDue, #leaveDetailExpires').prop('tabindex','-1').addClass('tabindex-negative-one')
-$('#caseInputSubmit, #caseId, #selectPeriod').prop('tabindex', '-1');
+$('#caseInputSubmit, #caseId, #selectPeriod, td').prop('tabindex', '-1');
 //SECTION END Removing items from the tabindex
 
 //SECTION START Post load changes to the page
-$('label').removeClass('control-label textR textInherit').addClass('centered-right-label');
+// $('label').removeClass('control-label textR textInherit').addClass('centered-right-label')
+$('label:has(+textarea, +output, +select, +input, +div:has(select, input))').removeClass('control-label textR textInherit').addClass('centered-right-label')
 $('h1').parents('div.row').addClass('h1-parent-row');
 $(".marginTop5").removeClass("marginTop5" );
 $(".marginTop10").removeClass("marginTop10" );
 $(".padding-top-5px").removeClass("padding-top-5px" );
 $('.col-lg-offset-3').addClass('col-md-offset-3');
 $('.col-lg-3.col-md-2.col-sm-2.control-label.textR.textInherit').removeClass('col-md-2').addClass('col-md-3');
-$('div[id*="ZipDash"]').add($('div[id*="ZipDash"]').next()).add($('input[id*="ZipCodePlus4"]')).add($('input[id*="zipCodePlus4"]')).add($('label:contains("-")')).addClass('collapse');
+// $('div[id*="ZipDash"]').add($('div[id*="ZipDash"]').next()).add($('input[id*="ZipCodePlus4"]')).add($('input[id*="zipCodePlus4"]')).add($('div, label').filter(function() {return /^-$/.test($(this).text())})).addClass('collapse');
+$('div[id*="ZipDash" i]').add($('div, label').filter(function() {return /^-$/.test($(this).text())})).add($('div[id*="ZipDash" i]').next()).add($('input[id*="ZipCodePlus4" i]')).addClass('collapse');
 $('.col-xs-3.col-sm-3.col-md-3.col-lg-1').removeClass('col-md-3').addClass('col-md-1');
 //SECTION END Post load changes to the page
 

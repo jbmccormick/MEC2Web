@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         MEC2Buttons
-// @namespace    http://github.com/jbmccormick
+// @namespace    http://tampermonkey.net/
 // @version      0.83.7
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
-// @grant        none
+// @match        mec2.trng2.dhs.state.mn.us/*
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
+
 (function() {
     'use strict';
 $('.marginBottom20').length && (console.log($('.marginBottom20')))

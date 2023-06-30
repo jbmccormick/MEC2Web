@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.78.0
+// @version      0.78.1
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -965,20 +965,14 @@ box-shadow: var(--highlightFocus) !important;
 outline: none !important;
 transition: all .2s ease-in;
 }
-/*
-html>body input[type="checkbox"]:not([readonly], [disabled]) {
-background: var(--borderlessNotDisabledBackground) !important;
-}
-
-html>body input[type="checkbox"]:is([readonly], [disabled]) {
-background: var(--borderlessDisabledBackground) !important;
-}
-*/
-html>body .form-control:not([readonly], [disabled]) {
+html>body .form-control:not([readonly], [disabled]), html>body textarea:not([readonly], [disabled]) {
 color: var(--textColor);
 background-color: var(--borderlessNotDisabledBackground);
 border-color: var(--borderColor);
 box-shadow: var(--borderColor);
+}
+html>body * {
+background-image: none;
 }
 
 button, html input[type="button"], input[type="reset"], input[type="submit"], .custom-button, .custom-button__nav__plus {
@@ -988,13 +982,13 @@ border: 1px solid var(--buttonBorderColor);
 box-shadow: var(--buttonBorderColor);
 }
 
-button[readonly], html input[readonly], html select[readonly] {
+button[readonly], html input[readonly], html select[readonly], html textarea[readonly] {
 color: var(--textColor);
 background-color: var(--borderlessDisabledBackground);
 border-color: var(--buttonBorderColor);
 }
 
-html>body :is(html input[disabled], html select[disabled]) {
+html>body :is(input[disabled], html select[disabled], textarea[disabled]) {
 color: var(--textColor);
 background-color: var(--borderlessDisabledBackground);
 border: 1px solid var(--borderColor);

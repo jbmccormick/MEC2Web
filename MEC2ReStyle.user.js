@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.77.8
+// @version      0.77.9
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -633,7 +633,6 @@ margin-bottom: 2px !important;
 margin-top: 0px !important;
 padding-bottom: 5px !important;
 padding-top: 5px !important;
-background-color: var(--panelBackground) !important;
 }
 
 
@@ -698,7 +697,6 @@ font-weight: bold;
 
 .form-button:disabled {
 color: var(--disabledTextColor);
-background: var(--panelBackground) !important;
 border: 1px solid var(--buttonBorderColorDisabled);
 cursor: no-drop !important;
 }
@@ -717,7 +715,7 @@ background-image: none !important;
 display: inline-flex;
 }
 .next-prev-period-button {
-padding: 3px 5px;
+padding: 3px 0px;
 height: 25px;
 }
 
@@ -931,7 +929,7 @@ color: var(--textColor);
 
 /* blarg
 div.panel.panel-default:not(.panel-box-format), .error_alertbox_new {
-background-color: var(--panelBackground) !important;
+background-color: var(--bodyBackground) !important;
 } */
 
 html>body .panel, .error_alertbox_new {
@@ -939,7 +937,7 @@ background-color: inherit;
 }
 
 div.panel.panel-default.modal-content {
-background-color: var(--panelBackground) !important;
+background-color: var(--bodyBackground) !important;
 }
 
 html>body .eligibility-highlight, html>body .eligibility-highlight-table {

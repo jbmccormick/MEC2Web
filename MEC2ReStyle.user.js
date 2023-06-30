@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.77.9
+// @version      0.78.0
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -101,10 +101,10 @@ GM_addStyle ( `
 --absentDayDisabledOpacity: .9;
 --highlightFocus: 0 0 6px 3px #78be21;
 --highlightTable: 0 0 20px 6px inset #9b0000;
---calendarBody: 
---calendarWeekdayText:
---calendarDateText:
---calendarDatesBackground:
+--calendarBody: #262626;
+--calendarText: #fff;
+--calendarHeaderText: #fff;
+--calendarDatesBackground: #555;
 
 ::-webkit-scrollbar {
     background-color: #202324;
@@ -175,19 +175,16 @@ padding-top: 4px;
 
 /* Variables end ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
-/* Needs color fixing */
-
-.ui-datepicker-title select {
+html>body .ui-datepicker-title select {
 padding: 1px;
 }
-#ui-datepicker-div .ui-datepicker-header {
+html>body #ui-datepicker-div .ui-datepicker-header {
 border-radius: 6px !important;
 }
-#ui-datepicker-div table thead tr th {
-blarg: colors;
-color: white;
+html>body #ui-datepicker-div table thead tr th {
+color: var(--calendarText);
 }
-#ui-datepicker-div tr {
+html>body #ui-datepicker-div tr {
 display: grid;
 grid-template-columns: repeat(7, 1fr);
 }
@@ -199,29 +196,27 @@ margin-top: .25em;
 width: 45em !important;
 transform: translateX(-40%);
 }
-.ui-datepicker-group, .ui-widget-content {
-background: #222 !important;
-blarg: colors;
+html>body .ui-datepicker-group, .ui-widget-content {
 padding: 0px 1px;
 }
-.ui-datepicker-buttonpane {
+html>body .ui-datepicker-buttonpane {
 margin: 0 !important;
 }
-/* blargblargblarg
-.ui-state-default {
+html>body tr>td>a.ui-state-default, html>body .ui-widget-content a.ui-state-default, html>body .ui-widget-header a.ui-state-default  {
 color: var(--calendarText);
-background: ;
-}
-.ui-datepicker-buttonpane {
 background: var(--calendarDatesBackground);
 }
-.ui-datepicker {
+html>body tr>td>a.ui-state-highlight, html>body .ui-widget-content a.ui-state-highlight, html>body .ui-widget-header a.ui-state-highlight {
+background: var(--tableSelected);
+border: 1px solid var(--tableSelected);
+}
+html>body .ui-datepicker {
 background: var(--calendarBody);
 }
---calendarBody: #ccc;
---calendarText: black;
---calendarHeaderText: white;
---calendarDatesBackground: gray;
+/* Does not work, changes background size (needs parent to be grid)
+html>body div#ui-datepicker-div.ui.datepicker tr>td {
+justify-self: center;
+}
 */
 #preFilledFields {
 color: var(--prefilledField);

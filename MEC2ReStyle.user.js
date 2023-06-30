@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.77.7
+// @version      0.77.8
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -936,6 +936,10 @@ background-color: var(--panelBackground) !important;
 
 html>body .panel, .error_alertbox_new {
 background-color: inherit;
+}
+
+div.panel.panel-default.modal-content {
+background-color: var(--panelBackground) !important;
 }
 
 html>body .eligibility-highlight, html>body .eligibility-highlight-table {

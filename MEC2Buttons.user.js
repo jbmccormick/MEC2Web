@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.83.7
+// @version      0.83.8
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1042,8 +1042,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     };
     $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button>');
     $('#copyAlertButton').click(function() { fCopyExplanation()});
-    $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Case Note</button>');
-    $('#autoCaseNote').click(function() { fAutoCaseNote()});
+    //$('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Case Note</button>');
+    //$('#autoCaseNote').click(function() { fAutoCaseNote()});
     //SECTION END Copy Alert text, navigate to Case Notes
 
     //SECTION START Copy alert text to Case Notes via iframe
@@ -1812,7 +1812,7 @@ if (window.location.href.indexOf("CaseOverview.htm") > -1) {
             snackBar('Copied! <br> Redetermination mailed, due ' + redetDate);
         })
     }
-    $('#programInformationData td:contains("HC"), #programInformationData td:contains("FS"), #programInformationData td:contains("DWP"), #programInformationData td:contains("MFIP")').parent().addClass('stickyRow').addClass('stillNeedsBottom')
+    $('#programInformationData td:contains("HC"), #programInformationData td:contains("FS"), #programInformationData td:contains("DWP"), #programInformationData td:contains("MFIP"), #programInformationData td:contains("WB")').parent().addClass('stickyRow').addClass('stillNeedsBottom')
     waitForElmHeight('#programInformationData > tbody > tr > td').then(() => {
         document.querySelectorAll('.stickyRow').forEach(function(element, index) {
             element.style.bottom = ($('.stillNeedsBottom').length -1) * (document.querySelector('#programInformationData').getBoundingClientRect().height / document.querySelectorAll('#programInformationData tbody tr').length) + "px"

@@ -59,6 +59,10 @@ GM_addStyle ( `
 --absentDayDisabledOpacity: .5;
 --highlightFocus: 3px 3px 0px rgba(0, 0, 0, .05), 0 0 8px 2px rgba(102, 175, 233, .8);
 --highlightTable: 0 0 20px 0px inset #c77272;
+--calendarBody: #ccc;
+--calendarText: black;
+--calendarHeaderText: white;
+--calendarDatesBackground: gray;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -97,6 +101,10 @@ GM_addStyle ( `
 --absentDayDisabledOpacity: .9;
 --highlightFocus: 0 0 6px 3px #78be21;
 --highlightTable: 0 0 20px 6px inset #9b0000;
+--calendarBody: 
+--calendarWeekdayText:
+--calendarDateText:
+--calendarDatesBackground:
 
 ::-webkit-scrollbar {
     background-color: #202324;
@@ -199,8 +207,22 @@ padding: 0px 1px;
 .ui-datepicker-buttonpane {
 margin: 0 !important;
 }
-
-
+/* blargblargblarg
+.ui-state-default {
+color: var(--calendarText);
+background: ;
+}
+.ui-datepicker-buttonpane {
+background: var(--calendarDatesBackground);
+}
+.ui-datepicker {
+background: var(--calendarBody);
+}
+--calendarBody: #ccc;
+--calendarText: black;
+--calendarHeaderText: white;
+--calendarDatesBackground: gray;
+*/
 #preFilledFields {
 color: var(--prefilledField);
 }
@@ -274,10 +296,10 @@ border-top: 1px solid var(--tableRowBorder) !important;
 h1, h2, h3, h4 {
 color: var(--headerColor) !important;
 }
-a {
+a:not(.ui-state-default) {
 color: var(--aLinkColor) !important;
 }
-#footer_info {
+#footer_info, #editSummaryPanelData div.form-group div>input {
 color: inherit !important;
 }
 

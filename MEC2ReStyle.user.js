@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    http://github.com/jbmccormick
-// @version      0.78.1
+// @version      0.78.2
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -205,6 +205,9 @@ margin: 0 !important;
 html>body tr>td>a.ui-state-default, html>body .ui-widget-content a.ui-state-default, html>body .ui-widget-header a.ui-state-default  {
 color: var(--calendarText);
 background: var(--calendarDatesBackground);
+}
+html>body .ui-widget input, html>body .ui-widget select, html>body .ui-widget textarea, html>body .ui-widget button {
+color: white
 }
 html>body tr>td>a.ui-state-highlight, html>body .ui-widget-content a.ui-state-highlight, html>body .ui-widget-header a.ui-state-highlight {
 background: var(--tableSelected);

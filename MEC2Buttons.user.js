@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://github.com/jbmccormick
-// @version      0.83.6
+// @version      0.83.7
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/jbmccormick/MEC2Web/master/MEC2Buttons.user.js
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
 (function() {
@@ -709,13 +708,11 @@ $('#footer_links>a[href="https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_
     .text('New User Manual')
     .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=dhs16_139409" target="_blank">Old User Manual</a>')
     .attr('href', 'https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=MECC-0001')
-$('#footer_links>a[href="https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=MECC-USER-MANUAL-HOME"]')
-    .text('New User Manual')
 $('#footer_links>#contactInformation')
-    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="blarg" target="_blank">PMI Merge</a>')
-    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="blarg" target="_blank">Help Desk</a>')
-    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="blarg" target="_blank">SIR Mail</a>')
-    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="blarg" target="_blank">Policy Quest</a>')
+    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://owa.dhssir.cty.dhs.state.mn.us/csedforms/ccforms/TSS_PMI_Merge_Request.aspx" target="_blank">PMI Merge</a>')
+    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://owa.dhssir.cty.dhs.state.mn.us/csedforms/MMR/TSS_General_Request.asp" target="_blank">Help Desk</a>')
+    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://owa.dhssir.cty.dhs.state.mn.us/owa/" target="_blank">SIR Mail</a>')
+    .after('&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://policyquest.dhs.state.mn.us/" target="_blank">Policy Quest</a>')
 
 //SECTION START Fix issue caused by giving .form-group the display: flex property
 $('.visible-sm').remove()

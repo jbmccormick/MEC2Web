@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.83.8
+// @version      0.83.9
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1662,6 +1662,18 @@ if (window.location.href.indexOf("CaseMemberII.htm") > -1) {
 
 //SECTION START Case Notes custom styles
 if (window.location.href.indexOf("CaseNotes.htm") > -1) {
+    $(window).on('paste', function(e) {
+        // if ("CaseNoteFromAHK".includes(e.originalEvent.clipboardData.getData('text'))) {//not plain/text
+        if (e.originalEvent.clipboardData.getData('text').indexOf("CaseNoteFromAHK") === 0) {
+            e.preventDefault()
+            e.stopImmediatePropagation()
+            let aCaseNoteData = e.originalEvent.clipboardData.getData('text').split('SPLIT')
+            if (["Application","Redetermination"].includes(aCaseNoteData[1])) { $('#noteCategory').val(aCaseNoteData[1]) }
+            $('#noteSummary').val(aCaseNoteData[2])
+            $('#noteStringText').val(aCaseNoteData[3])
+            eleFocus('#save')
+        }
+    })
     if (!viewMode) { $('h4:contains("Note")').after('<button type="button" class="custom-button__float custom-button__nodisable float-right" id="disAutoFormat" tabindex="-1">Disable Auto-Format</button>') }
     $('#disAutoFormat').click(function(e) { e.preventDefault(); $(this).text($(this).text() === "Disable Auto-Format" ? "Enable Auto-Format" : "Disable Auto-Format") })
     $('#save').click(function() {

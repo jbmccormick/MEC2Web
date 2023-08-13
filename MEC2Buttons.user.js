@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.83.9
+// @version      0.84.0
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -762,7 +762,15 @@ if (window.location.href.indexOf("ctiveCaseList.htm") > 0) {
 
 ////// ALERTS.htm start ////// ("Alerts.htm")
 if (window.location.href.indexOf("/Alerts.htm") > -1) {
-
+    if (localStorage.getItem('MECH2.userName') === null || localStorage.getItem('MECH2.userName') === undefined && document.referrer === "https://mec2.childcare.dhs.state.mn.us/ChildCare/Welcome.htm") {
+        setTimeout(function() {
+            if ( localStorage.getItem('MECH2.userIdNumber').toLowerCase() === document.getElementById('inputWorkerId').value.toLowerCase() ) {
+                let workerName = reorderCommaName(document.getElementById('workerName').value)
+                let shortWorkerName = workerName.replace(/(\s\w)\w+/, '$1')
+                localStorage.setItem('MECH2.userName', shortWorkerName)
+                }
+        }, 1)
+    }
     //SUB-SECTION Moving Worker ID and Worker Name to the section they are displayed in
     $('#inputWorkerId').parent().attr('id','workerIdRow')
     $('#workerName').parent().attr('id','workerNameRow')
@@ -988,81 +996,176 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
     };
     const oAlertCategoriesLowerCase = {//For smart navigation, and AutoCaseNotes
-        template: {
-            buttonText: "",
-            explanation: {
-                1: { textIncludes: "", page: "", caseNoteTitle: "" }
+        information: {
+            messages: {
+                mailed: {
+                    textIncludes: /Redetermination form has been mailed/,
+                    noteCategory: "Redetermination",
+                    noteSummary: "",
+                    page: "",
+                },
+                two: {
+                    textIncludes: /Redetermination has not been received/,
+                    noteCategory: "Redetermination",
+                    noteSummary: "Redetermination not received or is incomplete",
+                    page: "",
+                },
+                // three: {
+                //     textIncludes: "Redetermination has not been received",
+                //     category: "Redetermination",
+                //     noteTitle: "Redetermination has not been received",
+                //     page: "",
+                // },
             }
         },
-        eligibility: {
-            buttonText: "",
-            explanation: {
-                1: { textIncludes: "", page: "", caseNoteTitle: "" }
-            }
+        periodicprocessing: {
+            messages: {
+                jsHours: {
+                    textIncludes: /Job Search Hours available will run out/,
+                    noteCategory: "Activity Change",
+                    noteSummary: "",
+                    page: "",
+                },
+                homelessExpiring: {
+                    textIncludes: /The Homeless 3 month period will expire/,
+                    noteCategory: "Application",
+                    noteSummary: "",
+                    page: "",
+                },
+                extendedEligExpiring: {
+                    textIncludes: /activity extended eligibility/,
+                    noteCategory: "Activity Change",
+                    noteSummary: "",
+                    page: "",
+                },
+                four: {
+                    textIncludes: /The allowed time on Transition Year will expi/,
+                    noteCategory: "Other",
+                    noteSummary: "Approved TY to BSF eligibility results",
+                    page: "",
+                },
+            },
+        },
+        childsupport: {
+            messages: {
+                nameChange: {
+                    textIncludes: /reported a name change to/,
+                    noteCategory: "Child Support Note",
+                    noteSummary: "",
+                    page: "",
+                },
+                ncpAddress: {
+                    textIncludes: /Absent Parent of Child Ref #\d{2} has an address/,
+                    noteCategory: "NCP Information",
+                    noteSummary: "CS Alert - NCP address change",
+                    page: "",
+                },
+                cpAddress: {
+                    textIncludes: /Parentally Responsible Individual Ref #\d{2} add/,
+                    noteCategory: "Household Change",
+                    noteSummary: "",
+                    page: "",
+                },
+                four: {
+                    textIncludes: /qqq/,
+                    noteCategory: "",
+                    noteSummary: "",
+                    page: "",
+                },
+            },
         },
         serviceauthorization: {
-            buttonText: "",
-            explanation: {
-                1: { textIncludes: "", page: "", caseNoteTitle: "" }
-            }
+            messages: {
+                paEnd: {
+                    textIncludes: /ParentAwareEnd/,
+                    noteCategory: "Provider Change",
+                    noteSummary: "",
+                    page: "",
+                },
+                paStart: {
+                    textIncludes: /ParentAwareStart/,
+                    noteCategory: "",
+                    noteSummary: "",
+                    page: "",
+                },
+                providerClosed: {
+                    textIncludes: /ProviderClosed/,
+                    noteCategory: "",
+                    noteSummary: "",
+                    page: "",
+                },
+                blarp: {
+                    textIncludes: /blarp/,
+                    noteCategory: "",
+                    noteSummary: "",
+                    page: "",
+                },
+            },
         },
-    };
-    /*function findPageParent() {
-    for (let category in alertCategories) {
-        for (let page in rowThreeButtonObject[grouping]) {
-            if (Object.hasOwn(rowThreeButtonObject[grouping][page], "pageWithoutDotHtm") && rowThreeButtonObject[grouping][page].pageWithoutDotHtm === thisPageName) {
-                if (viewMode && $('#buttonPanelThree').children().length === 0) { fillButtonRowThree(rowThreeButtonObject[grouping][page].rowTwoParent) }
-                return [grouping, page] }
-            else {
-                for (let page in gotoButtonsObject) {
-                    if (Object.hasOwn(gotoButtonsObject[page], "gotoPage") && gotoButtonsObject[page].gotoPage === thisPageName) { return [undefined, page] }
-    } } } } };
-    */
-    function fGoDoTheThing() {
-        let messageText = document.getElementById('message');//alertTable
-        if (messageText.value === "Unapproved results have been created and need review.") {//eventually replace this with... startsWith? Spreadsheet in Documents has alerts list.
-            window.open('/ChildCare/CaseEligibilityResultSelection.htm' + fGetCaseParameters(), '_blank')
-        };
+        //categories: Absent Days, Activity Change, Appeal, Application, Child Support Note, Email Contact, Expense Change, Fraud, Household Change, Income Change,
+        //Medical Leave, NCP Information, Office Contact, Phone Contact, Provider Change, Redetermination, Special Needs, Other
+        // template: {
+        //     messages: {
+                // descriptionHere: {
+                //     textIncludes: /text/,
+                //     noteCategory: "",
+                //     noteSummary: "",
+                //     page: "",
+                // },
+            // },
+        // },
     };
     //SECTION END Do action based on Alert Type
 
     //SECTION START Copy Alert text, navigate to Case Notes
-    function fCopyExplanation() {
-        let copyText = document.getElementById("message").value//.replaceAll('\n', ' ');
-        navigator.clipboard
-            .writeText(copyText)
-            .then(() => {
-            localStorage.setItem('mech2.caseNoteText', copyText);
-            snackBar('Copied! <br>' + copyText/*.replace(/(?:\r\n|\r|\n)/g, '<br>')*/);
-            window.open('/ChildCare/CaseNotes.htm' + fGetCaseParameters(), '_blank')//fGetProviderParameters()
-        })
-            .catch((error) => {
-            console.log("Copy Alert Detail explanation error", error);
-        });
-    };
-    $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button>');
-    $('#copyAlertButton').click(function() { fCopyExplanation()});
-    //$('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Case Note</button>');
-    //$('#autoCaseNote').click(function() { fAutoCaseNote()});
-    //SECTION END Copy Alert text, navigate to Case Notes
-
-    //SECTION START Copy alert text to Case Notes via iframe
-    function fAutoCaseNote() {//whatAlertType().number
-        let copyText = document.getElementById("message").value.replaceAll('/n', ' ');
-        $('div.panel:has(div#alertButtonHouse)').after('<div class="panel panel-default panel-box-format"><iframe id="notesIframe" name="notesIframe" height="300px" width="100%"></iframe></div>')
-        addEventListener('storage', function(key, newValue) {
-            // if (event.key === 'MECH2.doClose' && event.newValue === 'didClose') { fAutoCaseNoteSwitch() }
-            switch (event.key) {
-                case "MECH2.caseNotesViewLoaded": //case "MECH.autoNoteText":
-                    break
-                case "MECH2.caseNotesEditLoaded": //case "MECH.autoNoteStatus":
-                    break
-            }
-        })
-        let vDetailToNotes = [$('#message').val(), $( vCaseNumberOrProviderId ).val()]
+        //Copy, open CaseNotes
+    $('h4:contains("Alert Detail")').attr('id','h4AlertDetail').css('display','inline-flex');
+    $('#h4AlertDetail').after('<div id="alertButtonHouse" style="display: inline-flex; margin-left: 10px;" class="button-row__nav"></div>');
+    async function fGetNoteSummary(obj) {
+        console.log(oAlertCategoriesLowerCase)
+        switch(obj) {
+            case "information.messages.mailed.noteSummary":
+                return "Redetermination mailed, due " + addDays(document.querySelectorAll('#alertTable .selected>td')[1].textContent, 45).toLocaleDateString('en-US', {year: "2-digit", month: "numeric", day: "numeric"})
+                break
+            case "childsupport.messages.nameChange.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/, "PRI$1")
+                break
+            case "childsupport.messages.npcAddress.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})(?:[a-z +]+)/, "ABPS of $1 address: ")
+                break
+            case "periodicprocessing.messages.extendedEligExpiring.noteSummary":
+                return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z ]+)([0-9\/]+)/, "Ext Elig ($1) ends $2")
+                break
+            case "periodicprocessing.messages.jsHours.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)([0-9\/]+)/, "Job search hours end $1")
+                break
+        }
     }
-    function fAutoCaseNoteSwitch() {}
-    //SECTION END Copy alert text to Case Notes via iframe
+    async function fAutoCaseNote() {
+        let foundAlert = {}
+        let alertCategory = document.querySelector('#alertTable .selected>td').textContent.toLowerCase().replace(" ", "")
+        for (let message in oAlertCategoriesLowerCase[alertCategory].messages) {
+            if (Object.hasOwn(oAlertCategoriesLowerCase[alertCategory].messages[message], "noteSummary") && oAlertCategoriesLowerCase[alertCategory].messages[message].textIncludes.test(document.getElementById("message").value) === true) {
+                foundAlert = oAlertCategoriesLowerCase[alertCategory].messages[message]
+                foundAlert.noteMessage = document.getElementById("message").value
+                if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
+            }
+            if (!Object.keys(foundAlert).length) { foundAlert = { noteSummary: document.getElementById("message").value.slice(0, 50), noteMessage: document.getElementById("message").value, noteCategory: "Other" } }
+            let workerName = await reorderCommaName(document.getElementById('workerName').value)
+            let shortWorkerName = workerName.replace(/(\s\w)\w+/, '$1')
+            foundAlert.worker = shortWorkerName
+            foundAlert.xNumber = document.getElementById("inputWorkerId").value.toLowerCase()
+            return foundAlert
+        }
+    }
+    // $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button><button type="button" class="custom-button custom-button__floating" id="openAlertPage">Open Page</button>');
+    $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Note</button>');
+    // $('#copyAlertButton').click(function() { fCopyExplanation()});
+    $('#autoCaseNote').click(function() { fAutoCaseNote().then( function(returnedAlert) {
+        localStorage.setItem( "MECH2.note." + document.getElementById("groupId").value, JSON.stringify(returnedAlert) )
+        window.addEventListener("close", () => localStorage.removeItem( "MECH2.note." + document.getElementById("groupId").value ))
+        window.open('/ChildCare/' + whatAlertType().page + whatAlertType().parameters, '_blank')
+    } ) })
 };
     ////// ALERTS.htm end //////
 if (window.location.href.indexOf("/Alerts.htm") < 0) { (localStorage.setItem('MECH2.autoCaseNote','no')) }
@@ -1746,6 +1849,19 @@ if (window.location.href.indexOf("CaseNotes.htm") > -1) {
 
 //SECTION START CaseNotes and ProviderNotes layout fix
 if (window.location.href.indexOf("Notes.htm") > -1) {//CaseNotes, ProviderNotes
+    if (localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value) !== null) {
+        if (viewMode) { document.getElementById("new").click() }
+        else if (!viewMode) {
+            let workerName = localStorage.getItem('MECH2.userName')
+            let noteInfo = JSON.parse(localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value))
+            let signatureName = document.getElementById('noteCreator').value.toLowerCase() === noteInfo.xNumber ? workerName : workerName + " for " + noteInfo.worker
+            document.getElementById("noteCategory").value = noteInfo.noteCategory
+            document.getElementById("noteSummary").value = noteInfo.noteSummary
+            document.getElementById("noteStringText").value = noteInfo.noteMessage + "\n=====\n" + signatureName
+            localStorage.removeItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value)
+            document.getElementById("save").click()
+        }
+    }
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').rows = '29'
     $('br').remove();

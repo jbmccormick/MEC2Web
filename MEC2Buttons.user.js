@@ -808,16 +808,26 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     //             break
     //     }
     // }
+    function fGetCaseParameters() {
+        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
+        let parameter3alerts = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
+        return '?parm2=' + parameter2alerts + '&parm3=' + parameter3alerts
+    }
+    function fGetProviderParameters() {
+        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
+        return '?providerId=' + parameter2alerts
+    }
+
     function whatAlertType() {
         switch ($('#caseOrProviderAlertsTable>tbody>tr.selected>td:eq(0)').html().toLowerCase()) {
             case "case":
-                return { page: "CaseNotes", type: "Case", number: $('#caseNumber').val(), name: $('') }
+                return { page: "CaseNotes.htm", type: "Case", number: $('#caseNumber').val(), name: $(''), parameters: fGetCaseParameters() }
                 break
             case "provider":
-                return { page: "ProviderNotes", type: "Provider", number: $('#providerId').val() }
+                return { page: "ProviderNotes.htm", type: "Provider", number: $('#providerId').val(), parameters: fGetProviderParameters() }
                 break
             default:
-                return "whatAlertType; no matches found"
+                break
         }
     }
     $('#deleteTop').after('<button type="button" class="form-button custom-form-button centered-text doNotDupe" id="deleteAll" title="Delete All" value="Delete All">Delete All</button>');
@@ -878,16 +888,6 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     //SECTION END Delete all alerts of current name onclick
 
     //SECTION START Do action based on Alert Type
-    function fGetCaseParameters() {
-        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
-        let parameter3alerts = document.getElementById('periodBeginDate').value.replace(/\//g, '') + document.getElementById('periodEndDate').value.replace(/\//g, '')
-        return '?parm2=' + parameter2alerts + '&parm3=' + parameter3alerts
-    }
-    function fGetProviderParameters() {
-        let parameter2alerts = document.getElementById('caseOrProviderAlertsTable').getElementsByClassName('selected')[0].childNodes[2].innerText
-        return '?providerId=' + parameter2alerts
-    }
-
     const aCaseCategoryButtons = [
         ["Eligibility", "CaseEligibilityResultSelection"],
         ["SA:O", "CaseServiceAuthorizationOverview"],
@@ -958,27 +958,27 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         //SUBSECTION START Buttons by Alert Details
     $('h4:contains("Alert Detail")').width('13%').attr('id','h4AlertDetail').css('display','inline-flex');
     $('#h4AlertDetail').after('<div id="alertButtonHouse" style="display: inline-flex;" class="button-row__nav"></div>');
-    let anchorPoint = document.getElementById('alertButtonHouse');
-    let btnNavigation = document.createElement('button');
-    btnNavigation.type = 'button';
-    btnNavigation.innerHTML = "Select an alert";
-    btnNavigation.id = "doTheThing";
-    btnNavigation.className = 'custom-button custom-button__floating';
-    // anchorPoint.appendChild(btnNavigation);
-    btnNavigation.addEventListener("click", function() { fGoDoTheThing()});
-    let clickedAlert = $('#alertTable');
-    $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
-    $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
-        fChangeButtonText();
-    });
-    waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
-        fChangeButtonText()
-        fGetCaseParameters()
-    });
+    // let anchorPoint = document.getElementById('alertButtonHouse');
+    // let btnNavigation = document.createElement('button');
+    // btnNavigation.type = 'button';
+    // btnNavigation.innerHTML = "Select an alert";
+    // btnNavigation.id = "doTheThing";
+    // btnNavigation.className = 'custom-button custom-button__floating';
+    // // anchorPoint.appendChild(btnNavigation);
+    // btnNavigation.addEventListener("click", function() { fGoDoTheThing()});
+    // let clickedAlert = $('#alertTable');
+    // $('#doTheThing').text($('#alertTable .selected').children().eq(0).text());
+    // $('#caseOrProviderAlertsTable, #alertTable').click(function(event) {
+    //     fChangeButtonText();
+    // });
+    // waitForElmValue('#alertTable > tbody > tr > td').then((elm) => {
+    //     fChangeButtonText()
+    //     fGetCaseParameters()
+    // });
         //SUBSECTION END Buttons by Alert Details
 
 
-    function fChangeButtonText() {
+    // function fChangeButtonText() {
         // let alertType = $('#alertTable .selected').children().eq(0).text()
         // if (alertType === '') {
         //     document.getElementById('doTheThing').innerHTML = 'Click on Alert'
@@ -993,8 +993,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         //     case "":
         //         break
         // }
-        let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
-    };
+    //     let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
+    // };
     const oAlertCategoriesLowerCase = {//For smart navigation, and AutoCaseNotes
         information: {
             messages: {
@@ -1144,19 +1144,22 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     async function fAutoCaseNote() {
         let foundAlert = {}
         let alertCategory = document.querySelector('#alertTable .selected>td').textContent.toLowerCase().replace(" ", "")
-        for (let message in oAlertCategoriesLowerCase[alertCategory].messages) {
-            if (Object.hasOwn(oAlertCategoriesLowerCase[alertCategory].messages[message], "noteSummary") && oAlertCategoriesLowerCase[alertCategory].messages[message].textIncludes.test(document.getElementById("message").value) === true) {
+        for (let message in oAlertCategoriesLowerCase[alertCategory]?.messages) {
+            if (Object.hasOwn(oAlertCategoriesLowerCase[alertCategory]?.messages[message], "noteSummary") && oAlertCategoriesLowerCase[alertCategory]?.messages[message]?.textIncludes.test(document.getElementById("message").value) === true) {
                 foundAlert = oAlertCategoriesLowerCase[alertCategory].messages[message]
                 foundAlert.noteMessage = document.getElementById("message").value
-                if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
+                // if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
             }
-            if (!Object.keys(foundAlert).length) { foundAlert = { noteSummary: document.getElementById("message").value.slice(0, 50), noteMessage: document.getElementById("message").value, noteCategory: "Other" } }
-            let workerName = await reorderCommaName(document.getElementById('workerName').value)
-            let shortWorkerName = workerName.replace(/(\s\w)\w+/, '$1')
-            foundAlert.worker = shortWorkerName
-            foundAlert.xNumber = document.getElementById("inputWorkerId").value.toLowerCase()
-            return foundAlert
         }
+        if (foundAlert === 'undefined' || !Object.keys(foundAlert).length) { foundAlert = { noteSummary: document.getElementById("message").value.slice(0, 50), noteMessage: document.getElementById("message").value, noteCategory: "Other" } }
+        let workerName = await reorderCommaName(document.getElementById('workerName').value)
+        let shortWorkerName = workerName.replace(/(\s\w)\w+/, '$1')
+        foundAlert.worker = shortWorkerName
+        foundAlert.xNumber = document.getElementById("inputWorkerId").value.toLowerCase()
+        let oWhatAlertType = await whatAlertType()
+        foundAlert.page = oWhatAlertType.page
+        foundAlert.parameters = oWhatAlertType.parameters
+        return foundAlert
     }
     // $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button><button type="button" class="custom-button custom-button__floating" id="openAlertPage">Open Page</button>');
     $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Note</button>');
@@ -1164,7 +1167,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     $('#autoCaseNote').click(function() { fAutoCaseNote().then( function(returnedAlert) {
         localStorage.setItem( "MECH2.note." + document.getElementById("groupId").value, JSON.stringify(returnedAlert) )
         window.addEventListener("close", () => localStorage.removeItem( "MECH2.note." + document.getElementById("groupId").value ))
-        window.open('/ChildCare/' + whatAlertType().page + whatAlertType().parameters, '_blank')
+        window.open('/ChildCare/' + returnedAlert.page + returnedAlert.parameters, '_blank')
     } ) })
 };
     ////// ALERTS.htm end //////

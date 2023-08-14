@@ -1010,12 +1010,12 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                     noteSummary: "Redetermination not received or is incomplete",
                     page: "",
                 },
-                // three: {
-                //     textIncludes: "Redetermination has not been received",
-                //     category: "Redetermination",
-                //     noteTitle: "Redetermination has not been received",
-                //     page: "",
-                // },
+                autoDenied: {
+                    textIncludes: /This case has been auto/,
+                    category: "Application",
+                    noteTitle: "This case has been auto-denied",
+                    page: "",
+                },
             }
         },
         periodicprocessing: {

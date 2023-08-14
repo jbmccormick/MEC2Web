@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.0
+// @version      0.84.1
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1148,7 +1148,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             if (Object.hasOwn(oAlertCategoriesLowerCase[alertCategory]?.messages[message], "noteSummary") && oAlertCategoriesLowerCase[alertCategory]?.messages[message]?.textIncludes.test(document.getElementById("message").value) === true) {
                 foundAlert = oAlertCategoriesLowerCase[alertCategory].messages[message]
                 foundAlert.noteMessage = document.getElementById("message").value
-                // if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
+                if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
             }
         }
         if (foundAlert === 'undefined' || !Object.keys(foundAlert).length) { foundAlert = { noteSummary: document.getElementById("message").value.slice(0, 50), noteMessage: document.getElementById("message").value, noteCategory: "Other" } }

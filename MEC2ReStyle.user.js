@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
-// @namespace    http://github.com/jbmccormick
-// @version      0.78.2
+// @namespace    https://github.com/jbmccormick/MEC2Web
+// @version      0.78.3
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -796,7 +796,7 @@ height: 22px !important;
 width: 10ch;
 }
 
-#caseId {
+#caseId, #providerId {
 width: 10ch !important;
 }
 

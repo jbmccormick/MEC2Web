@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.1
+// @version      0.84.2
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -998,6 +998,18 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     const oAlertCategoriesLowerCase = {//For smart navigation, and AutoCaseNotes
         information: {
             messages: {
+                closeSusp: {
+                    textIncludes: /allowed period of suspension expires/,
+                    noteCategory: "Other",
+                    noteSummary: "",
+                    page: "",
+                },
+                closeTI: {
+                    textIncludes: /allowed period of temporary ineligibility expires/,
+                    noteCategory: "Other",
+                    noteSummary: "",
+                    page: "",
+                },
                 mailed: {
                     textIncludes: /Redetermination form has been mailed/,
                     noteCategory: "Redetermination",
@@ -1038,7 +1050,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                     noteSummary: "",
                     page: "",
                 },
-                four: {
+                tyExpires: {
                     textIncludes: /The allowed time on Transition Year will expi/,
                     noteCategory: "Other",
                     noteSummary: "Approved TY to BSF eligibility results",
@@ -1066,9 +1078,15 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                     noteSummary: "",
                     page: "",
                 },
-                four: {
-                    textIncludes: /qqq/,
-                    noteCategory: "",
+                nonCoopCS: {
+                    textIncludes: /Parentally Responsible Individual Ref (#\d{2}) is not cooperating/,
+                    noteCategory: "Child Support Note",
+                    noteSummary: "",
+                    page: "",
+                },
+                coopCS: {
+                    textIncludes: /Parentally Responsible Individual Ref (#\d{2}) is cooperating/,
+                    noteCategory: "Child Support Note",
                     noteSummary: "",
                     page: "",
                 },
@@ -1127,17 +1145,34 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             case "information.messages.mailed.noteSummary":
                 return "Redetermination mailed, due " + addDays(document.querySelectorAll('#alertTable .selected>td')[1].textContent, 45).toLocaleDateString('en-US', {year: "2-digit", month: "numeric", day: "numeric"})
                 break
+            case "information.messages.closeSusp.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: 1yr suspension expires on $1")
+                break
+            case "information.messages.closeTI.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: TI period expires on $1")
+                break
+
             case "childsupport.messages.nameChange.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/, "PRI$1")
                 break
             case "childsupport.messages.npcAddress.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})(?:[a-z +]+)/, "ABPS of $1 address: ")
                 break
+            case "childsupport.messages.nonCoopCS.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/,"PRI$1")
+                break
+            case "childsupport.messages.coopCS.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/,"PRI$1")
+                break
+
             case "periodicprocessing.messages.extendedEligExpiring.noteSummary":
                 return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z ]+)([0-9\/]+)/, "Ext Elig ($1) ends $2")
                 break
             case "periodicprocessing.messages.jsHours.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)([0-9\/]+)/, "Job search hours end $1")
+                break
+            case "periodicprocessing.messages.tyExpires.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)([0-9\/]+)/, "Approved TY to BSF elig results eff $1")
                 break
         }
     }
@@ -2726,9 +2761,11 @@ function addDays(date, days) {
 };
 //
 function reorderCommaName(commaName) {
-    let caseNameBackwards = toTitleCase(commaName).replace(/\b\w\b/,'').trim();
+    try {
+    let caseNameBackwards = toTitleCase(commaName).replace(/\b\w\W*$/,'').trim() // removing MI
     let caseName = caseNameBackwards.split(",")[1].trim() + " " + caseNameBackwards.split(",")[0].replace(/,/,'')
     return caseName
+    } catch(error) {}
 };
 //
 function getFirstName(commaName) {

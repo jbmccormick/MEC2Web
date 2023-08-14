@@ -1069,7 +1069,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 ncpAddress: {
                     textIncludes: /Absent Parent of Child Ref #\d{2} has an address/,
                     noteCategory: "NCP Information",
-                    noteSummary: "CS Alert - NCP address change",
+                    noteSummary: "",
                     page: "",
                 },
                 cpAddress: {
@@ -1155,8 +1155,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             case "childsupport.messages.nameChange.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/, "PRI$1")
                 break
-            case "childsupport.messages.npcAddress.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})(?:[a-z +]+)/, "ABPS of $1 address: ")
+            case "childsupport.messages.ncpAddress.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})(?:[a-z +]+)/, "ABPS of $1 address: ").replace(/(\d{5})(?:\d{4})/, "$1")
                 break
             case "childsupport.messages.nonCoopCS.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/,"PRI$1")

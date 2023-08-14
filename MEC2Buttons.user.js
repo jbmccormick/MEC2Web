@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.3
+// @version      0.84.31
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1146,33 +1146,33 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 return "Redetermination mailed, due " + addDays(document.querySelectorAll('#alertTable .selected>td')[1].textContent, 45).toLocaleDateString('en-US', {year: "2-digit", month: "numeric", day: "numeric"})
                 break
             case "information.messages.closeSusp.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: 1yr suspension expires on $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: 1yr suspension expires on $1")
                 break
             case "information.messages.closeTI.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: TI period expires on $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: TI period expires on $1")
                 break
 
             case "childsupport.messages.nameChange.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/, "PRI$1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})/, "PRI$1")
                 break
             case "childsupport.messages.ncpAddress.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})(?:[a-z +]+)/, "ABPS of $1 address: ").replace(/(\d{5})(?:\d{4})/, "$1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})(?:[a-z- +]+)/, "ABPS of $1 address: ").replace(/(\d{5})(?:\d{4})/, "$1")
                 break
             case "childsupport.messages.nonCoopCS.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/,"PRI$1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})/,"PRI$1")
                 break
             case "childsupport.messages.coopCS.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)(\#\d{2})/,"PRI$1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})/,"PRI$1")
                 break
 
             case "periodicprocessing.messages.extendedEligExpiring.noteSummary":
-                return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z ]+)([0-9\/]+)/, "Ext Elig ($1) ends $2")
+                return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z- ]+)([0-9\/]+)/, "Ext Elig ($1) ends $2")
                 break
             case "periodicprocessing.messages.jsHours.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)([0-9\/]+)/, "Job search hours end $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)([0-9\/]+)/, "Job search hours end $1")
                 break
             case "periodicprocessing.messages.tyExpires.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]+)([0-9\/]+)/, "Approved TY to BSF elig results eff $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)([0-9\/]+)/, "Approved TY to BSF elig results eff $1")
                 break
         }
     }

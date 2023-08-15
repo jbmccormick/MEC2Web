@@ -1734,7 +1734,7 @@ window.location.href.indexOf("CaseFraud.htm") > -1 && ($('.col-md-3, .col-lg-3')
 
 //SECTION START CaseLockStatus Reveal Unlock button
 if (window.location.href.indexOf("CaseLockStatus.htm") > -1) {
-    if ($('div#caseLockStatusPanelData div.form-group').contents().eq(2).text().indexOf("lock found") < 1) {
+    if ( (/[localStorage.getItem('MECH2.userIdNumber')]/i).test($('div#caseLockStatusPanelData div.form-group').contents().eq(2).text()) ) {
         $('#caseLockStatusDetail').append('<div style="font-size: 20px; margin-left: 5px; padding: 2px 5px; width: fit-content;" class="eligibility-highlight" id="acceptMyTerms"> I solemnly swear I am up to no good. Click this text to show the "Unlock" button. </div>')
         $('#acceptMyTerms').click(function() {
             $("#caseLockStatusUnlockButtonArea").show();

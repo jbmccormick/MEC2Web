@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.33
+// @version      0.84.34
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1019,7 +1019,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 two: {
                     textIncludes: /Redetermination has not been received/,
                     noteCategory: "Redetermination",
-                    noteSummary: "Redetermination not received or is incomplete",
+                    noteSummary: "Closing: Redetermination not received/incomplete",
                     page: "",
                 },
                 autoDenied: {
@@ -1158,6 +1158,9 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             case "childsupport.messages.ncpAddress.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})(?:[a-z- +]+)/, "ABPS of $1 address: ").replace(/(\d{5})(?:\d{4})/, "$1")
                 break
+            case "childsupport.messages.cpAddress.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(?:\#\d{2})(?:[A-Za-z- +]+)/, "HH address per PRISM: ").replace(/(\d{5})(?:\d{4})/, "$1")
+                break
             case "childsupport.messages.nonCoopCS.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\#\d{2})/,"PRI$1")
                 break
@@ -1176,6 +1179,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 break
         }
     }
+    window.addEventListener("close", () => localStorage.removeItem( "MECH2.note") )
     async function fAutoCaseNote() {
         let foundAlert = {}
         let alertCategory = document.querySelector('#alertTable .selected>td').textContent.toLowerCase().replace(" ", "")
@@ -1194,14 +1198,19 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         let oWhatAlertType = await whatAlertType()
         foundAlert.page = oWhatAlertType.page
         foundAlert.parameters = oWhatAlertType.parameters
+        foundAlert.number = oWhatAlertType.number
         return foundAlert
     }
     // $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button><button type="button" class="custom-button custom-button__floating" id="openAlertPage">Open Page</button>');
     $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Note</button>');
     // $('#copyAlertButton').click(function() { fCopyExplanation()});
     $('#autoCaseNote').click(function() { fAutoCaseNote().then( function(returnedAlert) {
-        localStorage.setItem( "MECH2.note." + document.getElementById("groupId").value, JSON.stringify(returnedAlert) )
-        window.addEventListener("close", () => localStorage.removeItem( "MECH2.note." + document.getElementById("groupId").value ))
+        // let caseNumber = returnedAlert.number
+        let readiedAlert = {}
+        readiedAlert[returnedAlert.number] = returnedAlert
+        localStorage.setItem( "MECH2.note", JSON.stringify( readiedAlert ) )//blargy
+        // localStorage.setItem( "MECH2.note." + document.getElementById("groupId").value, JSON.stringify(returnedAlert) )
+        // window.addEventListener("close", () => localStorage.removeItem( "MECH2.note." + document.getElementById("groupId").value ))
         window.open('/ChildCare/' + returnedAlert.page + returnedAlert.parameters, '_blank')
     } ) })
 };
@@ -1888,19 +1897,29 @@ if (window.location.href.indexOf("CaseNotes.htm") > -1) {
 
 //SECTION START CaseNotes and ProviderNotes layout fix
 if (window.location.href.indexOf("Notes.htm") > -1) {//CaseNotes, ProviderNotes
-    if (localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value) !== null) {
-        if (viewMode) { document.getElementById("new").click() }
-        else if (!viewMode) {
-            let workerName = localStorage.getItem('MECH2.userName')
-            let noteInfo = JSON.parse(localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value))
-            let signatureName = document.getElementById('noteCreator').value.toLowerCase() === noteInfo.xNumber ? workerName : workerName + " for " + noteInfo.worker
-            document.getElementById("noteCategory").value = noteInfo.noteCategory
-            document.getElementById("noteSummary").value = noteInfo.noteSummary
-            document.getElementById("noteStringText").value = noteInfo.noteMessage + "\n=====\n" + signatureName
-            localStorage.removeItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value)
-            document.getElementById("save").click()
+    try {
+        let noteInfo = JSON.parse(localStorage.getItem("MECH2.note"))[document.querySelector('#providerInput>#providerId, #caseId').value] //blargy
+        // console.log(noteInfo)
+        // console.log(Object.keys(noteInfo))
+        // try { JSON.parse(localStorage.getItem("MECH2.note"))[document.querySelector('#providerInput>#providerId, #caseId').value] }
+        // catch(error) {}
+        if (noteInfo !== null && noteInfo !== undefined) {
+            // if (localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value) !== null) {
+            if (viewMode) { document.getElementById("new").click() }
+            else if (!viewMode) {
+                let workerName = localStorage.getItem('MECH2.userName')
+                // let noteInfo = JSON.parse(localStorage.getItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value))
+                let signatureName = document.getElementById('noteCreator').value.toLowerCase() === noteInfo.xNumber ? workerName : workerName + " for " + noteInfo.worker
+                document.getElementById("noteCategory").value = noteInfo.noteCategory
+                document.getElementById("noteSummary").value = noteInfo.noteSummary
+                document.getElementById("noteStringText").value = noteInfo.noteMessage + "\n=====\n" + signatureName
+                localStorage.removeItem("MECH2.note")
+                // localStorage.removeItem("MECH2.note." + document.querySelector('#providerInput>#providerId, #caseId').value)
+                document.getElementById("save").click()
+            }
         }
     }
+    catch(error) {console.error(error)}
     document.getElementsByClassName('panel-box-format')[1].style.display = "none";
     document.getElementById('noteStringText').rows = '29'
     $('br').remove();

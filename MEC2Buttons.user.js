@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.34
+// @version      0.84.35
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -996,6 +996,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
     //     let vAlertCategoryLowerCase = $('#alertTable .selected').children().eq(0).text().toLowerCase().replace(" ", "")
     // };
     const oAlertCategoriesLowerCase = {//For smart navigation, and AutoCaseNotes
+
         information: {
             messages: {
                 closeSusp: {
@@ -1016,14 +1017,14 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                     noteSummary: "",
                     page: "",
                 },
-                two: {
+                noRedet: {
                     textIncludes: /Redetermination has not been received/,
                     noteCategory: "Redetermination",
                     noteSummary: "Closing: Redetermination not received/incomplete",
                     page: "",
                 },
                 autoDenied: {
-                    textIncludes: /This case has been auto/,
+                    textIncludes: /This case has been auto-denied/,
                     category: "Application",
                     noteTitle: "This case has been auto-denied",
                     page: "",
@@ -1061,7 +1062,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         childsupport: {
             messages: {
                 nameChange: {
-                    textIncludes: /reported a name change to/,
+                    textIncludes: /Parentally Responsible Individual Ref #\d{2} reported a name change/,
                     noteCategory: "Child Support Note",
                     noteSummary: "",
                     page: "",
@@ -1102,13 +1103,30 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 },
                 paStart: {
                     textIncludes: /ParentAwareStart/,
-                    noteCategory: "",
+                    noteCategory: "Provider Change",
                     noteSummary: "",
                     page: "",
                 },
                 providerClosed: {
                     textIncludes: /ProviderClosed/,
+                    noteCategory: "Provider Change",
+                    noteSummary: "",
+                    page: "",
+                },
+                blarp: {
+                    textIncludes: /blarp/,
                     noteCategory: "",
+                    noteSummary: "",
+                    page: "",
+                },
+            },
+        },
+        maxis: {
+            messages: {
+                memberLeft: {
+                    textIncludes: /Member Left date/,
+                    noteCategory: "Household Change",
+                    personName: "true",
                     noteSummary: "",
                     page: "",
                 },
@@ -1139,8 +1157,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         //Copy, open CaseNotes
     $('h4:contains("Alert Detail")').attr('id','h4AlertDetail').css('display','inline-flex');
     $('#h4AlertDetail').after('<div id="alertButtonHouse" style="display: inline-flex; margin-left: 10px;" class="button-row__nav"></div>');
-    async function fGetNoteSummary(obj) {
-        console.log(oAlertCategoriesLowerCase)
+
+    async function fGetNoteSummary(obj, personName) {
         switch(obj) {
             case "information.messages.mailed.noteSummary":
                 return "Redetermination mailed, due " + addDays(document.querySelectorAll('#alertTable .selected>td')[1].textContent, 45).toLocaleDateString('en-US', {year: "2-digit", month: "numeric", day: "numeric"})
@@ -1177,6 +1195,16 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             case "periodicprocessing.messages.tyExpires.noteSummary":
                 return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)([0-9\/]+)/, "Approved TY to BSF elig results eff $1")
                 break
+            case "periodicprocessing.messages.homelessExpiring.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z0-9 ]*)(\d{2}\/\d{2}\/\d{4})(?:[A-Za-z0-9. ]*)/, "Homeless period expires $1: case set to TI")
+                break
+
+            case "maxis.messages.memberLeft.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*)(?:X[A-Z0-9]{6})(?:[A-Za-z ]*)(\d{2}\/\d{2}\/\d{4})./, "REMO: " + personName + " left $1")
+                break
+            // case "":
+            //     return Cooperation Status for Absent Parent ID 22718985 has been changed on the Child Support Enforcement window from Not Cooperating to Cooperating by MAXIS worker X169056 with an actual date of 07/31/2023.
+            //     break
         }
     }
     window.addEventListener("close", () => localStorage.removeItem( "MECH2.note") )
@@ -1187,7 +1215,8 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
             if (Object.hasOwn(oAlertCategoriesLowerCase[alertCategory]?.messages[message], "noteSummary") && oAlertCategoriesLowerCase[alertCategory]?.messages[message]?.textIncludes.test(document.getElementById("message").value) === true) {
                 foundAlert = oAlertCategoriesLowerCase[alertCategory].messages[message]
                 foundAlert.noteMessage = document.getElementById("message").value
-                if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary") }
+                if ( Object.hasOwn(foundAlert, "personName") ) { foundAlert.personName = reorderCommaName(document.querySelector('#alertTable_wrapper #alertTable > tbody > tr.selected > td:nth-of-type(3)').textContent) }
+                if (!Object.keys(foundAlert.noteSummary).length) { foundAlert.noteSummary = await fGetNoteSummary(alertCategory + ".messages." + message + ".noteSummary", foundAlert.personName) }
             }
         }
         if (foundAlert === 'undefined' || !Object.keys(foundAlert).length) { foundAlert = { noteSummary: document.getElementById("message").value.slice(0, 50), noteMessage: document.getElementById("message").value, noteCategory: "Other" } }
@@ -1201,16 +1230,11 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
         foundAlert.number = oWhatAlertType.number
         return foundAlert
     }
-    // $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="copyAlertButton">Copy, goto Notes</button><button type="button" class="custom-button custom-button__floating" id="openAlertPage">Open Page</button>');
     $('#alertButtonHouse').prepend('<button type="button" class="custom-button custom-button__floating" id="autoCaseNote">Automated Note</button>');
-    // $('#copyAlertButton').click(function() { fCopyExplanation()});
     $('#autoCaseNote').click(function() { fAutoCaseNote().then( function(returnedAlert) {
-        // let caseNumber = returnedAlert.number
         let readiedAlert = {}
         readiedAlert[returnedAlert.number] = returnedAlert
         localStorage.setItem( "MECH2.note", JSON.stringify( readiedAlert ) )//blargy
-        // localStorage.setItem( "MECH2.note." + document.getElementById("groupId").value, JSON.stringify(returnedAlert) )
-        // window.addEventListener("close", () => localStorage.removeItem( "MECH2.note." + document.getElementById("groupId").value ))
         window.open('/ChildCare/' + returnedAlert.page + returnedAlert.parameters, '_blank')
     } ) })
 };

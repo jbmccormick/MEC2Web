@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.36
+// @version      0.84.37
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -44,7 +44,8 @@ if ($('#selectPeriod').length) {
     periodDateEnd = periodDateRange.slice(13)
     // periodDateEnd = new Date(periodDateRange.slice(0, 10))
 }
-console.log(periodDateRange, periodDateStart, periodDateEnd)
+let caseId = document.getElementById('caseId')?.value
+let providerId = document.getElementById('providerId')?.value
 /* DIVIDER ////////////////////////////////////////////////////////////////////////////////////////////////// EARLY EVENTS SECTION START \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 
 // function updateBackground( e ) {
@@ -2313,15 +2314,28 @@ if (window.location.href.indexOf("FinancialBilling.htm") > -1) {
             }
         })
     }
+    document.getElementById('billingProviderTable').addEventListener('click', function() { setActiveProvider() })
+    function setActiveProvider() {
+        if (caseId.length && document.querySelectorAll('#billingProviderTable>tbody>tr.selected').length) {
+            sessionStorage.setItem('MECH2.billingApproval.' + caseId, document.querySelector('#billingProviderTable>tbody>tr.selected>td:nth-child(5)').textContent)
+        }
+    }
+    setTimeout(function() { setActiveProvider() }, 200)
 };
 //SECTION END FinancialBilling Fix to display table
 
 //SECTION START FinancialBillingApproval button to add comments
-if (window.location.href.indexOf("FinancialBillingApproval.htm") > -1 && !viewMode) {
-    $('#remittanceComments').parents('.form-group').append('<div id="unpaidCopayNote" class="custom-button__nodisable custom-button__floating"">Unpaid Copay</div>');
-    $('#unpaidCopayNote').click(function() { $('#userComments').val('Copay is unpaid, provider did not indicate if there is a payment plan.') })
-    $('#remittanceComments').parents('.form-group').append('<div id="paymentPlanNote" class="custom-button__nodisable custom-button__floating flex-right">Payment Plan</div>');
-    $('#paymentPlanNote').click(function() { $('#userComments').val('Provider indicated there is a payment plan for the unpaid copay.') })
+if (("FinancialBillingApproval.htm").includes(thisPageNameHtm)) {
+    if (!viewMode) {
+        $('#remittanceComments').parents('.form-group').append('<button type="button" id="unpaidCopayNote" class="custom-button__nodisable custom-button__floating" tabindex="-1">Unpaid Copay</button>');
+        $('#unpaidCopayNote').click(function() { $('#userComments').val('Copay is unpaid, provider did not indicate if there is a payment plan.') })
+        $('#remittanceComments').parents('.form-group').append('<button type="button" id="paymentPlanNote" class="custom-button__nodisable custom-button__floating flex-right" tabindex="-1">Payment Plan</button>');
+        $('#paymentPlanNote').click(function() { $('#userComments').val('Provider indicated there is a payment plan for the unpaid copay.') })
+    }
+    else if (viewMode) {
+        let lastSelectedProvider = sessionStorage.getItem('MECH2.billingApproval.' + caseId)
+        setTimeout(function() { console.log('here');if (lastSelectedProvider.length) { $('#financialBillingApprovalTable>tbody>tr>td:contains(' + lastSelectedProvider + ')').click() } }, 100)
+    }
 };
 //SECTION END FinancialBillingApproval button to add comments
 

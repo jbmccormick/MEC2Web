@@ -1178,7 +1178,7 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 break
 
             case "maxis.messages.memberLeft.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*)(?:X[A-Z0-9]{6})(?:[A-Za-z ]*) (\d{2}\/\d{2}\/\d{2})./, "REMO: " + personName + " left $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*)(?:X[A-Z0-9]{6})(?:[A-Za-z ]*) (\d{2}\/\d{2}\/\d{2,4})./, "REMO: " + personName + " left $1")
                 break
 
             case "childsupport.messages.nameChange.noteSummary":

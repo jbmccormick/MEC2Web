@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.37
+// @version      0.84.38
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -1162,14 +1162,23 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
 
     async function fGetNoteSummary(obj, personName) {
         switch(obj) {
+            case "eligibility.messages.unpaidCopay.noteSummary":
+                console.log('here')
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+) (\d{2}\/\d{2}\/\d{2,4}) - (\d{2}\/\d{2}\/\d{2,4})/, "Unpaid copay for period $1 - $2")
+                break
+
             case "information.messages.mailed.noteSummary":
                 return "Redetermination mailed, due " + addDays(document.querySelectorAll('#alertTable .selected>td')[1].textContent, 45).toLocaleDateString('en-US', {year: "2-digit", month: "numeric", day: "numeric"})
                 break
             case "information.messages.closeSusp.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: 1yr suspension expires on $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+) (\d{2}\/\d{2}\/\d{2,4})/, "Auto-closing: 1yr suspension expires on $1")
                 break
             case "information.messages.closeTI.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\d{2}\/\d{2}\/\d{4})/, "Auto-closing: TI period expires on $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+) (\d{2}\/\d{2}\/\d{2,4})/, "Auto-closing: TI period expires on $1")
+                break
+
+            case "maxis.messages.memberLeft.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*)(?:X[A-Z0-9]{6})(?:[A-Za-z ]*) (\d{2}\/\d{2}\/\d{2})./, "REMO: " + personName + " left $1")
                 break
 
             case "childsupport.messages.nameChange.noteSummary":
@@ -1189,21 +1198,21 @@ if (window.location.href.indexOf("/Alerts.htm") > -1) {
                 break
 
             case "periodicprocessing.messages.extendedEligExpiring.noteSummary":
-                return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z- ]+)([0-9\/]+)/, "Ext Elig ($1) ends $2")
+                return document.getElementById("message").value.replace(/The (\w+)(?:[A-Za-z- ]+) (\d{2}\/\d{2}\/\d{2,4})/, "Ext Elig ($1) ends $2")
                 break
             case "periodicprocessing.messages.jsHours.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)([0-9\/]+)/, "Job search hours end $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+) (\d{2}\/\d{2}\/\d{2,4})/, "Job search hours end $1")
                 break
             case "periodicprocessing.messages.tyExpires.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)([0-9\/]+)/, "Approved TY to BSF elig results eff $1")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z- ]+)(\d{2}\/\d{2}\/\d{2,4})/, "Approved TY to BSF elig results eff $1")
                 break
             case "periodicprocessing.messages.homelessExpiring.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z0-9 ]*)(\d{2}\/\d{2}\/\d{4})(?:[A-Za-z0-9. ]*)/, "Homeless period expires $1: case set to TI")
+                return document.getElementById("message").value.replace(/(?:[A-Za-z0-9 ]*) (\d{2}\/\d{2}\/\d{2,4})(?:[A-Za-z0-9. ]*)/, "Homeless period expires $1; case set to TI")
+                break
+            case "periodicprocessing.messages.disabilityExpires.noteSummary":
+                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*) (\d{2}\/\d{2}\/\d{2,4})(?:[A-Za-z0-9. ]*)/, "The allowed disability period will end $1")
                 break
 
-            case "maxis.messages.memberLeft.noteSummary":
-                return document.getElementById("message").value.replace(/(?:[A-Za-z ]*)(?:X[A-Z0-9]{6})(?:[A-Za-z ]*)(\d{2}\/\d{2}\/\d{4})./, "REMO: " + personName + " left $1")
-                break
             // case "":
             //     return Cooperation Status for Absent Parent ID 22718985 has been changed on the Child Support Enforcement window from Not Cooperating to Cooperating by MAXIS worker X169056 with an actual date of 07/31/2023.
             //     break

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2ReStyle
 // @namespace    https://github.com/jbmccormick/MEC2Web
-// @version      0.78.3
+// @version      0.78.31
 // @description  ReStyle the MEC2 page by adding and changing style-sheets
 // @author       MECH2
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -116,12 +116,32 @@ GM_addStyle ( `
 }
 ` )
 GM_addStyle ( `
+@media (min-width: 1050px) {
+    .container {
+        width: 1040px !important;
+    }
+}
+@media (min-width: 1100px) {
+    .container {
+        width: 1090px !important;
+    }
+}
+@media (min-width: 1150px) {
+    .container {
+        width: 1140px !important;
+    }
+}
+@media (min-width: 1201px) {
+    .container {
+        width: 1190px !important;
+    }
+}
 h1 {
 display: flex;
 column-gap: 1rem;
 }
 h1::before, h1::after {
-content: '🌻';
+content: '☔';
 }
 
 br {

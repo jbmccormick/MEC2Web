@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.84.38
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus
-// @author       MECH2
+// @author       MNDHS
 // @match        mec2.childcare.dhs.state.mn.us/*
 // @match        mec2.trng2.dhs.state.mn.us/*
 // ==/UserScript==

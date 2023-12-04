@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      0.84.38
-// @description  Add navigation buttons to MEC2 to replace the drop down hover menus
+// @version      1.00.00
+// @description  Add navigation buttons to MEC2 to replace the drop down hover menus. Deprecated.
 // @author       MNDHS
 // @match        mec2.childcare.dhs.state.mn.us/*
-// @match        mec2.trng2.dhs.state.mn.us/*
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
 
@@ -183,7 +182,6 @@ const rowThreeButtonObject = {
         caseRedetermination: { buttonName: "Redetermination", pageWithoutDotHtm: "CaseRedetermination", opensIn: "_self", parentId: "Case Redetermination", buttonId: "CaseRedeterminationSelf", rowTwoParent: "caseButtons"},
         caseAppInfo: { buttonName: "Application Info", pageWithoutDotHtm: "ApplicationInformation", opensIn: "_self", parentId: "Case Application Info", buttonId: "CaseApplicationInfoSelf", rowTwoParent: "caseButtons"},
         caseReinstate: { buttonName: "Reinstate", pageWithoutDotHtm: "CaseReinstate", opensIn: "_self", parentId: "Reinstate", buttonId: "CaseReinstateSelf", rowTwoParent: "caseButtons"},
-        caseLockStatus: { buttonName: "Lock Status", pageWithoutDotHtm: "CaseLockStatus", opensIn: "_self", parentId: "Case Lock Status", buttonId: "CaseLockStatus", rowTwoParent: "caseButtons"},
     },
     eligibilityButtons: {//objectName: { buttonName: "Button Name", pageWithoutDotHtm: "PageNameWithoutDotHtm", opensIn: "_self or _blank", parentId: "Id of Parent", buttonId: "Id of Button", rowTwoParent: "RowTwoParent"},
         eligibilitySelection: { buttonName: "Selection", pageWithoutDotHtm: "CaseEligibilityResultSelection", opensIn: "_self", parentId: "Eligibility Results Selection", buttonId: "CaseEligibilityResultSelectionSelf", rowTwoParent: "eligibilityButtons"},
@@ -1776,19 +1774,6 @@ if (window.location.href.indexOf("CaseExpense.htm") > -1) {
 window.location.href.indexOf("CaseFraud.htm") > -1 && ($('.col-md-3, .col-lg-3').removeClass('col-md-3 col-lg-3').addClass('col-md-5 col-lg-4'));
 //SECTION START CaseFraud Column resizing
 
-//SECTION START CaseLockStatus Reveal Unlock button
-if (window.location.href.indexOf("CaseLockStatus.htm") > -1) {
-    if (!$('div#caseLockStatusPanelData div.form-group').contents().eq(2).text().trim().match(/X1[A-Za-z0-9]{5}/)) { return }
-    else if ($('div#caseLockStatusPanelData div.form-group').contents().eq(2).text().trim().match(/X1[A-Za-z0-9]{5}/)[0].toLowerCase() === localStorage.getItem('MECH2.userIdNumber').toLowerCase() ) {
-        $('#caseLockStatusDetail').append('<div style="font-size: 20px; margin-left: 5px; padding: 2px 5px; width: fit-content;" class="eligibility-highlight" id="acceptMyTerms"> I solemnly swear I am up to no good. Click this text to show the "Unlock" button. </div>')
-        $('#acceptMyTerms').click(function() {
-            $("#caseLockStatusUnlockButtonArea").show();
-            $("#acceptMyTerms").remove();
-        });
-	};
-};
-//SECTION END CaseLockStatus Reveal Unlock button
-
 //SECTION START Open CaseMemberHistory page from CaseMember with 'button'
 if (window.location.href.indexOf("CaseMember.htm") > -1) {
     $('#memberNameIsAlias').parents('.form-group').prop('id', 'aliasGroup')
@@ -2979,13 +2964,6 @@ function nextPrevPeriodButtons() {
 nextPrevPeriodButtons()
 //SECTION END Next/Prev buttons next to period drop down
 
-//SECTION START No timing out, resets sessionStartTime every 61 seconds
-function keepAlive() {
-    localStorage.setItem('mec2.sessionStartTime', new Date().getTime());
-};
-setInterval(keepAlive, 61000);//61 seconds, /1000
-//SECTION END No timing out, resets sessionStartTime every 61 seconds
-
 //SECTION START Login assistance - clicks Terms box, remembers last used login name
 function loginAssistance() {
     if (document.getElementById("loginDetail") !== null) {
@@ -3030,31 +3008,37 @@ $( window ).on( "load", function() {
 //SECTION END Make labels the same height as their next neighbor
 
 //SECTION START Duplicate buttons above H1 row
-if (window.location.href.indexOf("ctiveCaseList.htm") < 0 && window.location.href.indexOf("ProviderSearch.htm") < 0 && window.location.href.indexOf("CaseLockStatus.htm") < 0) {
-    $('.modal .form-button').addClass('modal-button');//popup buttons
-    $('table').click(function() {//check on table click if buttons were enabled/disabled and use class to mirror
-        $('.mutable').each(function() {
-            let oldButtonId = $(this).prop('id').split('DuplicateButton')[0];
+if (!(thisPageNameHtm).match("List.htm") && !["ProviderSearch.htm", "CaseLockStatus.htm", "ClientSearch.htm", "MaximumRates.htm", "ReportAProblem.htm", "FinancialClaimTransfer.htm"].includes(thisPageNameHtm)) {
+    function checkDBclickability() {
+        $('.mutable').each(function() { //optimize
+            let oldButtonId = $(this).attr('id').split('DB')[0];
             if ($('#' + oldButtonId).prop('disabled')) {
-                $(this).addClass('custom-form-button__disabled').prop('tabindex', '-1');
+                $(this).attr('disabled', 'disabled');
             } else {
-                $(this).removeClass('custom-form-button__disabled').prop('tabindex', '0');
+                $(this).removeAttr('disabled');
             };
         });
-    });
-    $('.form-button:not([style*="display: none"], [id$="Business"], [id$="Person"], .panel-box-format input.form-button, .modal-button, #workerSearch, #contactInfo, #providerIdSubmit, #ratePeriodSelectButton, #validateCertificationButton, #resetCertButton, #validateLicenseButton, #resetLicButton, #selectFra, #caseSearch, #providerSearch, #caseInputSubmit, #alertInputSubmit, #search, #reset, #changeType, #storage, #addRegistrationFee, #deleteRegistrationFee, #addBilledTime, #deleteBilledTime, #calculate, #cappingInfo, #calcAmounts, .custom-button, .custom-button__floating, .doNotDupe').each(function() {
-        if ($(this).val()) {
-            let disabledStatus = $(this).prop('disabled') ? '" class="form-button custom-form-button custom-form-button__disabled centered-text mutable" tabindex="-1"' : '" class="form-button custom-form-button centered-text mutable" tabindex="0';
-            let idName = $(this).prop('id') + "DuplicateButton";
-            $('#dupeButtonHouse').append('<button id="'+ idName + disabledStatus + '">' + $(this).val() + '</button>');
-        };
-    })
-    $('#dupeButtonHouse').children().length === 0 && ($('#dupeButtonHouse').hide());
-    $('#dupeButtonHouse').click(function(e) {
-        e.preventDefault()
-        // if ( e.target.classList.contains('mutable') ) { document.getElementById(e.target.id.slice(0, -15)).click() }
-        if ( e.target.classList.contains('mutable') ) { $('#' + e.target.id.slice(0, -15)).click() }
-    })
+    }
+    try {
+        $('.modal .form-button').addClass('modal-button');//popup buttons
+        $('table').click(function() { checkDBclickability() });//check on table click if buttons were enabled/disabled and use class to mirror
+        $('.form-button:not([style$=none i], [id$="Business" i], [id$="Person" i], [id*=submit i], [id*=billed i], [id*=registration i], [id*=button i], [id*=search i], [type=hidden i], .panel-box-format input.form-button, .modal-button, #contactInfo, #selectFra, #reset, #changeType, #storage, #calculate, #cappingInfo, #calcAmounts, .cButton, .cButton__floating, .doNotDupe').each(function() {
+            if ($(this).val()) {
+                // let disabledStatus = $(this).attr('disabled') ? 'disabled' : '';
+                let idName = $(this).attr('id') + "DB";
+                $('#secondaryActionArea').append('<button  class="form-button mutable" id="' + idName + '" disabled="disabled"><span class="sAAspan">' + $(this).val() + '</span></button>');
+            };
+        })
+        $('#secondaryActionArea').children().length === 0 && ($('#secondaryActionArea').hide());
+        $('#secondaryActionArea').click(function(e) {
+            e.preventDefault()
+            if ( e.target.closest('button:not(:disabled)')?.classList.contains('mutable') ) { $('#' + e.target.closest('button').id.slice(0, -2)).click() }
+        })
+    }
+    catch(err) { console.error(err) }
+    finally {
+        setTimeout(function() { checkDBclickability() }, 100)
+    }
 };
 //SECTION END Buttons above H1 row
 

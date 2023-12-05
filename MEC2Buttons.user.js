@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEC2Buttons
 // @namespace    http://tampermonkey.net/
-// @version      1.00.00
+// @version      1.00.01
 // @description  Add navigation buttons to MEC2 to replace the drop down hover menus. Deprecated.
 // @author       MNDHS
 // @match        mec2.childcare.dhs.state.mn.us/*
@@ -16,7 +16,7 @@ $('br').remove();
 let viewMode = $('#page-wrap').length;
 document.getElementsByClassName("line_mn_green")[0].id = "greenline"
 let primaryPanelID = document.getElementById("page-wrap") ? document.getElementById("page-wrap") : document.getElementById("greenline");
-$(primaryPanelID).after('<div id="navButtonHouse" class="button-house nav-button-house"><div class="button-row__nav"><div id="buttonPanelOne"></div><div id="buttonPanelOneNTF"></div></div><div class="button-row__nav" id="buttonPanelTwo"></div><div class="button-row__nav" id="buttonPanelThree"></div></div><div id="dupeButtonHouse" class="button-house dupe-button-house"></div>');
+$(primaryPanelID).after('<div id="navButtonHouse" class="button-house nav-button-house"><div class="button-row__nav"><div id="buttonPanelOne"></div><div id="buttonPanelOneNTF"></div></div><div class="button-row__nav" id="buttonPanelTwo"></div><div class="button-row__nav" id="buttonPanelThree"></div></div><div id="secondaryActionArea" class="button-house dupe-button-house"></div>');
 $('#dupeButtonHouse').siblings('br').remove();
 let buttonDivOne = document.getElementById('buttonPanelOne');
 let buttonDivTwo = document.getElementById('buttonPanelTwo');
@@ -3026,7 +3026,7 @@ if (!(thisPageNameHtm).match("List.htm") && !["ProviderSearch.htm", "CaseLockSta
             if ($(this).val()) {
                 // let disabledStatus = $(this).attr('disabled') ? 'disabled' : '';
                 let idName = $(this).attr('id') + "DB";
-                $('#secondaryActionArea').append('<button  class="form-button mutable" id="' + idName + '" disabled="disabled"><span class="sAAspan">' + $(this).val() + '</span></button>');
+                $('#dupeButtonHouse').append('<button  class="form-button mutable" id="' + idName + '" disabled="disabled"><span class="dupe-span">' + $(this).val() + '</span></button>');
             };
         })
         $('#secondaryActionArea').children().length === 0 && ($('#secondaryActionArea').hide());

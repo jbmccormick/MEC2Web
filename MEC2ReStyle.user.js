@@ -1,10 +1,9 @@
 // ==UserScript==
 // @name         MEC2ReStyle
-// @version      0.78.31
-// @description  ReStyle the MEC2 page by adding and changing style-sheets
+// @version      1.00.00
+// @description  ReStyle the MEC2 page by adding and changing style-sheets. Deprecated.
 // @author       MNDHS
 // @match        mec2.childcare.dhs.state.mn.us/*
-// @match        mec2.trng2.dhs.state.mn.us/*
 // @grant        GM_addStyle
 // @run-at       document-start
 // ==/UserScript==
@@ -751,7 +750,7 @@ height: fit-content;
 background-image: none !important;
 }
 .form-button:not(.form-button:disabled, .custom-form-button__disabled, [hidden]) {
-display: inline-flex;
+display: inline-block;
 }
 .next-prev-period-button {
 padding: 3px 0px;
@@ -791,11 +790,6 @@ opacity: var(--absentDayDisabledOpacity) !important;
 padding-left: 5px !important;
 padding-right: 5px !important;
 margin-left: -25px !important;
-}
-
-html>body .error_alertbox_new {
-margin: 5px !important;
-padding: 2px 2px 0px 8px !important;
 }
 
 :is(a, div)>input:is(#updateUser, #updateUserURL, #updateDate, #priEligibleActivity, #absentDaysUsed) {
@@ -966,13 +960,13 @@ background-color: var(--bodyBackground);
 color: var(--textColor);
 }
 
-/* blarg
-div.panel.panel-default:not(.panel-box-format), .error_alertbox_new {
-background-color: var(--bodyBackground) !important;
-} */
+html>body .error_alertbox_new {
+margin: 5px !important;
+padding: 2px 2px 0px 8px !important;
+}
 
-html>body .panel, .error_alertbox_new {
-background-color: inherit;
+html>body .panel, html>body div.error_alertbox_new {
+background-color: inherit !important;
 }
 
 div.panel.panel-default.modal-content {
